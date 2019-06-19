@@ -39,7 +39,7 @@ exec_dir=os.path.split(sys.argv[0])[0]
 sys.path.insert(0,exec_dir)
 
 def normalize_path(path):
-    return os.path.join(exec_dir,path)
+    return os.path.join(os.getcwd(),path)
 
 default_configfile=os.path.join(gethomedir(),r".pytraffic")
 backup_configfile=os.path.join(gethomedir(),r".pytraffic_save")
