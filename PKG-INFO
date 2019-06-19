@@ -1,0 +1,17 @@
+Metadata-Version: 1.0
+Name: pytraffic
+Version: 2.5.4
+Summary: A Python simulation of the Game Rush Hour.
+Home-page: http://alpha.uhasselt.be/Research/Algebra
+Author: Michel Van den Bergh
+Author-email: michel.vandenbergh@uhasselt.be
+License: GPL
+Description: PyTraffic is a Python version of the board game Rush Hour
+        created by Binary Arts Coporation. The goal is to remove the red
+        car out of the grid through the slot on the right. To do this you have to
+        slide the other cars out of the way.
+        
+        PyTraffic comes with about 19.000 puzzles ranging from intermediate to
+        expert.
+        
+Platform: UNKNOWN

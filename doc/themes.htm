@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+<h2>Themes</h2>
+Let us first describe a simple 2D-theme without sound.
+<ul>
+<li>
+The background images are installed in
+<center>
+&lt;install_directory&gt;/themes/&lt;theme_name&gt;/background.
+</center>  They
+must be png images. A theme may contain multiple backgrounds. These will be selected randomly at runtime (this feature has not been tested exhaustively however).
+</li>
+<li> 
+The cars are png images with a transparent background. They are installed in  
+<center>
+&lt;install_directory&gt;/themes/&lt;theme_name&gt;/cars.  </center>
+
+The syntax
+for the filenames of the non-red cars is 
+<center>
+car{H,V}{C,T}N&lt;id&gt;.png
+</center>
+with the following interpretation:
+<ul>
+<li> {H,V} means "horizontal" or "vertical".
+</li>
+<li> {C,T} means "car" or "truck". 
+<li> &lt;id&gt; is a string used to identify the car.
+</li>
+</li>
+</ul>
+<li> The syntax for the filename of the red car is
+"carNred.png".
+</li>
+<li> The background image should be big enough to contain a (virtual) 6x6 grid with
+origin (10,10) (from the top left corner) and squares which are 50 pixels wide. During
+play the top left corners of the car images will be snapped to the vertices in this
+grid. It is useful, but not required, that the background image has some visual representation
+of the virtual grid.
+</li>
+<li>
+The png
+format 
+ supports partial transparency. Unfortunately this information is lost when
+converting to pixmaps for storage in the X server. Therefore it is best to anti-alias the images
+against a suitably colored solid background. If you don't do
+this your images may look ugly or blocky. Note: it would be possible to use 
+client side images. However this would make PyTraffic rather slow when playing over a network.
+</li>
+</ul>
+PyTraffic 2.5 introduces sligthly more elaborate 3D-themes.
+<ul> 
+<li> A 3D-theme depends on two new concepts: <strong>basepoints</strong> and a 
+<strong>coordinate transform</strong>.
+</li>
+<li> The coordinate transform is in the file 
+<center>
+&lt;install_directory&gt;/themes/&lt;theme_name&gt;/transform
+</center>
+It has the format
+<pre>
+(m11,m12,m21,22,t1,t2)
+</pre>
+which stands for the affine transformation T sending (x,y) to
+<pre>(m11*x+m12*y+t1,m21*x+m22*y+t2)</pre>
+If the transform file is missing then T is assumed to be the identity.
+</li>
+<li> To get the background image for the 3D-theme you should <strong>conceptually</strong> take
+the background image for the 2D-theme and apply the transformation T to it. Of course in practice
+you will generate the 3D-background directly using some kind of 3D rendering software and
+then compute the corresponding T from the camera position.
+</li>
+<li> A base point is a point in an image which is used for alignment. The "cars" and
+"background" directory may contain a file "basepoints" which contains a python dictionary
+which maps an image name to its base point. If the basepoints file is missing then
+the base point of an image is assumed to be its upper left corner.
+</li>
+<li> In the following picture we show some images from the DeLuxe3D-theme together with their base points and
+bounding boxes (drawn at scale 1/2). Hopefully this will make things clearer. Note that the bounding box of the
+background  is only partially drawn.
+<p align=center>
+<img src="bounding_boxes.png">
+</p>
+<p>
+In this case T happens to be:
+<pre>(1.2020815280171306, -1.2020815280171306, 0.69402209378856716, 
+                              0.69402209378856716, 469.19999999999999, 45.899999999999999)
+</pre>
+For example the point (0,0) is mapped to p=(469,46). In the above image the base point  (473, 49)
+of the background has been aligned with p.
+</li>
+</ul>
+Finally let us discuss the sound support of themes.
+<ul>
+<li> The sounds are .ogg files which are installed in 
+<center>
+&lt;install_directory&gt;/themes/&lt;theme_name&gt;/sound
+</center>
+If this directory is not there then your theme does not have sound.
+</li>
+<li> You need at least 3 default sound files: "applause.ogg",
+"horn.ogg" and "engine.ogg".
+</li>
+<li> 
+The syntax
+for the sound files for the non-red cars is 
+<center>
+car{C,T}{horn,engine}id.ogg
+</center>
+with the obvious interpretation. If such a file is missing then the
+default sound is used. 
+</li>
+<li> 
+The syntax
+for the sound files for the red car is 
+<center>
+car{horn,engine}red.ogg
+</center>
+with the obvious interpretation. If such a file is missing then the
+default sound is used. 
+</li>
+</ul>

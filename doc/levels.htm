@@ -1,0 +1,69 @@
+<html>
+<head>
+</head>
+<body>
+<h2> The level file </h2> 
+The precomputed levels are contained in the
+file 'ttraffic.levels' in the install directory. The level file is
+accessed through the module 'LevelFileParser'.
+<p>
+The file 'ttraffic.levels' does not contain solutions, only
+levels. The format is as follows:
+<ul>
+<li> The file consists of a sequence of 4-byte numbers, lowest byte first.
+</li>
+<li> The file starts with a directory.
+</li>
+<li> The first number of the directory is 21.
+</li>
+<li> The next number of the directory is 52.
+</li>
+<li>The next number of the directory is the offset in the level file of the 
+levels whose solution requires at least 20 moves.
+</li>
+<li>The next number of the directory is the offset of the 
+levels whose solution requires at least 21 moves.
+</li>
+<li>
+...
+</li>
+<li>The last number of the directory is the offset  of the 
+levels whose solution requires at least 51 moves.
+</li>
+<li>After the directory come the actual levels. The levels are encoded
+in two 32 bit numbers, corresponding respectively to the rows and columns.
+</li>
+<li>The rows and columns are encoded as 6 strips of 4 bits. The least
+significant four bits correspond to the first row/column. The upper
+8 bits of the 4 byte numbers are zero.
+</li>
+<li> Every strip is encoded as 4 bits, i.e. a number between 0 and
+15. The corresponding strip is as follows (a,b are cars or trucks).
+<pre>
+0  ......
+1  aa....
+2  .aa...
+3  ..aa..
+4  ...aa.
+5  ....aa
+6  aaa...
+7  .aaa..
+8  ..aaa.
+9  ...aaa
+10 aabb..
+11 aa.bb.
+12 aa..bb
+13 .aabb.
+14 .aa.bb
+15 ..aabb
+</pre>
+</li>
+<li>
+Note that there are no strips containing a car and a truck. 
+</li>
+</ul>
+</body>
+</html>
+
+
+

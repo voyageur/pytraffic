@@ -1,0 +1,29 @@
+hint_wrap.c
+
+[ Python Module : _hint ]
+
+
+bestmove(packedrows,packedcolumns)
+        [ returns void  ]
+
+init()
+        [ returns void  ]
+
+getbestmoverows()
+        [ returns int  ]
+
+getbestmovecolumns()
+        [ returns int  ]
+
+findlevel(start,end)
+        [ returns void  ]
+
+getbestyoucando()
+        [ returns int  ]
+
+getpackedrows()
+        [ returns int  ]
+
+getpackedcolumns()
+        [ returns int  ]
+
