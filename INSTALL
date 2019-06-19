@@ -1,0 +1,19 @@
+The generic, non-binary, install for a posix system is done 
+using the command
+
+      python setup.py install --prefix=<prefix>
+
+You will need a working gcc toolchain, python (including headers and
+libraries), pygtk and pygame. PyTraffic was tested with python 2.3,
+pygtk 2.4 and pygame 1.6. Somewhat lower versions will probably also
+work but this is not guaranteed!
+
+The default prefix is /usr/local. If you use a standard prefix such
+as /usr or /usr/local then a menu item will be created for pytraffic. 
+Otherwise issue the command
+
+     <prefix>/bin/pytraffic
+
+to play. 
+
+For other installation methods (including Windows) see doc/readme.htm.

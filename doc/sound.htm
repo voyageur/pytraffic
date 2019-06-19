@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+<h2> Sound output</h2>
+
+On GNU/Linux PyTraffic allows for the selection of some common
+sound output devices (via the "Settings" menu). Don't bother with this
+if things work for you. Note that you have to restart PyTraffic for
+any changes to take effect.
+<ul>
+<li>
+<bold> Default: </bold> Leave the selection of the output device to
+the underlying <a href=http://www.libsdl.org>SDL library</a>.
+</li>
+<li> <bold> <a href=http://www.opensound.com/>OSS</a>: </bold> The "Open
+Sound System", the standard sound system on GNU/Linux and other
+Unix variants. It does not allow for multiple applications to share the
+sound card.
+</li>
+<li> <bold> <a
+href=http://www.alsa-project.org/>Alsa</a>: </bold> The "Advanced Linux Sound
+Architecture", the default in the 2.6 kernel. Alsa allows for multiple
+applications to share the soundcard in a lag free manner
+(see <a
+href=http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php3?company=Generic&card=Generic&chip=Generic&module=Generic>here</a>
+or below), but curiously
+this does not seem to be enabled by default on modern linux distributions.
+  Hopefully <a
+href=http://ometer.com/hardware.html>this</a> will change things.
+</li>
+</ul>
+Instead of dealing directly with the underlying sound system a safe
+and convenient solution is to select a sound server as output device.
+Unfortunately sound servers tend to create lag...
+<ul>
+<li>
+<bold> <a
+href=http://www.arts-project.org/doc/mcop-doc/artsd-faq.html>Artsd</a>: </bold> The "Advanced
+Real Time Synthesizer Daemon". The default on KDE. Seems to be very
+laggy.
+</li>
+<li><bold> <a
+href=http://www.tux.org/~ricdude/news.html>Esd</a>: </bold> The 
+"Enlightenment Sound Daemon". The default on Gnome. Seems less laggy.
+</li>
+</ul>
+<h2> Case study </h2>
+Currently what works best for me is the dmix plugin for alsa.
+This is my .asoundrc file:
+
+<pre>
+pcm.!default {
+
+        type plug
+        slave.pcm "dmixer"
+}
+
+pcm.dmixer {
+
+  type dmix
+  ipc_key 1024
+
+  slave {
+
+    pcm "hw:0,0"
+    period_time 0
+    period_size 1024
+    buffer_size 4096
+    rate 44100
+  }
+}
+
+ctl.dmixer {
+
+  type hw
+  card 0
+}
+</pre>
+
+
+</li>
+</ul>
+
+
+
+

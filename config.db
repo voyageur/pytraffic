@@ -1,0 +1,10 @@
+[Main]
+default_playlist=['music/Ranger_Song.s3m']
+install_leaf='pytraffic'
+default_music_path=['music']
+install_leaf_windows='PyTraffic'
+themes=['themes/DeLuxe3DLowRes', 'extra_themes/DeLuxe3D', 'extra_themes/Fancy2D', 'extra_themes/Blocks', 'extra_themes/Minimal2D', 'extra_themes/FancyRotated']
+version='2.5.4'
+release='3'
+python_reqs='2.3'
+theme_search_path=['themes', 'extra_themes']

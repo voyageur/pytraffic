@@ -1,0 +1,125 @@
+1.0            Initial announcement
+1.0->1.0.1     Added a mechanism to deal with the fact that
+               on windows extensions are tied to a specific
+               python version
+1.0.1->1.1     GUI enhancements:
+- addition of, on the fly generated, 'trivial' and 
+  'easy' levels;
+- 'no warnings' mode: supresses most dialog boxes;
+- cars are constrained to legal moves during drag and drop;
+- optional car animation (contributed by 
+  Jesse Weinstein<jessw@netwood.net>);
+- color coding of solved/unsolved label;
+- cursor now changes with car orientation.
+
+1.1->1.1.2     
+- fixed crash with "Restart" button when in "Trivial" or "Easy" mode;
+- changes to property mechanism: game state no longer lost
+when upgrading (nice if you have solved all 107 expert levels); 
+- addition of statistics window.
+- animated mode is now the def default
+
+1.1.2->1.1.3
+- fixed harmless bug in savefile (zeroes inserted in 'solvedlevels');
+- fixed serious memory leak (one must use tag_unbind!!);
+- created demomode;
+- created standalone windows installer using py2exe and Inno;
+- fixed ugly looking dialogs in Linux (changed default background of canvas);
+- changed menu layout so that the menus look better in windows;
+- worked out how to put Help menu on right of menu bar on Linux. 
+
+1.1.3->1.1.4 
+- fixed small regression in coloring of "solved/unsolved" label.
+
+1.1.4->1.2
+- Make PyTraffic work with Python 2.3.
+- Nicer buttons and cars!
+- Code cleanup.
+- Rudimentary theme support
+- Indicators in menus are reenabled. Apparently Python 2.3 fixes the display
+problem on windows.
+
+1.2->1.2.1
+- Some support for cygwin. In order to display the readme you
+need X and lynx. Sound should work provided somebody can build
+an ogg enabled pygame on cygwin.
+- Slightly improved detection of working pygame.
+- Better handling of paths with spaces.
+
+
+1.2.1->2.0
+- Conversion to pygtk.
+- Wrote basic pygtk canvas, since I didn't want to depend on Gnome Canvas.
+- Suppressed caps in names of unix installers.
+- Code cleanup.
+
+2.0->2.0.1 
+- PyTraffic is now compatible with pygtk 2.6.
+- setup.py now honors the prefix argument. The default prefix (for non-binary
+installs) is /usr/local.  It used to be /usr, which some people (rightfully) 
+didn't like.
+- Added INSTALL file.
+- Renamed CHANGELOG.txt to CHANGELOG etc...
+- Various .spec file cleanups.
+- Replaced sys.exit() with os._exit() to fix the problem that the 
+program does not properly quits after suspend (this has to do with
+SDL I guess).
+- Documentation updates.
+- Changed shortcut in menus to Statistics.
+- Escape or mouse click now ends demo mode.
+
+2.0.1->2.5
+- Added support for coordinate transformations to canvas.
+- Added support for 3D themes.
+- Added pack method to canvas to do auto-sizing.
+- Bugfix: settheme was called twice on a menu selection (this is an issue with gtk).
+- Made forced selection of English in Posix actually work: created Main.py. 
+By analogy WinGame.pyw was renamed to WinMain.pyw.
+- Converted themes to png format.
+- Created a new 3D theme using POV-Ray. This will now be the default theme.
+- Eliminated: animation menu item and ghost objects. Animated moves are now used
+automatically after an action induced by a button push (like Hint, Undo, etc...).
+- Replaced cursors by hand cursors. Arrows cursor don't make much sense on rotated images. 
+This should really be theme dependent. 
+- Documentation updates.
+- Dead code elimination and cleanups.
+
+2.5->2.5.1
+Mostly invisible changes to comply better with Dag Wieers' repository.
+- Got rid of 'prefix' hack. Setup.py now properly overrides install command.
+This is necessary to have a (clean) separate build and install stage.
+- Changed many files and directories to non-caps.
+- Documentation is no longer installed twice.
+- Filled in license field in setup.py.
+- Rudimentary playlist support: drop files in <install_directory>/music.
+- Changed .spec file based on the one created by Dag.
+- Created subpackage for extra themes.
+- Added two more extra themes (Blocks and FancyRotated).
+- The install directory on unix is now <prefix>/share/pytraffic. Added a check 
+against installing twice in the same directory.
+Changes specific to windows:
+- Windows installer does no longer take previous install directory
+as default.
+- Added freely distributable msvcr71.dll to windows full binary installer.
+
+2.5.1->2.5.3
+Mostly invisible changes.
+- It is now possible to select the background music. So if you own
+Autobahn by Kraftwork you can use that:-)
+- Conversion of some dialogs to libglade.
+- Conversion of some python objects to proper GObjects.
+- Icons on buttons are no longer shown if gtk-button-images=0.
+- Finally figured out how to properly reuse dialogs in gtk.
+
+2.5.3->2.5.4
+Mostly user invisble changes
+- Standard gtk about dialog (using libglade).
+- Eliminated rpmlint warnings on spec files.
+- Install python C modules in <prefix>/lib/pytraffic.
+- Xdg compatible install of icons.
+- Removal of pygame dependency by creating a direct wrapper around SDL_mixer.
+- Relocated some source files.
+- Bumped up mixer output frequency to 44100 (was 22050). This should be an 
+(advanced) configurable setting.
+- Minor documentation updates.
+- Spec files updates. 

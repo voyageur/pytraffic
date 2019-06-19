@@ -1,0 +1,8 @@
+Files dropped in this directory will be played as 
+background music, provided they are in a format
+supported by pygame (or rather SDL). Depending on your setup,
+this may not be the case for mp3 files (due to patent
+issues).
+
+Filenames with extensions .COPYRIGHT or .README are ignored.
+
