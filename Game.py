@@ -515,7 +515,7 @@ The error was: """+Hint.last_error(),
                 window=self.window)
         if not ShowHTML.can_display_html():
             CondMessageBox.showwarning(
-                message="""I don't seem to know how to display html on your system. Please point the environment variable PYTRAFFICBROWSER to your favorite browser.
+                message="""I don't seem to know how to display html on your system.
 PyTraffic reported: """+ShowHTML.last_error(),
                 window=self.window)
 

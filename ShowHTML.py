@@ -29,8 +29,6 @@ import string
 np=Misc.normalize_path
 
 
-message="To override, point PYTRAFFICBROWSER to your preferred browser"
-
 def sanitize(file_name):
 	return string.replace(file_name,' ',r'\ ')
 
@@ -52,30 +50,6 @@ def program_present(program):
  	return which_python(program)
     else:
         return 0
-
-def showhtml_mozilla(file):
-    if os.system('mozilla -remote "ping()"')==0:
-        mozilla_running=1
-    else:
-        mozilla_running=0
-    if mozilla_running:
-        os.system('mozilla -remote \
-             "openfile('+os.path.abspath(np(file))+',new-window)"')
-    else:
-	url=sanitize_url('file://'+os.path.abspath(np(file)))
-        os.system('mozilla '+url+' &')
-
-def showhtml_firefox(file):
-    if os.system('firefox -remote "ping()"')==0:
-        firefox_running=1
-    else:
-        firefox_running=0
-    if firefox_running:
-        os.system('firefox -remote \
-              "openfile('+os.path.abspath(np(file))+',new-window)"')
-    else:
-	url=sanitize_url('file://'+os.path.abspath(np(file)))
-        os.system('firefox '+url+' &')
 
 def showhtml_program(program,file,terminal=0):
     program=sanitize(program)
@@ -107,47 +81,16 @@ def init_showhtml():
         showhtml=showhtml_nt
     elif Misc.isCygwin():
 	if program_present('lynx'):	
-		print "Using lynx as browser"
 		showhtml=lambda file:showhtml_program('lynx',file,1)
 	else:
 	        _can_display_html=0
 	        _last_error="Please install lynx. Other browsers are broken\
 on Cygwin. Sorry."
-    elif os.environ.has_key('PYTRAFFICBROWSER'):
-        program=os.environ['PYTRAFFICBROWSER']
-        if program_present(program):
-            showhtml=lambda file, program=program:showhtml_program(program,
-                                                                   file)
-            print "Using "+program+" as browser"
-        else:
-            _can_display_html=0
-            _last_error=repr(program)+" does not exist"
-            showhtml=showhtml_dummy
-    elif program_present('firefox'):
-            print "Using firefox as browser"
-            showhtml=showhtml_firefox
-    elif program_present('mozilla'):
-            print "Using mozilla as browser"
-            showhtml=showhtml_mozilla
-    elif program_present('konqueror'):
-            print "Using konqueror as browser"
-            showhtml=lambda file:showhtml_program('konqueror',file)
-    elif program_present('galeon'):
-            print "Using galeon as browser"
-            showhtml=lambda file:showhtml_program('galeon',file)
-    elif program_present('opera'):
-            print "Using opera as browser"
-            showhtml=lambda file:showhtml_program('opera',file)
-    elif program_present('netscape'):
-            print "Using netscape as browser"
-            showhtml=lambda file:showhtml_program('netscape',file)
-    elif program_present('lynx'):
-	    print "Using lynx as browser"
-            showhtml=lambda file:showhtml_program('lynx',file,1)
+    elif program_present('xdg-open'):
+            showhtml=lambda file:showhtml_program('xdg-open',file)
     else:
         _can_display_html=0
-        _last_error="None of the standard browsers seem to work"
-    print message
+        _last_error="Please install xdg-utils"
 
 
 def can_display_html():
