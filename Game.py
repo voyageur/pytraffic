@@ -50,15 +50,15 @@ class Game:
     def __init__(self):
         self.callbacks_enabled=0
         self.window=Gtk.Window(Gtk.WindowType.TOPLEVEL)
-	self.window.set_icon_from_file(np("libglade/carNred64x64.png"))
+        self.window.set_icon_from_file(np("libglade/carNred64x64.png"))
         self.window.set_title("PyTraffic")
-	self.window.set_resizable(False)
+        self.window.set_resizable(False)
         self.window.connect("delete_event",self.quit)
         self.window.connect("destroy",self.quit)
         vbox=Gtk.VBox(False,0)
         self.window.add(vbox)
         sound_menu=self.construct_sound_menu()
-	self.theme_engine=ThemeEngine.ThemeEngine()
+        self.theme_engine=ThemeEngine.ThemeEngine()
         self.create_theme_data()
         theme_menu=self.construct_theme_menu()
         self.menu_items=(
@@ -197,25 +197,26 @@ class Game:
         self.arena=Arena.Arena(self)
         vbox.pack_start(self.arena,False,False)
         self.arena.connect("button_press_event",self.stop_demo)
-	self.window.connect("key_release_event",self.stop_demo_key)
+        self.window.connect("key_release_event",self.stop_demo_key)
         self.on=1
         self.clock()
         self.timer=Timer.Timer(interval=1000)
         self.timer.connect("tick",self.clock)
         self.timer.set_running(1)
-	self.demo_timer=Timer.Timer(interval=1500)
+        self.demo_timer=Timer.Timer(interval=1500)
         self.demo_timer.connect("tick",self.demo_step)
-	tree=Gtk.glade.XML(np("libglade/AboutDialog.glade"))
-	self.about_dialog=tree.get_widget("AboutDialog")
+        self.builder=Gtk.Builder()
+        self.builder.add_from_file("libglade/AboutDialog.glade")
+        self.about_dialog=self.builder.get_object("AboutDialog")
         config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
         config_db.load(all=True)
-	self.about_dialog.set_version("%s-%s" % (config_db["version"],
+        self.about_dialog.set_version("%s-%s" % (config_db["version"],
                                                  config_db["release"]))
-	events={"on_AboutDialog_response": self.about_dialog_close,
+        events={"on_AboutDialog_response": self.about_dialog_close,
 		"on_AboutDialog_close": self.about_dialog_close,
 		"on_AboutDialog_delete_event": self.about_dialog_close
 	}	
-	tree.signal_autoconnect(events)
+        self.builder.connect_signals(events)
         self.callbacks_enabled=1
         self.newgame()
         self.window.show_all()
@@ -240,10 +241,10 @@ class Game:
        
             
     def stop_demo_key(self,widget,event,*args):
-	if not(event.get_state() & Gdk.ModifierType.MODIFIER_MASK) and \
+        if not(event.get_state() & Gdk.ModifierType.MODIFIER_MASK) and \
                event.keyval & 255==27:  # compare with ESC
-		self.demomode=0
-		self.updateGUI()
+            self.demomode=0
+            self.updateGUI()
 
     def stop_demo(self,widget,event,*args):
         self.demomode=0
@@ -341,17 +342,17 @@ class Game:
         ShowHTML.showhtml("doc/sound.htm")
 
     def demo_step(self,timer):
-	if self.gamestate.redcarout():
-		self.new()
-	else:
-		self.hint()
-		if self.gamestate.redcarout():
-			self.doredcarout()
+        if self.gamestate.redcarout():
+            self.new()
+        else:
+            self.hint()
+            if self.gamestate.redcarout():
+                self.doredcarout()
 		
 
     def enable_easteregg(self,*args):
-    	print "Enabling easter egg"
-    	self.gamestate.easteregg=1
+        print("Enabling easter egg")
+        self.gamestate.easteregg=1
 
     def show_statistics(self,*args):
         if self.callbacks_enabled:
@@ -441,12 +442,12 @@ files.
             self.time_label.set_text(strtime)
 
     def about_dialog_close(self,*args):
-	self.about_dialog.hide()
-	return True
+        self.about_dialog.hide()
+        return True
 
     def about(self,*args):
        	self.about_dialog.show()
-	return True
+        return True
  
     def new(self,action=None,menu=None):
             if self.demomode:
@@ -484,11 +485,11 @@ type! Do you want to reset these levels?",
             self.default_all()
             self.propertybag.load()
             self.load_all()
-        except Exception,e:
+        except Exception as e:
             something_bad_happened=1
             last_error=str(e)
             print ("Exception in newgame",last_error)
-        except Error,e:
+        except Error as e:
             something_bad_happened=1
             last_error=str(e)
             print ("Error in newgame", last_error)
@@ -543,9 +544,9 @@ PyTraffic reported: """+ShowHTML.last_error(),
     def doredcarout(self):
         if not(self.gamestate.youvewon or self.demomode):
             self.sound_server.play(self.artwork.getapplause())
-	    if self.gamestate.hint==0 and \
-             self.gamestate.bestyoucando-1==self.gamestate.nrofmovestaken():
-		CondMessageBox.showinfo(
+            if self.gamestate.hint==0 and \
+                    self.gamestate.bestyoucando-1==self.gamestate.nrofmovestaken():
+                CondMessageBox.showinfo(
 			 message="Congratulations...you found the shortest possible solution to this level!",
 			 window=self.window,
 			 disable=self.expertmode)
@@ -560,8 +561,8 @@ PyTraffic reported: """+ShowHTML.last_error(),
                        window=self.window,
                        disable=self.expertmode)
             self.gamestate.won()
-	elif self.demomode:
-		self.gamestate.won()
+        elif self.demomode:
+            self.gamestate.won()
         self.save_all()
         self.updateGUI()
 
@@ -663,8 +664,8 @@ PyTraffic reported: """+ShowHTML.last_error(),
         
         if self.theme_engine.theme_has_sound():  
             self.sound_.set_sensitive(True)
-	else:
-	    self.sound_.set_sensitive(False)
+        else:
+            self.sound_.set_sensitive(False)
             self.sound_.set_active(False)
 
 #        if self.sound_server.has_music():  
@@ -681,26 +682,26 @@ PyTraffic reported: """+ShowHTML.last_error(),
             self.readme_.set_sensitive(False)
             if os.name!='nt':
                 self.soundabout_.set_sensitive(False)
-	if self.demomode:
-            	self.demo_.set_active(True)
-        	self.hint_button.set_sensitive(False)
-                self.hint_.set_sensitive(False)
+        if self.demomode:
+            self.demo_.set_active(True)
+            self.hint_button.set_sensitive(False)
+            self.hint_.set_sensitive(False)
 #                self.arena.set_sensitive(False)
-                self.arena.disable()
-                self.undo_button.set_sensitive(False)
-                self.undo_.set_sensitive(False)
-                self.restart_button.set_sensitive(False)
-                self.restart_.set_sensitive(False)
-                self.redo_button.set_sensitive(False)
-                self.redo_.set_sensitive(False)
-                self.end_button.set_sensitive(False)
-                self.end_.set_sensitive(False)
-                self.new_button.set_sensitive(False)
-                self.new_.set_sensitive(False)
-                self.hints.set_text("Demo"),
-                self.hints.modify_bg(Gdk.color_parse("yellow"))
-		self.demo_timer.set_running(1)
-	else:
+            self.arena.disable()
+            self.undo_button.set_sensitive(False)
+            self.undo_.set_sensitive(False)
+            self.restart_button.set_sensitive(False)
+            self.restart_.set_sensitive(False)
+            self.redo_button.set_sensitive(False)
+            self.redo_.set_sensitive(False)
+            self.end_button.set_sensitive(False)
+            self.end_.set_sensitive(False)
+            self.new_button.set_sensitive(False)
+            self.new_.set_sensitive(False)
+            self.hints.set_text("Demo"),
+            self.hints.modify_bg(Gdk.color_parse("yellow"))
+            self.demo_timer.set_running(1)
+        else:
             if not(Hint.hint_enabled):
                 self.demo_.set_sensitive(False)
                 self.trivial_.set_sensitive(False)
@@ -710,10 +711,10 @@ PyTraffic reported: """+ShowHTML.last_error(),
             self.new_.set_sensitive(True)
             self.new_button.set_sensitive(True)
             if self.gamestate.redcarout():
-#                self.arena.set_sensitive(False)
+                #                self.arena.set_sensitive(False)
                  self.arena.disable()
             else:
-#                self.arena.set_sensitive(True)
+                #                self.arena.set_sensitive(True)
                 self.arena.enable()
             if not(Hint.hint_enabled) or self.gamestate.redcarout():
                 self.hint_button.set_sensitive(False)
@@ -747,7 +748,7 @@ PyTraffic reported: """+ShowHTML.last_error(),
             else:
                 self.hints.reset_bg()
             self.demo_timer.set_running(0)
-	self.arena.update_cursors()
+        self.arena.update_cursors()
         self.callbacks_enabled=1
 
     def quit(self,*args):
@@ -761,18 +762,18 @@ PyTraffic reported: """+ShowHTML.last_error(),
 
     def save_all(self):
         self.artwork.save_bag(self.propertybag)
-	self.theme_engine.save_bag(self.propertybag)
+        self.theme_engine.save_bag(self.propertybag)
         self.gamestate.save_bag(self.propertybag)
         self.statisticsdialog.save_bag(self.propertybag)
         self.sound_server.save_bag(self.propertybag)
         self.music_server.save_bag(self.propertybag)
         self.arena.save_bag(self.propertybag)
-	self.propertybag['expertmode']=self.expertmode
+        self.propertybag['expertmode']=self.expertmode
 #        self.propertybag['location']=self.location()
         self.propertybag.save()
 
     def default_all(self):
-    	self.theme_engine.default_bag(self.propertybag)
+        self.theme_engine.default_bag(self.propertybag)
         self.sound_server.default_bag(self.propertybag)
         self.music_server.default_bag(self.propertybag)
         self.artwork.default_bag(self.propertybag)
@@ -780,12 +781,12 @@ PyTraffic reported: """+ShowHTML.last_error(),
         self.statisticsdialog.default_bag(self.propertybag)
         self.arena.default_bag(self.propertybag)
 #        self.propertybag['location']=None
-	self.propertybag['expertmode']=0
+        self.propertybag['expertmode']=0
         self.propertybag['demomode']=0
 
     def load_all(self):
         self.callbacks_enabled=0
-	self.theme_engine.load_bag(self.propertybag)
+        self.theme_engine.load_bag(self.propertybag)
         self.sound_server.load_bag(self.propertybag)
         self.music_server.load_bag(self.propertybag)
         self.artwork.load_bag(self.propertybag)
@@ -794,9 +795,9 @@ PyTraffic reported: """+ShowHTML.last_error(),
         self.arena.setupboard()
 #        if self.propertybag['location']!=None:
 #            self.window.parse_geometry(self.propertybag['location'])
-	self.expertmode=self.propertybag['expertmode']
+        self.expertmode=self.propertybag['expertmode']
         self.statisticsdialog.load_bag(self.propertybag)
-	self.demomode=0
+        self.demomode=0
         self.callbacks_enabled=1
         self.updateGUI()
 
