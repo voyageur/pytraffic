@@ -23,7 +23,6 @@
 import os
 import Misc
 from gi.repository import Gtk
-import Gtk.glade
 from gi.repository import GObject
 import Chooser
 
@@ -32,20 +31,21 @@ np=Misc.normalize_path
 class MusicChooser:
 
     def __init__(self,theme_engine,music_server):
-	settings=Gtk.Settings.get_default()
-        tree=Gtk.glade.XML(np("libglade/MusicDialog.glade"))
-        self.dialog=tree.get_widget("ChooseMusicDialog")
-        self.chosen_location=tree.get_widget("chosen_location")
-        self.browse_button=tree.get_widget("browse_button")
-        self.advanced_button=tree.get_widget("advanced_button")
-        self.shuffle_button=tree.get_widget("shuffle_button")
-        self.recursive_button=tree.get_widget("recursive_button")
-        self.use_extensions_button=tree.get_widget("use_extensions_button")
-	self.browse_image=tree.get_widget("browse_image")
-	self.default_image=tree.get_widget("default_image")
-	if not settings.get_property("gtk_button_images"):
-		self.browse_image.destroy()
-		self.default_image.destroy()
+        settings=Gtk.Settings.get_default()
+        self.builder=Gtk.Builder()
+        self.builder.add_from_file("libglade/MusicDialog.ui")
+        self.dialog=self.builder.get_object("ChooseMusicDialog")
+        self.chosen_location=self.builder.get_object("chosen_location")
+        self.browse_button=self.builder.get_object("browse_button")
+        self.advanced_button=self.builder.get_object("advanced_button")
+        self.shuffle_button=self.builder.get_object("shuffle_button")
+        self.recursive_button=self.builder.get_object("recursive_button")
+        self.use_extensions_button=self.builder.get_object("use_extensions_button")
+        self.browse_image=self.builder.get_object("browse_image")
+        self.default_image=self.builder.get_object("default_image")
+        if not settings.get_property("gtk_button_images"):
+            self.browse_image.destroy()
+            self.default_image.destroy()
 	
         events={"on_browse_button_clicked" : self.browse,
               "on_default_button_clicked": self.default,
@@ -53,14 +53,14 @@ class MusicChooser:
               "on_ok_button_clicked"     : self.ok,
               "on_chosen_location_activate" : self.ok,
               "on_ChooseMusicDialog_delete_event" : self.cancel}
-        tree.signal_autoconnect(events)
+        self.builder.connect_signals(events)
         self.theme_engine=theme_engine
         self.music_server=music_server
-	self.create_browser()
+        self.create_browser()
         self.myloop=GObject.MainLoop()
 
     def create_browser(self):
-        tree1=Gtk.glade.XML(np("libglade/MusicBrowser.glade"))
+        self.builder.add_from_file("libglade/MusicBrowser.ui")
         events1={"on_music_browser_cancel_button_clicked" :
                  self.music_browser_cancel,
                  "on_music_browser_open_button_clicked" :
@@ -73,13 +73,13 @@ class MusicChooser:
                  self.music_browser_cancel,
                  "on_MusicBrowser_response":
                  self.music_browser_response}
-        tree1.signal_autoconnect(events1)
-        self.music_browser=tree1.get_widget("MusicBrowser")
+        self.builder.connect_signals(events1)
+        self.music_browser=self.builder.get_object("MusicBrowser")
 		
         
     def run(self):
-	self.browse_button.grab_focus()
-	self.advanced_button.set_expanded(False)
+        self.browse_button.grab_focus()
+        self.advanced_button.set_expanded(False)
         self.chosen_location.set_text(\
             os.path.abspath(self.music_server.get_music_path()))
         if self.music_server.get_strategy()==Chooser.RANDOM:
@@ -98,23 +98,23 @@ class MusicChooser:
         self.myloop.run()
 
     def browse(self, *args):
-	path=os.path.abspath(self.chosen_location.get_text())
-	self.music_browser.select_filename(path)
+        path=os.path.abspath(self.chosen_location.get_text())
+        self.music_browser.select_filename(path)
         self.music_browser.run()
-	return True
+        return True
 
     def default(self, *args):
         self.chosen_location.set_text(\
             os.path.abspath(self.theme_engine.default_music_path()[0]))
-	self.use_extensions_button.set_active(True)
-	self.music_server.set_use_extensions(True)
-	return True
+        self.use_extensions_button.set_active(True)
+        self.music_server.set_use_extensions(True)
+        return True
         
 
     def cancel(self, *args):
         self.dialog.hide()
         self.myloop.quit()
-	return True
+        return True
 
     def ok(self, *args):
         if self.shuffle_button.get_active():
@@ -132,24 +132,24 @@ class MusicChooser:
         path=self.chosen_location.get_text()
         self.music_server.load([path])
         self.cancel()
-	return True
+        return True
 
     def music_browser_cancel(self,*args):
         self.music_browser.hide()
-	return True
+        return True
 
     def music_browser_response(self,*args):
-	return True
+        return True
         
     def music_browser_open(self,*args):
-	selection=self.music_browser.get_filename()
+        selection=self.music_browser.get_filename()
         if selection and not os.path.isdir(selection):
             self.music_browser_select()
-	return True
+        return True
 
     def music_browser_select(self,*args):
-	selection=self.music_browser.get_filename()
-	if selection:
-	        self.chosen_location.set_text(selection)
-	        self.music_browser_cancel()
-	return True
+        selection=self.music_browser.get_filename()
+        if selection:
+            self.chosen_location.set_text(selection)
+            self.music_browser_cancel()
+        return True

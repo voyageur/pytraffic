@@ -22,38 +22,38 @@
 import os
 import Misc
 from gi.repository import Gtk
-import Gtk.glade
 import sys
 
 np=Misc.normalize_path
 
 class StatisticsDialog:
     def __init__(self,parent=None):
-        tree=Gtk.glade.XML(np("libglade/StatisticsWindow.glade"))
-        self.window=tree.get_widget("StatisticsWindow")
+        self.builder=Gtk.Builder()
+        self.builder.add_from_file("libglade/StatisticsWindow.ui")
+        self.window=self.builder.get_object("StatisticsWindow")
         self.window.set_destroy_with_parent(True)
 	# transient does not work well on nt
         if parent and os.name!='nt':
 	        self.set_transient_for(parent)
-        self.intermediate_solved=tree.get_widget("intermediate_solved")
-        self.intermediate_total=tree.get_widget("intermediate_total")
-        self.advanced_solved=tree.get_widget("advanced_solved")
-        self.advanced_total=tree.get_widget("advanced_total")
-        self.expert_solved=tree.get_widget("expert_solved")
-        self.expert_total=tree.get_widget("expert_total")
+        self.intermediate_solved=self.builder.get_object("intermediate_solved")
+        self.intermediate_total=self.builder.get_object("intermediate_total")
+        self.advanced_solved=self.builder.get_object("advanced_solved")
+        self.advanced_total=self.builder.get_object("advanced_total")
+        self.expert_solved=self.builder.get_object("expert_solved")
+        self.expert_total=self.builder.get_object("expert_total")
         events={"on_StatisticsWindow_delete_event" : self.hide}
-        tree.signal_autoconnect(events)
+        self.builder.connect_signals(events)
         
     def show(self):
         self.window.show_all()
         self._visible=1
 
     def hide(self,*args):
-	self.window.hide_all()
+        self.window.hide_all()
 # at one point this seemed necessary...don't remember why...
 #        self.window.unrealize()
         self._visible=0
-	return True
+        return True
         
     def save_bag(self,propertybag):
         propertybag['statistics']=self._visible
