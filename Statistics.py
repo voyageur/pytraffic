@@ -21,20 +21,20 @@
 
 import os
 import Misc
-import gtk
-import gtk.glade
+from gi.repository import Gtk
+import Gtk.glade
 import sys
 
 np=Misc.normalize_path
 
 class StatisticsDialog:
     def __init__(self,parent=None):
-        tree=gtk.glade.XML(np("libglade/StatisticsWindow.glade"))
+        tree=Gtk.glade.XML(np("libglade/StatisticsWindow.glade"))
         self.window=tree.get_widget("StatisticsWindow")
         self.window.set_destroy_with_parent(True)
 	# transient does not work well on nt
         if parent and os.name!='nt':
-	        self.window.set_transient_for(parent)
+	        self.set_transient_for(parent)
         self.intermediate_solved=tree.get_widget("intermediate_solved")
         self.intermediate_total=tree.get_widget("intermediate_total")
         self.advanced_solved=tree.get_widget("advanced_solved")

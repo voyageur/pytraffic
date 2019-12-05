@@ -19,7 +19,7 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import gtk
+from gi.repository import Gtk
 import Cache
 
 class ImageCache(Cache.Cache):
@@ -27,8 +27,8 @@ class ImageCache(Cache.Cache):
         Cache.Cache.__init__(self,self.__factory)
 
     def __factory(self,filename):
-        pixbuf=gtk.gdk.pixbuf_new_from_file(filename)
-        image=gtk.Image()
+        pixbuf=GdkPixbuf.Pixbuf.new_from_file(filename)
+        image=Gtk.Image()
         image.set_from_pixbuf(pixbuf)
         return image
 
@@ -40,7 +40,7 @@ class PixmapCache(Cache.Cache):
         Cache.Cache.__init__(self,self.__factory)
 
     def __factory(self,image):
-        return gtk.gdk.Pixbuf.render_pixmap_and_mask(image.get_pixbuf())
+        return GdkPixbuf.Pixbuf.render_pixmap_and_mask(image.get_pixbuf())
 
     def getpixmaps(self,image):
         return self.getitem(image)

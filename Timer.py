@@ -20,20 +20,20 @@
 ##
 
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 
-class Timer(gobject.GObject):
+class Timer(GObject.GObject):
     __gsignals__ = {
-        'tick' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+        'tick' : (GObject.SignalFlags.RUN_FIRST, None,
                       ())
     }
     __gproperties__ = {
-        'running' :  (gobject.TYPE_BOOLEAN,
+        'running' :  (GObject.TYPE_BOOLEAN,
                       'running property',
                       'indicates if the timer has started',
                       0,
-                      gobject.PARAM_READWRITE)
+                      GObject.PARAM_READWRITE)
         }
     def __init__(self, interval=1000):
         self.__gobject_init__()
@@ -66,12 +66,12 @@ class Timer(gobject.GObject):
 
     def __start(self):
         if self.__afterid==None:
-            self.__afterid=gobject.timeout_add(self.__interval,
+            self.__afterid=GObject.timeout_add(self.__interval,
                                        self.__commandwrapper)
 
     def __stop(self):
         if self.__afterid!=None:
-            gobject.source_remove(self.__afterid)
+            GObject.source_remove(self.__afterid)
             self.__afterid=None
 
     def __commandwrapper(self):
@@ -84,20 +84,20 @@ class Timer(gobject.GObject):
 #        self.__stop()
 
 
-gobject.type_register(Timer)
+GObject.type_register(Timer)
 
 
-class Idler(gobject.GObject):
+class Idler(GObject.GObject):
     __gsignals__ = {
-        'tick' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+        'tick' : (GObject.SignalFlags.RUN_FIRST, None,
                       ())
     }
     __gproperties__ = {
-        'running' :  (gobject.TYPE_BOOLEAN,
+        'running' :  (GObject.TYPE_BOOLEAN,
                       'running property',
                       'indicates if the timer has started',
                       0,
-                      gobject.PARAM_READWRITE)
+                      GObject.PARAM_READWRITE)
         }
     def __init__(self):
         self.__gobject_init__()
@@ -129,11 +129,11 @@ class Idler(gobject.GObject):
 
     def __start(self):
         if self.__afterid==None:
-            self.__afterid=gobject.idle_add(self.__commandwrapper)
+            self.__afterid=GObject.idle_add(self.__commandwrapper)
 
     def __stop(self):
         if self.__afterid!=None:
-            gobject.source_remove(self.__afterid)
+            GObject.source_remove(self.__afterid)
             self.__afterid=None
 
     def __commandwrapper(self):
@@ -147,7 +147,7 @@ class Idler(gobject.GObject):
 #    def __del__(self):
 #        self.__stop()
 
-gobject.type_register(Idler)
+GObject.type_register(Idler)
 
 
 
@@ -164,5 +164,5 @@ if __name__=='__main__':
 #    t.set_property('running',True)
     print t.__grefcount__
     del t
-    gtk.main()
+    Gtk.main()
 

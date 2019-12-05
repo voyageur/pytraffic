@@ -19,8 +19,8 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import Timer,Chooser
 import Misc
 import PropertyBag
@@ -30,43 +30,43 @@ BUSY=1
 
 np=Misc.normalize_path
 
-class MusicServer(gobject.GObject):
+class MusicServer(GObject.GObject):
     __gsignals__ = {
-        'progress' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+        'progress' : (GObject.SignalFlags.RUN_FIRST, None,
                       ()),
-        'no_files_loaded' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+        'no_files_loaded' : (GObject.SignalFlags.RUN_FIRST, None,
                       ()),
     }
     __gproperties__ = {
-        'playing' :  (gobject.TYPE_BOOLEAN,
+        'playing' :  (GObject.TYPE_BOOLEAN,
                       'playing property',
                       'indicates if the music is playing',
                       0,
-                      gobject.PARAM_READWRITE),
-        'status' :  (gobject.TYPE_INT,
+                      GObject.PARAM_READWRITE),
+        'status' :  (GObject.TYPE_INT,
                       'status property',
                       'indicates if the server is loading or not',
                      0,
                      1,
                       FREE,
-                      gobject.PARAM_READABLE),
-        'strategy' :  (gobject.TYPE_INT,
+                      GObject.PARAM_READABLE),
+        'strategy' :  (GObject.TYPE_INT,
                       'strategy property',
                       'indicates whether music selection should be shuffled or not',
                      0,
                      1,
                       Chooser.REPEAT,
-                      gobject.PARAM_READWRITE),
-        'recursive' :  (gobject.TYPE_BOOLEAN,
+                      GObject.PARAM_READWRITE),
+        'recursive' :  (GObject.TYPE_BOOLEAN,
                       'recursive property',
                       'indicates if the music selection should be considered recursive',
                       0,
-                      gobject.PARAM_READWRITE),
-        'use-extensions' :  (gobject.TYPE_BOOLEAN,
+                      GObject.PARAM_READWRITE),
+        'use-extensions' :  (GObject.TYPE_BOOLEAN,
                       'use_extension property',
                       'whether to cache supported/unsupported extensions',
                       1,
-                      gobject.PARAM_READWRITE),
+                      GObject.PARAM_READWRITE),
         }
 
     def set_playing(self,value):
@@ -260,4 +260,4 @@ class MusicServer(gobject.GObject):
      
         
 
-gobject.type_register(MusicServer)
+GObject.type_register(MusicServer)

@@ -19,22 +19,22 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import gtk
+from gi.repository import Gtk
 
     
 
 def askokcancel(message,window=None,disable=0):
     if not disable:
-        dialog=gtk.MessageDialog(type=gtk.MESSAGE_QUESTION,
-                                 flags=gtk.DIALOG_MODAL|\
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                 buttons=gtk.BUTTONS_OK_CANCEL,
+        dialog=Gtk.MessageDialog(type=Gtk.MessageType.QUESTION,
+                                 flags=Gtk.DialogFlags.MODAL|\
+                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                 buttons=Gtk.ButtonsType.OK_CANCEL,
                                  message_format=message)
         if window:
             dialog.set_transient_for(window)
         response_id=dialog.run()
         dialog.destroy()
-        if response_id==gtk.RESPONSE_OK:
+        if response_id==Gtk.ResponseType.OK:
             return 1
         else:
             return 0
@@ -43,17 +43,17 @@ def askokcancel(message,window=None,disable=0):
 
 def askyesno(message,window=None,disable=0):
     if not disable:
-        dialog=gtk.MessageDialog(type=gtk.MESSAGE_QUESTION,
-                                 flags=gtk.DIALOG_MODAL|\
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                 buttons=gtk.BUTTONS_YES_NO,
+        dialog=Gtk.MessageDialog(type=Gtk.MessageType.QUESTION,
+                                 flags=Gtk.DialogFlags.MODAL|\
+                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                 buttons=Gtk.ButtonsType.YES_NO,
                                  message_format=message)
         if window:
             dialog.set_transient_for(window)
         dialog.set_modal(True)
         response_id=dialog.run()
         dialog.destroy()
-        if response_id==gtk.RESPONSE_YES:
+        if response_id==Gtk.ResponseType.YES:
             return 1
         else:
             return 0
@@ -62,10 +62,10 @@ def askyesno(message,window=None,disable=0):
 
 def showinfo(message,window=None,disable=0):
     if not disable:
-        dialog=gtk.MessageDialog(type=gtk.MESSAGE_INFO,
-                                 flags=gtk.DIALOG_MODAL|\
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                 buttons=gtk.BUTTONS_OK,
+        dialog=Gtk.MessageDialog(type=Gtk.MessageType.INFO,
+                                 flags=Gtk.DialogFlags.MODAL|\
+                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                 buttons=Gtk.ButtonsType.OK,
                                  message_format=message)
         if window:
             dialog.set_transient_for(window)
@@ -74,10 +74,10 @@ def showinfo(message,window=None,disable=0):
 
 def showwarning(message,window=None,disable=0):
     if not disable:
-        dialog=gtk.MessageDialog(type=gtk.MESSAGE_WARNING,
-                                 flags=gtk.DIALOG_MODAL|\
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                 buttons=gtk.BUTTONS_OK,
+        dialog=Gtk.MessageDialog(type=Gtk.MessageType.WARNING,
+                                 flags=Gtk.DialogFlags.MODAL|\
+                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                 buttons=Gtk.ButtonsType.OK,
                                  message_format=message)
         if window:
             dialog.set_transient_for(window)

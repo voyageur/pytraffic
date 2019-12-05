@@ -19,7 +19,7 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import gtk
+from gi.repository import Gdk,Gtk
 import ImageCache
 import Affine2D
 import math
@@ -27,12 +27,12 @@ import math
 DUMMY=0
 IMAGE=1
 
-class SmartRectangle(gtk.gdk.Rectangle):
+class SmartRectangle(Gdk.Rectangle):
 
     def __init__(self,x=0,y=0,width=0,height=0):
         x=int(x+0.5)
         y=int(y+0.5)
-        gtk.gdk.Rectangle.__init__(self,x,y,width,height)
+        Gdk.Rectangle.__init__(self,x,y,width,height)
 
     def translate(self,s,t):
         self.x=self.x+s
@@ -43,11 +43,11 @@ class SmartRectangle(gtk.gdk.Rectangle):
         return SmartRectangle(self[0],self[1],self[2],self[3])
 
     def union(self,rectangle):
-        r=gtk.gdk.Rectangle.union(self.copy(),rectangle)
+        r=Gdk.Rectangle.union(self.copy(),rectangle)
         return SmartRectangle(r[0],r[1],r[2],r[3])
 
     def intersect(self,rectangle):
-        r=gtk.gdk.Rectangle.intersect(self.copy(),rectangle)
+        r=Gdk.Rectangle.intersect(self.copy(),rectangle)
         return SmartRectangle(r[0],r[1],r[2],r[3])
 
     def union_translate(self,s,t):
@@ -125,13 +125,13 @@ class CanvasItem:
 
 # for debugging purposes
     def draw_bbox(self):
-        our_gc=gtk.gdk.GC(self.canvas.window)
+        our_gc=Gdk.GC(self.canvas.window)
         our_gc.copy(self.canvas.style.black_gc)
 #        our_gc.set_clip_rectangle(self.bbox)
         color_map=self.canvas.window.get_colormap()
-        red=gtk.gdk.color_parse("red")
+        red=Gdk.color_parse("red")
         red=color_map.alloc_color(red)
-        blue=gtk.gdk.color_parse("blue")
+        blue=Gdk.color_parse("blue")
         blue=color_map.alloc_color(blue)
         our_gc.set_values(line_width=4,
                           foreground=red,
@@ -252,7 +252,7 @@ class ScreenImageItem(CanvasItem):
             return
         im_origx=dr.x-self.bbox.x
         im_origy=dr.y-self.bbox.y
-        our_gc=gtk.gdk.GC(self.canvas.window)
+        our_gc=Gdk.GC(self.canvas.window)
         our_gc.copy(self.canvas.gc)
         our_gc.set_clip_origin(self.bbox.x,self.bbox.y)
         if self.mask!=None:
@@ -304,31 +304,31 @@ class FakeEvent:
     pass
     
 
-class Canvas(gtk.DrawingArea):
+class Canvas(Gtk.DrawingArea):
     def __init__(self):
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
         self.set_double_buffered(False)
-        gtk.DrawingArea.connect(self,"expose_event", 
+        Gtk.DrawingArea.connect(self,"expose_event", 
                                      self.expose_event)
-        gtk.DrawingArea.connect(self,"configure_event", 
+        Gtk.DrawingArea.connect(self,"configure_event", 
                                      self.configure_event)
-        gtk.DrawingArea.connect(self,"motion_notify_event", 
+        Gtk.DrawingArea.connect(self,"motion_notify_event", 
                                      self.motion_notify_event)
-        gtk.DrawingArea.connect(self,"button_press_event", 
+        Gtk.DrawingArea.connect(self,"button_press_event", 
                                      self.button_press_event)
-        gtk.DrawingArea.connect(self,"button_release_event", 
+        Gtk.DrawingArea.connect(self,"button_release_event", 
                                      self.button_release_event)
-        gtk.DrawingArea.connect(self,"enter_notify_event", 
+        Gtk.DrawingArea.connect(self,"enter_notify_event", 
                                      self.enter_notify_event)
-        gtk.DrawingArea.connect(self,"leave_notify_event", 
+        Gtk.DrawingArea.connect(self,"leave_notify_event", 
                                      self.leave_notify_event)
-        self.set_events(gtk.gdk.EXPOSURE_MASK
-                            | gtk.gdk.LEAVE_NOTIFY_MASK
-                            | gtk.gdk.ENTER_NOTIFY_MASK
-                            | gtk.gdk.BUTTON_PRESS_MASK
-                            | gtk.gdk.BUTTON_RELEASE_MASK
-                            | gtk.gdk.POINTER_MOTION_MASK
-                            | gtk.gdk.POINTER_MOTION_HINT_MASK)
+        self.set_events(Gdk.EventMask.EXPOSURE_MASK
+                            | Gdk.EventMask.LEAVE_NOTIFY_MASK
+                            | Gdk.EventMask.ENTER_NOTIFY_MASK
+                            | Gdk.EventMask.BUTTON_PRESS_MASK
+                            | Gdk.EventMask.BUTTON_RELEASE_MASK
+                            | Gdk.EventMask.POINTER_MOTION_MASK
+                            | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
 
         self.objects=[]
         self.gc=None
@@ -351,7 +351,7 @@ class Canvas(gtk.DrawingArea):
         self.objects.append(object)
         if self.size_set==0:
             mb=self.mb=self.mb.union(object.get_bbox())
-            gtk.DrawingArea.set_size_request(self,mb.x+mb.width,mb.y+mb.height)
+            Gtk.DrawingArea.set_size_request(self,mb.x+mb.width,mb.y+mb.height)
         self.handle_mouse_over()
 
         self.refresh(object.get_bbox())
@@ -364,7 +364,7 @@ class Canvas(gtk.DrawingArea):
         self.mb=mb=SmartRectangle(0,0,0,0)
         for object in self.objects:
             mb=self.mb=self.mb.union(object.get_bbox())
-        gtk.DrawingArea.set_size_request(self,mb.x+mb.width,mb.y+mb.height)
+        Gtk.DrawingArea.set_size_request(self,mb.x+mb.width,mb.y+mb.height)
         self.size_set=0
 
     def remove(self,object):
@@ -387,7 +387,7 @@ class Canvas(gtk.DrawingArea):
 
     def set_size_request(self,w,h):
         self.size_set=1
-        gtk.DrawingArea.set_size_request(self,w,h)
+        Gtk.DrawingArea.set_size_request(self,w,h)
         
     def configure_event(self, widget, event):
         x, y, self.width, self.height = self.get_allocation()
@@ -447,7 +447,7 @@ class Canvas(gtk.DrawingArea):
         if not object:
             handled=False
         else:
-            if event.type==gtk.gdk.BUTTON_PRESS:
+            if event.type==Gdk.EventType.BUTTON_PRESS:
                 self.selection=object
 # this does not handle double clicks entirely correctly
 # too difficult to change!
@@ -472,7 +472,7 @@ class Canvas(gtk.DrawingArea):
         ex,ey,es=event.window.get_pointer()
         self._pointer_cache=(ex,ey)
         e=FakeEvent()
-        e.type=gtk.gdk.MOTION_NOTIFY
+        e.type=Gdk.MOTION_NOTIFY
         e.x=float(ex)
         e.y=float(ey)
         e.state=es
@@ -514,11 +514,11 @@ class Canvas(gtk.DrawingArea):
         handled_enter=False
         if object!=self.under_mouse:
             if self.under_mouse:
-                e.type=gtk.gdk.LEAVE_NOTIFY
+                e.type=Gdk.LEAVE_NOTIFY
                 handled_leave=self.under_mouse.handle_event(\
                     "leave_notify_event",e)
             if object:
-                e.type=gtk.gdk.ENTER_NOTIFY
+                e.type=Gdk.ENTER_NOTIFY
                 handled_enter=object.handle_event(\
                     "enter_notify_event",e)
             self.under_mouse=object
@@ -549,7 +549,7 @@ import Timer
 
 class SimpleTestApp:
     def __init__(self):
-        window=gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window=Gtk.Window(Gtk.WindowType.TOPLEVEL)
         window.set_title("PyTraffic")
 	window.set_resizable(False)
         window.connect("delete_event",self.quit)
@@ -559,7 +559,7 @@ class SimpleTestApp:
             Affine2D.translation_affine((320/math.sqrt(2),0)),
             Affine2D.rotation_affine(math.pi/4))
         self.canvas.set_world_to_screen_transform(worldtoscreen)
-        image=gtk.Image()
+        image=Gtk.Image()
         image.set_from_file("background_rotated.png")
         bpx,bpy=Utils.default_basepoint(image,
                                         worldtoscreen[0:4],
@@ -568,7 +568,7 @@ class SimpleTestApp:
         print image_object.row_stride
         print len(image_object.pixels)
         self.canvas.add(0,0,image_object)
-        image_car2=gtk.Image()
+        image_car2=Gtk.Image()
         image_car2.set_from_file("car_rotated.png")
         bpx,bpy=Utils.default_basepoint(image_car2,
                                         worldtoscreen[0:4],
@@ -577,18 +577,18 @@ class SimpleTestApp:
         self.canvas.add(10,10,self.image_object_car2)
         print self.canvas.find_object(100,40)
         print self.canvas.find_object(200,200)
-        self.image_object_car2.set_cursor(gtk.gdk.Cursor(\
-                                         gtk.gdk.SB_H_DOUBLE_ARROW))
+        self.image_object_car2.set_cursor(Gdk.Cursor.new(\
+                                         Gdk.SB_H_DOUBLE_ARROW))
         window.add(self.canvas)
         window.show_all()
 
     def quit(self,*args):
-        gtk.main_quit()
+        Gtk.main_quit()
 
 
 class TestApp:
     def __init__(self):
-        window=gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window=Gtk.Window(Gtk.WindowType.TOPLEVEL)
         window.set_title("PyTraffic")
 	window.set_resizable(False)
         window.connect("delete_event",self.quit)
@@ -597,7 +597,7 @@ class TestApp:
         f=open("themes/DeLuxe3D/transform")
         worldtoscreen=eval(f.read())
         f.close()
-        image=gtk.Image()
+        image=Gtk.Image()
         image.set_from_file("themes/DeLuxe3D/background/background.png")
         f=open("themes/DeLuxe3D/background/basepoints","r")
         bpx,bpy=eval(f.read())['background.png']
@@ -605,16 +605,16 @@ class TestApp:
         self.canvas.set_world_to_screen_transform(worldtoscreen)
         image_object=ScreenImageItem(image,bpx,bpy)
         self.canvas.add(0,0,image_object)
-        image_car2=gtk.Image()
+        image_car2=Gtk.Image()
         image_car2.set_from_file("themes/DeLuxe3D/cars/carHTN3.png")
         f=open("themes/DeLuxe3D/cars/basepoints","r")
         basepoints=eval(f.read())
         bpx,bpy=basepoints['carHTN3.png']
         f.close()
         self.image_object_car2=ScreenImageItem(image_car2,bpx,bpy)
-        self.image_object_car2.set_cursor(gtk.gdk.Cursor(\
-                                         gtk.gdk.SB_H_DOUBLE_ARROW))
-        image_car=gtk.Image()
+        self.image_object_car2.set_cursor(Gdk.Cursor.new(\
+                                         Gdk.SB_H_DOUBLE_ARROW))
+        image_car=Gtk.Image()
         image_car.set_from_file("themes/DeLuxe3D/cars/carNred.png")
         bpx,bpy=basepoints['carNred.png']
         self.image_object_car=ScreenImageItem(image_car,bpx,bpy)
@@ -667,9 +667,9 @@ class TestApp:
         self.image_object_car2.set_coords(self.x1,self.y1)
    
     def quit(self,*args):
-        gtk.main_quit()
+        Gtk.main_quit()
     
 
 if __name__=='__main__':
     a=TestApp()
-    gtk.main()    
+    Gtk.main()    
