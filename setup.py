@@ -82,7 +82,7 @@ exec python %s/share/%s/Main.py""" %\
             else:
                 return os.path.abspath(os.path.join(self.install_base,"lib"))
 
-	def relocate_platform_specific_files(self,strip=0):
+        def relocate_platform_specific_files(self,strip=0):
             install_dir=os.path.join(self.install_base,
                                      "share",
                                      config_db["install_leaf"])
@@ -97,20 +97,20 @@ exec python %s/share/%s/Main.py""" %\
                                                            lib_dir_base)
             else:
                 lib_dir=lib_dir_base
-        
+
             distutils.dir_util.mkpath(lib_dir)
             for f in plat_files:
-          		self.move_file(f,lib_dir)
-	    		if strip:
-   	   			log.info("stripping %s" % f)
-				os.system("strip -s %s" % f)
+                self.move_file(f,lib_dir)
+                if strip:
+                    log.info("stripping %s" % f)
+                    os.system("strip -s %s" % f)
 # make sure pytraffic knows how to find the libraries.
             config_db_new=PropertyBag.PropertyBag(configfile=\
                                   os.path.join(install_dir,Misc.default_config_db))
             config_db_new.load(all=True)
             config_db_new['add_path']=[ os.path.abspath(lib_dir_base)]
             config_db_new.save()
-            
+
         def refresh_icon_cache(self):
             if self.root:
                 return
@@ -121,14 +121,14 @@ exec python %s/share/%s/Main.py""" %\
                                      "hicolor")
                 log.info("updating utime of %s", icon_dir)
                 os.utime(icon_dir,None)
-                
-        
+
+
         def run(self):
             if os.path.exists(self.install_lib):
                 print "The installation directory %s already exists.\n\
 Please delete it first." % self.install_lib
-                sys.exit()                        
-                
+                sys.exit()
+
             _install.run(self)
             self.relocate_platform_specific_files()
             self.build_and_install_pytraffic_script()
@@ -146,7 +146,7 @@ options['sdist']={'formats':'gztar'}
 
 
 if os.name=='nt':
-    options['install']={'prefix': "c:\\"+config_db["install_leaf_windows"], 
+    options['install']={'prefix': "c:\\"+config_db["install_leaf_windows"],
                         'install_lib' :  "c:\\"+config_db["install_leaf_windows"]}
     options['build_ext']={'compiler' : 'mingw32'}
 else:
@@ -196,7 +196,7 @@ def desktop_file():
         return []
     else:
         return [(ail("."),["pytraffic.desktop"])]
-    
+
 def theme_files():
     result=[]
     for t in config_db["themes"]:
@@ -222,10 +222,10 @@ def music_files():
 py_modules=['Affine2D',
                   'Arena',
                   'ArtWork',
-	          'BottomBar',
+                  'BottomBar',
                   'Board',
                   'Cache',
-		  'Canvas',
+                  'Canvas',
                   'Chooser',
                   'CondMessageBox',
                   'Game',
@@ -238,15 +238,15 @@ py_modules=['Affine2D',
                   'Misc',
                   'MusicChooser',
                   'MusicServer',
-		  'PropertyBag',
-		  'ShowHTML',
+                  'PropertyBag',
+                  'ShowHTML',
                   'SmartLabel',
                   'SoundCache',
                   'SoundData',
                   'SoundServer',
                   'ThemeEngine',
                   'Timer',
-		  'Statistics',
+                  'Statistics',
                   'Main',
                   'sdl_mixer',
                   'music',
@@ -268,18 +268,18 @@ ext_modules=[Extension("_hint",["src/hint/asci.c",
                             )]
 
 data_files=[(ail("."),['ttraffic.levels','COPYING','config.db']),
-	    (ail('doc'),glob.glob('doc/*.htm')+glob.glob('doc/*.png')),
+            (ail('doc'),glob.glob('doc/*.htm')+glob.glob('doc/*.png')),
             (ail('libglade'),glob.glob('libglade/*.glade')+\
                               ['libglade/carNred64x64.png']),
             (ail('music'),['music/README.README']),
             (ail('sound_test'),['sound_test/tone.ogg']),
-            ('share/applications',['pytraffic.desktop']),
-	     ]+theme_files()\
-              +music_files()\
-              +main_command()\
-              +windows_installer()\
-              +icons()\
-              +desktop_file()
+            ('share/applications',['pytraffic.desktop']),]
+            +theme_files()\
+            +music_files()\
+            +main_command()\
+            +windows_installer()\
+            +icons()\
+            +desktop_file()
 
 
 long_description="""\
@@ -300,7 +300,7 @@ setup_kw={'cmdclass' : cmdclass,
           'author' : "Michel Van den Bergh",
           'author_email' : "michel.vandenbergh@uhasselt.be",
           'url' : "http://alpha.uhasselt.be/Research/Algebra",
-          'long_description' : long_description,  
+          'long_description' : long_description,
           'py_modules' : py_modules,
           'ext_modules' : ext_modules,
           'data_files' :data_files,
@@ -309,7 +309,7 @@ setup_kw={'cmdclass' : cmdclass,
 
 if py2exe_present:
     setup_kw['windows']=[{"script" : "WinMain.pyw",
-    		          "icon_resources":[(1,"icons/carNred.ico")]}]
+                          "icon_resources":[(1,"icons/carNred.ico")]}]
 
 apply(setup,[],setup_kw)
 
