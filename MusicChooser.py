@@ -22,9 +22,9 @@
 
 import os
 import Misc
-import gtk
-import gtk.glade
-import gobject
+from gi.repository import Gtk
+import Gtk.glade
+from gi.repository import GObject
 import Chooser
 
 np=Misc.normalize_path
@@ -32,8 +32,8 @@ np=Misc.normalize_path
 class MusicChooser:
 
     def __init__(self,theme_engine,music_server):
-	settings=gtk.settings_get_default()
-        tree=gtk.glade.XML(np("libglade/MusicDialog.glade"))
+	settings=Gtk.Settings.get_default()
+        tree=Gtk.glade.XML(np("libglade/MusicDialog.glade"))
         self.dialog=tree.get_widget("ChooseMusicDialog")
         self.chosen_location=tree.get_widget("chosen_location")
         self.browse_button=tree.get_widget("browse_button")
@@ -57,10 +57,10 @@ class MusicChooser:
         self.theme_engine=theme_engine
         self.music_server=music_server
 	self.create_browser()
-        self.myloop=gobject.MainLoop()
+        self.myloop=GObject.MainLoop()
 
     def create_browser(self):
-        tree1=gtk.glade.XML(np("libglade/MusicBrowser.glade"))
+        tree1=Gtk.glade.XML(np("libglade/MusicBrowser.glade"))
         events1={"on_music_browser_cancel_button_clicked" :
                  self.music_browser_cancel,
                  "on_music_browser_open_button_clicked" :

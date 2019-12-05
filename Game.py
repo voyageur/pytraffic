@@ -19,8 +19,8 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import gtk
-import pango
+from gi.repository import Gtk
+from gi.repository import Pango
 import sys,os,string,copy
 import time
 import PropertyBag
@@ -49,13 +49,13 @@ np=Misc.normalize_path
 class Game:
     def __init__(self):
         self.callbacks_enabled=0
-        self.window=gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window=Gtk.Window(Gtk.WindowType.TOPLEVEL)
 	self.window.set_icon_from_file(np("libglade/carNred64x64.png"))
         self.window.set_title("PyTraffic")
 	self.window.set_resizable(False)
         self.window.connect("delete_event",self.quit)
         self.window.connect("destroy",self.quit)
-        vbox=gtk.VBox(False,0)
+        vbox=Gtk.VBox(False,0)
         self.window.add(vbox)
         sound_menu=self.construct_sound_menu()
 	self.theme_engine=ThemeEngine.ThemeEngine()
@@ -96,8 +96,8 @@ class Game:
             ("/Help/_Show readme",None,self.readme,0,None),
             ("/Help/_About","<control>H",self.about,0,None)
             )
-        accel_group=gtk.AccelGroup()
-        self.item_factory=item_factory=gtk.ItemFactory(gtk.MenuBar, 
+        accel_group=Gtk.AccelGroup()
+        self.item_factory=item_factory=Gtk.ItemFactory(Gtk.MenuBar, 
                                                        "<main>", 
                                                        accel_group)
         item_factory.create_items(self.menu_items)
@@ -129,38 +129,38 @@ class Game:
         self.readme_=item_factory.get_widget("/Help/Show readme")
 
 
-        toolbar=gtk.Toolbar()
-        self.new_button=toolbar.insert_stock(gtk.STOCK_NEW,
+        toolbar=Gtk.Toolbar()
+        self.new_button=toolbar.insert_stock(Gtk.STOCK_NEW,
                                              "New level",
                                              "",
                                              self.new,
                                              None,
                                              -1)
-        self.restart_button=toolbar.insert_stock(gtk.STOCK_GOTO_FIRST,
+        self.restart_button=toolbar.insert_stock(Gtk.STOCK_GOTO_FIRST,
                                                  "Restart level",
                                                  "",
                                                  self.restart,
                                                  None,
                                                  -1)
-        self.undo_button=toolbar.insert_stock(gtk.STOCK_UNDO,
+        self.undo_button=toolbar.insert_stock(Gtk.STOCK_UNDO,
                                               "Undo last move",
                                               "",
                                               self.undo,
                                               None,
                                               -1)
-        self.redo_button=toolbar.insert_stock(gtk.STOCK_REDO,
+        self.redo_button=toolbar.insert_stock(Gtk.STOCK_REDO,
                                               "Redo last move",
                                               "",
                                               self.redo,
                                               None,
                                               -1)
-        self.end_button=toolbar.insert_stock(gtk.STOCK_GOTO_LAST,
+        self.end_button=toolbar.insert_stock(Gtk.STOCK_GOTO_LAST,
                                              "Goto end of history",
                                              "",
                                              self.gotoend,
                                              None,   
                                              -1)
-        self.hint_button=toolbar.insert_stock(gtk.STOCK_HELP,
+        self.hint_button=toolbar.insert_stock(Gtk.STOCK_HELP,
                                               "Ask for hint",
                                               "",
                                               self.hint,
@@ -205,7 +205,7 @@ class Game:
         self.timer.set_running(1)
 	self.demo_timer=Timer.Timer(interval=1500)
         self.demo_timer.connect("tick",self.demo_step)
-	tree=gtk.glade.XML(np("libglade/AboutDialog.glade"))
+	tree=Gtk.glade.XML(np("libglade/AboutDialog.glade"))
 	self.about_dialog=tree.get_widget("AboutDialog")
         config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
         config_db.load(all=True)
@@ -236,11 +236,11 @@ class Game:
         if self.al>=1.0 or self.al<=0.0:
             self.step=-self.step
         self.al+=self.step
-        gtk.Misc.set_alignment(self.time_label.label,self.al,1.0)
+        Gtk.Misc.set_alignment(self.time_label.label,self.al,1.0)
        
             
     def stop_demo_key(self,widget,event,*args):
-	if not(event.state & gtk.gdk.MODIFIER_MASK) and \
+	if not(event.get_state() & Gdk.ModifierType.MODIFIER_MASK) and \
                event.keyval & 255==27:  # compare with ESC
 		self.demomode=0
 		self.updateGUI()
@@ -638,15 +638,15 @@ PyTraffic reported: """+ShowHTML.last_error(),
         self.type_label.set_text(self.gamestate.type)
         if not self.gamestate.youvewon:
             self.finished.set_text("Unsolved")
-            self.finished.modify_bg(gtk.gdk.color_parse("red"))
+            self.finished.modify_bg(Gdk.color_parse("red"))
         elif self.gamestate.hint:
             self.finished.set_text("Solved: %d" % \
                             self.gamestate.solvedinnrofmoves)
-            self.finished.modify_bg(gtk.gdk.color_parse("Orange"))
+            self.finished.modify_bg(Gdk.color_parse("Orange"))
         else:
             self.finished.set_text("Solved: %d" % \
                             self.gamestate.solvedinnrofmoves)
-            self.finished.modify_bg(gtk.gdk.color_parse("Green"))
+            self.finished.modify_bg(Gdk.color_parse("Green"))
         self.statisticsdialog.update_statistics(self.gamestate.statistics)
         if os.name!='nt':
             for data in SoundData.sound_data:
@@ -698,7 +698,7 @@ PyTraffic reported: """+ShowHTML.last_error(),
                 self.new_button.set_sensitive(False)
                 self.new_.set_sensitive(False)
                 self.hints.set_text("Demo"),
-                self.hints.modify_bg(gtk.gdk.color_parse("yellow"))
+                self.hints.modify_bg(Gdk.color_parse("yellow"))
 		self.demo_timer.set_running(1)
 	else:
             if not(Hint.hint_enabled):
@@ -743,7 +743,7 @@ PyTraffic reported: """+ShowHTML.last_error(),
                 self.end_.set_sensitive(True)
             self.hints.set_text("Hint: %d" % self.gamestate.hint)
             if self.gamestate.hint:
-                self.hints.modify_bg(gtk.gdk.color_parse("Orange"))
+                self.hints.modify_bg(Gdk.color_parse("Orange"))
             else:
                 self.hints.reset_bg()
             self.demo_timer.set_running(0)
@@ -752,7 +752,7 @@ PyTraffic reported: """+ShowHTML.last_error(),
 
     def quit(self,*args):
         self.save_all()
-        gtk.main_quit()
+        Gtk.main_quit()
         # there is a problem with using sys.exit() if the program has
         # been suspended while the music is playing.
         # is this safe?
@@ -802,4 +802,4 @@ PyTraffic reported: """+ShowHTML.last_error(),
 
 if __name__=='__main__':
     Game()
-    gtk.main()
+    Gtk.main()
