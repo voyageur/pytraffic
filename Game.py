@@ -61,6 +61,7 @@ class Game:
         self.theme_engine=ThemeEngine.ThemeEngine()
         self.create_theme_data()
         theme_menu=self.construct_theme_menu()
+        """ TODO these need to be updated to modern framework
         self.menu_items=(
             ("/_File",None,None,0,"<Branch>"),
             ( "/File/_New","<control>N",self.new,0,None),
@@ -127,9 +128,11 @@ class Game:
         self.demo_=item_factory.get_widget("/Help/Demo")
         self.hint_=item_factory.get_widget("/Help/Hint")
         self.readme_=item_factory.get_widget("/Help/Show readme")
+        """
 
 
         toolbar=Gtk.Toolbar()
+        """ TODO these need to be updated too
         self.new_button=toolbar.insert_stock(Gtk.STOCK_NEW,
                                              "New level",
                                              "",
@@ -166,6 +169,7 @@ class Game:
                                               self.hint,
                                               None,
                                               -1)
+        """
         vbox.pack_start(toolbar,False,False,0)
 
         statusbar=BottomBar.BottomBar(False,0)
