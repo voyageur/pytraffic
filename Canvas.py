@@ -308,19 +308,19 @@ class Canvas(Gtk.DrawingArea):
     def __init__(self):
         Gtk.DrawingArea.__init__(self)
         self.set_double_buffered(False)
-        Gtk.DrawingArea.connect(self,"expose_event", 
+        gtk.DrawingArea.connect(self,"draw",
                                      self.expose_event)
-        Gtk.DrawingArea.connect(self,"configure_event", 
+        gtk.DrawingArea.connect(self,"configure-event",
                                      self.configure_event)
-        Gtk.DrawingArea.connect(self,"motion_notify_event", 
+        gtk.DrawingArea.connect(self,"motion-notify-event",
                                      self.motion_notify_event)
-        Gtk.DrawingArea.connect(self,"button_press_event", 
+        gtk.DrawingArea.connect(self,"button-press-event",
                                      self.button_press_event)
-        Gtk.DrawingArea.connect(self,"button_release_event", 
+        gtk.DrawingArea.connect(self,"button-release-event",
                                      self.button_release_event)
-        Gtk.DrawingArea.connect(self,"enter_notify_event", 
+        gtk.DrawingArea.connect(self,"enter-notify-event",
                                      self.enter_notify_event)
-        Gtk.DrawingArea.connect(self,"leave_notify_event", 
+        gtk.DrawingArea.connect(self,"leave-notify-event",
                                      self.leave_notify_event)
         self.set_events(Gdk.EventMask.EXPOSURE_MASK
                             | Gdk.EventMask.LEAVE_NOTIFY_MASK
