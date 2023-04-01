@@ -126,7 +126,7 @@ class LevelSelector:
         endoffset=self.tooffset(maxmoves)
         offset=self.randomoffset(beginoffset,endoffset,existing)
         board=self.getboard(offset)
-        for  p in xrange(minmoves,maxmoves):
+        for  p in range(minmoves,maxmoves):
             directoryentry=\
                             levelfileparser.directory[p -\
                             levelfileparser.minmovestosolution + 2 + 1]
@@ -146,9 +146,9 @@ class LevelSelector:
 # backwards compatibility
 # earlier versions inserted zeroes,
 # eliminate these
-	self.solvedlevels=filter(lambda x:x!=0,self.solvedlevels)
+	self.solvedlevels=[x for x in self.solvedlevels if x!=0]
 
 if __name__=='__main__':
     l=LevelSelector()
-    print l.randomlevel(30,40)
+    print(l.randomlevel(30,40))
 

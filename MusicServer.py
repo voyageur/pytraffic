@@ -116,11 +116,11 @@ class MusicServer(GObject.GObject):
         self.__sound_server=sound_server
         config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
         config_db.load(all=True)
-        self.__default_music_path=map(np,config_db["default_music_path"])
+        self.__default_music_path=list(map(np,config_db["default_music_path"]))
         self.__music_path=self.__default_music_path
         self.__old_music_path=self.__default_music_path
         self.__default_available_music=\
-                           Chooser.Chooser(map(np,config_db["default_playlist"]))
+                           Chooser.Chooser(list(map(np,config_db["default_playlist"])))
         self.__available_music=self.__default_available_music
 
         
@@ -145,7 +145,7 @@ class MusicServer(GObject.GObject):
 # many files which seem supported but are not.
 # We go back to the default setting here. We should emit a signal
 # accordingly.
-                            print "Can't find suitable music... Reverting to default."
+                            print("Can't find suitable music... Reverting to default.")
                             self.__music_path=\
                                           self.__default_music_path
                             self.__available_music=\
@@ -170,7 +170,7 @@ class MusicServer(GObject.GObject):
         elif pspec.name=='use-extensions':
             self.__use_extensions=value
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
     def do_get_property(self,pspec):
         if pspec.name=='playing':
@@ -184,7 +184,7 @@ class MusicServer(GObject.GObject):
         elif pspec.name=='use-extensions':
             return self.__use_extensions
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
 # temporary hack
     def get_music_path(self):
@@ -215,7 +215,7 @@ class MusicServer(GObject.GObject):
 
     def __make_some_progress(self,*args):
         try:
-            file_name=self.__file_list_generator.next()
+            file_name=next(self.__file_list_generator)
             self.emit("progress")
             if self.__sound_server.is_supported(file_name,self.get_use_extensions()):
                 self.__partial_list.append(file_name)

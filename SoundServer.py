@@ -127,7 +127,7 @@ class SoundServer:
             self.init_supported()
             if self.is_supported(np('sound_test/tone.ogg')):
                 self.__sound_works=1
-        except Exception,e:
+        except Exception as e:
             self.__last_error=str(e)
 
 

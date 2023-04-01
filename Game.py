@@ -28,7 +28,7 @@ import Hint
 import Arena,Board,Misc
 import History,BottomBar
 import LevelSelector
-import ConfigParser
+import configparser
 import Timer
 import GameState
 import CondMessageBox
@@ -492,11 +492,11 @@ type! Do you want to reset these levels?",
         except Exception as e:
             something_bad_happened=1
             last_error=str(e)
-            print ("Exception in newgame",last_error)
+            print(("Exception in newgame",last_error))
         except Error as e:
             something_bad_happened=1
             last_error=str(e)
-            print ("Error in newgame", last_error)
+            print(("Error in newgame", last_error))
         if something_bad_happened:
             Misc.save_configfile()
             self.default_all()

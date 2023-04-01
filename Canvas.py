@@ -164,7 +164,7 @@ class CanvasItem:
         return False
 
     def connect(self,event_type,function):
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             self.event_handlers[event_type]=[function]
         else:
             self.event_handlers[event_type].append(function)
@@ -175,7 +175,7 @@ class CanvasItem:
         elif  event_type=="leave_notify_event":
             self.canvas.window.set_cursor(None)
             
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             return False
         else:
             handled=False
@@ -413,7 +413,7 @@ class Canvas(Gtk.DrawingArea):
 # (x_screen,y_screen) are screen coordinates
     def find_object(self,x_screen,y_screen):
         count=len(self.objects)
-        for i in xrange(0,count):
+        for i in range(0,count):
             object=self.objects[count-1-i]
             if object.contains(x_screen,y_screen):
                 return object
@@ -426,13 +426,13 @@ class Canvas(Gtk.DrawingArea):
 
 
     def connect(self,event_type,function):
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             self.event_handlers[event_type]=[function]
         else:
             self.event_handlers[event_type].append(function)
     
     def handle_event(self,event_type,event):
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             return False
         else:
             handled=False
@@ -565,8 +565,8 @@ class SimpleTestApp:
                                         worldtoscreen[0:4],
                                         SmartRectangle(0,0,370,320))
         image_object=ScreenImageItem(image,bpx,bpy)
-        print image_object.row_stride
-        print len(image_object.pixels)
+        print(image_object.row_stride)
+        print(len(image_object.pixels))
         self.canvas.add(0,0,image_object)
         image_car2=Gtk.Image()
         image_car2.set_from_file("car_rotated.png")
@@ -575,8 +575,8 @@ class SimpleTestApp:
                                         SmartRectangle(0,0,150,50))
         self.image_object_car2=ScreenImageItem(image_car2,bpx,bpy)
         self.canvas.add(10,10,self.image_object_car2)
-        print self.canvas.find_object(100,40)
-        print self.canvas.find_object(200,200)
+        print(self.canvas.find_object(100,40))
+        print(self.canvas.find_object(200,200))
         self.image_object_car2.set_cursor(Gdk.Cursor.new(\
                                          Gdk.SB_H_DOUBLE_ARROW))
         window.add(self.canvas)
@@ -650,7 +650,7 @@ class TestApp:
         return True
 
     def enddrag(self,widget,event):
-        print "Well done!"
+        print("Well done!")
         return True
 
     def move_image(self,*args):

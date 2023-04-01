@@ -21,7 +21,7 @@
 ##
 
 import UserDict
-import ConfigParser
+import configparser
 import os
 
 class PropertyBag(UserDict.UserDict):
@@ -39,17 +39,17 @@ class PropertyBag(UserDict.UserDict):
 	if self.__comment!=None:
 		fp.write(";; %s\n" % self.__comment)
         fp.write("[%s]\n" % self.__title)
-        for (key,item) in self.items():
+        for (key,item) in list(self.items()):
             fp.write("%s=%s\n" % (key,repr(item)))
         fp.close()
 
     def load(self,all=False):
-        c=ConfigParser.ConfigParser()
+        c=configparser.ConfigParser()
         if not os.access(self.__configfile,os.F_OK):
             return
         c.read(self.__configfile)
         for key in c.options(self.__title):
-            if key!='__name__'  and (all or self.has_key(key)):
+            if key!='__name__'  and (all or key in self):
                 item=eval(c.get(self.__title,key))
                 self[key]=item
         

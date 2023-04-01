@@ -42,7 +42,7 @@ class LevelFileParser:
         self.directory[1]=self.mostcomplexsolution
         self.entriesindirectory=self.mostcomplexsolution\
                                  -self.minmovestosolution+2
-        for  i in xrange(1,self.entriesindirectory+1):
+        for  i in range(1,self.entriesindirectory+1):
             self.directory[i+1]=readint(self.fp)
 
     def getboard(self,offset):

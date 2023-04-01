@@ -47,13 +47,13 @@ gtrafficstrips= (
 def ttrafficboardtostring(ttrafficboard):
         s=""
         physicalboard={}
-        for row in xrange(0,6):
-            for column in xrange(0,6):
+        for row in range(0,6):
+            for column in range(0,6):
                 physicalboard[(row,column)]='.'
         a=ord('a')
         for car in ttrafficboard:
             row,col,horizontal,length=car
-            for i in xrange(0,length):
+            for i in range(0,length):
                 if horizontal:
                     if physicalboard[(row,col+i)]=='.':
                         physicalboard[(row,col+i)]=chr(a)
@@ -65,8 +65,8 @@ def ttrafficboardtostring(ttrafficboard):
                     else:
                         physicalboard[(row+i,col)]='*'
             a=a+1
-        for  row in xrange(0,6):
-            for column in xrange(0,6):
+        for  row in range(0,6):
+            for column in range(0,6):
                 s=s+physicalboard[(row,column)]
             s=s+"\n"
         return s
@@ -76,10 +76,10 @@ def unpackboard (packedboard):
     r=packedboard[0]
     c=packedboard[1]
     unpackedboard=[]
-    for i in xrange(0,6):
+    for i in range(0,6):
 	unpackedboard.append(r & 0xF)
 	r=r >> 4
-    for i in xrange(6,12):
+    for i in range(6,12):
 	unpackedboard.append(c & 0xF)
 	c=c >> 4
     return unpackedboard
@@ -88,14 +88,14 @@ def unpackboard (packedboard):
 def packboard(unpackedboard):
     r=0
     c=0
-    for i in xrange(0,6):
+    for i in range(0,6):
        r=r+(unpackedboard[i]<<(4*i))
        c=c+(unpackedboard[6+i]<<(4*i))
     return (r,c)
 
 def tottrafficboard(unpackedboard):
     originalboard=[]
-    for i in xrange(0,12):
+    for i in range(0,12):
         stripnr=unpackedboard[i]
         for j in (0,1):
 	    g=  gtrafficstrips[stripnr][j]
@@ -110,14 +110,14 @@ def tottrafficboard(unpackedboard):
 
 def tounpackedboard(ttrafficboard):
     temp=[]
-    for i in xrange(0,6):
+    for i in range(0,6):
         validcarlist=[]
         for c in ttrafficboard:
             row,col,horizontal,length=c
             if horizontal and row==i:
                 validcarlist.append((col,length))
         temp.append(validcarlist)
-    for i in xrange(6,12):
+    for i in range(6,12):
         validcarlist=[]
         for c in ttrafficboard:
             row,col,horizontal,length=c
@@ -125,13 +125,13 @@ def tounpackedboard(ttrafficboard):
                 validcarlist.append((row,length))
         temp.append(validcarlist)
     unpackedboard=[]
-    for j in xrange(0,12):
+    for j in range(0,12):
         validcarlist=temp[j]
         validcarlist.sort()
-        for i in xrange(len(validcarlist),2):
+        for i in range(len(validcarlist),2):
             validcarlist.append((0,0))
         validcarlist=tuple(validcarlist)
-        for k in xrange(0,len(gtrafficstrips)):
+        for k in range(0,len(gtrafficstrips)):
             if gtrafficstrips[k]==validcarlist:
                 unpackedboard.append(k)
     if len(unpackedboard)<12:
@@ -140,13 +140,13 @@ def tounpackedboard(ttrafficboard):
         
 def tophysicalboard (ttrafficboard):
     physicalboard={}
-    for row in xrange(0,6):
-        for column in xrange(0,6):
+    for row in range(0,6):
+        for column in range(0,6):
 	    physicalboard[(row,column)]=0
 
     for car in ttrafficboard:
 	row,col,horizontal,length=car
-        for i in xrange(0,length):
+        for i in range(0,length):
             if horizontal:
 		physicalboard[(row,col+i)]=1
 	    else:
@@ -221,7 +221,7 @@ class Board:
         savedttrafficboard=self.__ttrafficboard
         self.init()
         self.__ttrafficboard=savedttrafficboard
-        for i in xrange(0,len(newboard)):
+        for i in range(0,len(newboard)):
             self.__ttrafficboard[i]=newboard[i]
         
     def domove(self,index,row,column):
@@ -239,7 +239,7 @@ class Board:
 		    toprow=row
 		    bottomrow=row
 	            #remove current car
-		    for i in xrange(0,length):
+		    for i in range(0,length):
 			    physicalboard[(row,column+i)]=0
 		    #find left bound
 		    leftcolumn=column
@@ -269,7 +269,7 @@ class Board:
 		    leftcolumn=column
 		    rightcolumn=column
 	            #remove current car
-		    for i in xrange(0,length):
+		    for i in range(0,length):
 			    physicalboard[(row+i,column)]=0
 		    #find top bound
 		    toprow=row
@@ -316,19 +316,19 @@ class Board:
         elif not(horizontal) and (carcolumn!=column):
             legal=0
         elif horizontal and (column >= carcolumn):
-            for  i in xrange(carcolumn,column):
+            for  i in range(carcolumn,column):
                 if self.getphysicalboard()[(row,i+length)]==1:
                     legal=0
         elif horizontal and (column <= carcolumn):
-            for i in xrange(column,carcolumn):
+            for i in range(column,carcolumn):
                 if self.getphysicalboard()[(row,i)]==1:
                     legal=0
         elif not(horizontal) and (row >= carrow):
-            for i in xrange(carrow,row):
+            for i in range(carrow,row):
                 if self.getphysicalboard()[(i+length,column)]==1:
                     legal=0
         elif  not(horizontal) and (row <= carrow):
-            for i in xrange(row,carrow):
+            for i in range(row,carrow):
                 if self.getphysicalboard()[(i,column)]==1:
                     legal=0
 	return legal
@@ -358,7 +358,7 @@ class SimpleTestBoard(Board):
 
 if __name__=='__main__':
     t=TestBoard()
-    print ttrafficboardtostring(t.getttrafficboard())
-    for i in xrange(0,13):
-	    print t.play_area(i)
+    print(ttrafficboardtostring(t.getttrafficboard()))
+    for i in range(0,13):
+	    print(t.play_area(i))
     

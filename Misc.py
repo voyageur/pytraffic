@@ -49,7 +49,7 @@ def save_configfile():
     try:
         shutil.copyfile(default_configfile,backup_configfile)
     except:
-        print "Renaming configfile failed."
+        print("Renaming configfile failed.")
     
 cellheight=50
 cellwidth=50
@@ -98,7 +98,7 @@ def togridpoint (row,col):
 # works on cygwin 2.3 and 2.4
 
 def isCygwin():
-	return string.find(string.lower(sys.version),'cyg')<>-1	
+	return string.find(string.lower(sys.version),'cyg')!=-1	
 
 
 def walk(file_list,recursion_depth=None):
@@ -116,7 +116,7 @@ def walk(file_list,recursion_depth=None):
             except:
                 pass
             if l:
-                l=map(lambda x: os.path.join(f,x),l)
+                l=[os.path.join(f,x) for x in l]
                 if recursion_depth:
                     recursion_depth=recursion_depth-1
                 for ff in walk(l,recursion_depth):

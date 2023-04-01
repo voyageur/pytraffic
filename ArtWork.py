@@ -103,8 +103,8 @@ class ArtWork:
         	image=self.image_cache.getimage(\
                      self.theme_engine.find_background(self.last_background))
 	except:
-		print "Background image in save file does not exist"
-		print "Using place holder"
+		print("Background image in save file does not exist")
+		print("Using place holder")
 		self.last_background=self.bg_chooser.get()
 		image=self.image_cache.getimage(\
                         self.theme_engine.find_background(self.last_background))
@@ -154,7 +154,7 @@ class ArtWork:
                             self.car_basepoints[\
                                    os.path.basename(filename)])
         except:
-            print "Using place holder for %s" % filename
+            print("Using place holder for %s" % filename)
             filename=self.theme_engine.find_car_image(horizontal,
                                                          truck,
                                                          '0')
@@ -202,7 +202,7 @@ class ArtWork:
                             self.car_basepoints[\
                                    os.path.basename(filename)])
         except:
-            print "Using a place holder for %s." % filename
+            print("Using a place holder for %s." % filename)
             filename=self.theme_engine.find_car_image(horizontal=1,
                                                          truck=0,
                                                          type='0')

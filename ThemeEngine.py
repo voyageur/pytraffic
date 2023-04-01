@@ -35,10 +35,10 @@ def get_id(path):
     return iid
 
 def get_ids(list_of_paths):
-    return map(get_id,list_of_paths)
+    return list(map(get_id,list_of_paths))
 
 def get_background_ids(list_of_paths):
-    return map(lambda x: os.path.splitext(os.path.split(x)[1])[0],list_of_paths)
+    return [os.path.splitext(os.path.split(x)[1])[0] for x in list_of_paths]
 
 
 class NoSuchTheme(Exception):
@@ -54,7 +54,7 @@ class ThemeEngine:
         
 
     def default_music_path(self):
-        return map(np,self.config_db["default_music_path"])
+        return list(map(np,self.config_db["default_music_path"]))
 
     def theme_has_sound(self):
     	return os.path.exists(np(os.path.join(self.getavailable_themes_dict()[self.current_theme],
@@ -109,7 +109,7 @@ class ThemeEngine:
     def get_default_theme(self):
         if self.default_theme:
             return self.default_theme
-        default_themes=map(lambda x: os.path.basename(x),self.config_db["themes"])
+        default_themes=[os.path.basename(x) for x in self.config_db["themes"]]
         available_themes=self.getavailable_themes()
         for t in default_themes:
             if t in available_themes:
@@ -166,7 +166,7 @@ class ThemeEngine:
         return self.available_themes
 
     def getavailable_themes(self):
-        result=self.getavailable_themes_dict().keys()
+        result=list(self.getavailable_themes_dict().keys())
         result.sort()
         return result
 
