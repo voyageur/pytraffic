@@ -36,7 +36,7 @@ class Timer(GObject.GObject):
                       GObject.PARAM_READWRITE)
         }
     def __init__(self, interval=1000):
-        self.__gobject_init__()
+        super().__init__()
         self.__interval=interval
         self.__afterid=None
         self.running=0
@@ -100,7 +100,7 @@ class Idler(GObject.GObject):
                       GObject.PARAM_READWRITE)
         }
     def __init__(self):
-        self.__gobject_init__()
+        super().__init__()
         self.__afterid=None
         self.running=0
 

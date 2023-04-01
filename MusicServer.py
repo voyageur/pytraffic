@@ -103,7 +103,7 @@ class MusicServer(GObject.GObject):
 
     
     def __init__(self,sound_server):
-        self.__gobject_init__()
+        super().__init__()
         self.__playing=0
         self.__status=FREE
         self.__strategy=Chooser.REPEAT
