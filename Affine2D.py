@@ -69,7 +69,6 @@ def multiply_affine(*a):
     for a1 in a[1:]:
         result=multiply_affine_affine(result,a1)
     return result
-    
 
 def inverse_affine(a):
     m=a[0:4]
@@ -92,5 +91,3 @@ def scale_matrix(m,n):
 
 def scale_affine(m,n):
     return (m,0,0,n,0,0)
-
-    

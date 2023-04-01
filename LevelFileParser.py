@@ -33,7 +33,7 @@ class LevelFileParser:
     def __init__(self,file=np("ttraffic.levels")):
         self.file=file
         self.readdirectory()
-        
+
     def readdirectory(self):
         self.directory={}
         self.fp=open(self.file,"rb")
@@ -51,9 +51,3 @@ class LevelFileParser:
         rows=readint(self.fp)
         columns=readint(self.fp)
         return Board.Board((rows,columns))
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-import sdl_mixer 
+import sdl_mixer
 import _sdl_mixer
 
 _music=None
@@ -20,6 +20,3 @@ def get_busy():
 
 def stop():
     _sdl_mixer.Mix_HaltMusic()
-
-    
-

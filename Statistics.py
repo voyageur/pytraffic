@@ -32,9 +32,9 @@ class StatisticsDialog:
         self.builder.add_from_file("libglade/StatisticsWindow.ui")
         self.window=self.builder.get_object("StatisticsWindow")
         self.window.set_destroy_with_parent(True)
-	# transient does not work well on nt
+        # transient does not work well on nt
         if parent and os.name!='nt':
-	        self.set_transient_for(parent)
+            self.set_transient_for(parent)
         self.intermediate_solved=self.builder.get_object("intermediate_solved")
         self.intermediate_total=self.builder.get_object("intermediate_total")
         self.advanced_solved=self.builder.get_object("advanced_solved")
@@ -43,7 +43,7 @@ class StatisticsDialog:
         self.expert_total=self.builder.get_object("expert_total")
         events={"on_StatisticsWindow_delete_event" : self.hide}
         self.builder.connect_signals(events)
-        
+
     def show(self):
         self.window.show_all()
         self._visible=1
@@ -54,7 +54,7 @@ class StatisticsDialog:
 #        self.window.unrealize()
         self._visible=0
         return True
-        
+
     def save_bag(self,propertybag):
         propertybag['statistics']=self._visible
 
@@ -82,5 +82,3 @@ class StatisticsDialog:
         self.expert_solved.set_text(
             str(statistics['Expert']['Solved']))
         self.expert_total.set_text(str(statistics['Expert']['Total']))
-
-        

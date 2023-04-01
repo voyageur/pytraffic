@@ -44,4 +44,3 @@ class PixmapCache(Cache.Cache):
 
     def getpixmaps(self,image):
         return self.getitem(image)
-        

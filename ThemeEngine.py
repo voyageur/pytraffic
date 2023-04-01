@@ -51,13 +51,13 @@ class ThemeEngine:
         self.default_theme=None
         self.config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
         self.config_db.load(all=True)
-        
+
 
     def default_music_path(self):
         return [np(p) for p in self.config_db["default_music_path"]]
 
     def theme_has_sound(self):
-    	return os.path.exists(np(os.path.join(self.getavailable_themes_dict()[self.current_theme],
+        return os.path.exists(np(os.path.join(self.getavailable_themes_dict()[self.current_theme],
                                               "sound")))
 
     def find_sound(self,name,theme=None):
@@ -93,12 +93,12 @@ class ThemeEngine:
         return np(os.path.join(self.getavailable_themes_dict()[self.current_theme],
                                "background",
                                "basepoints"))
-    
+
     def find_car_basepoints(self):
         return np(os.path.join(self.getavailable_themes_dict()[self.current_theme],
                                "cars",
                                "basepoints"))
-    
+
     def __find_car_image(self,name,theme=None):
         if not theme:
             theme=self.current_theme
@@ -116,8 +116,8 @@ class ThemeEngine:
                 self.default_theme=t
                 return t
         raise Exception("No default theme")
-            
-    
+
+
     def find_car_image(self,horizontal,truck,type,theme=None):
         T=['C','T']
         H=['V','H']
@@ -126,7 +126,7 @@ class ThemeEngine:
         else:
             return self.__find_car_image('car'+H[horizontal]+T[truck]\
                                        +'N'+type,theme)
-    
+
 
     def find_background(self,name,theme=None):
         if not theme:
@@ -138,12 +138,12 @@ class ThemeEngine:
     def load_bag(self,propertybag):
         self.settheme(propertybag['current_theme'])
 
-    def save_bag(self,propertybag):	       
+    def save_bag(self,propertybag):
         propertybag['current_theme']=self.current_theme
 
     def default_bag(self,propertybag):
         propertybag['current_theme']=self.get_default_theme()
-    	     	
+
     def settheme(self,theme):
         if theme not in self.getavailable_themes():
             self.current_theme=self.get_default_theme()
@@ -177,5 +177,3 @@ class ThemeEngine:
     def getbackgrounds(self):
         return  get_background_ids(\
             glob.glob(self.find_background('*')))
-
-           

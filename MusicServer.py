@@ -101,7 +101,7 @@ class MusicServer(GObject.GObject):
     def get_status(self):
         return self.get_property('status')
 
-    
+
     def __init__(self,sound_server):
         super().__init__()
         self.__playing=0
@@ -123,7 +123,7 @@ class MusicServer(GObject.GObject):
                            Chooser.Chooser([np(p) for p in config_db["default_playlist"]])
         self.__available_music=self.__default_available_music
 
-        
+
     def __check_music(self,*args):
             if not self.__sound_server.mixer.music.get_busy() \
                    and self.get_status()==FREE:
@@ -200,8 +200,8 @@ class MusicServer(GObject.GObject):
         if self.__sound_server.sound_works():
             if type(music_path)!=type([]):
                 raise Exception("Music path is not a list")
-	    if self.get_status()!=BUSY:
-	        self.__old_music_path=self.__music_path
+            if self.get_status()!=BUSY:
+                self.__old_music_path=self.__music_path
             self.__music_path=music_path
             self.__set_status(BUSY)
             if self.get_recursive():
@@ -246,18 +246,17 @@ class MusicServer(GObject.GObject):
         self.set_strategy(propertybag['music_strategy'])
         self.load(propertybag['music_path'])
         self.set_playing(propertybag['music_playing'])
-        
+
 
     def save_bag(self,propertybag):
         propertybag['music_playing']=self.get_playing()
-	if self.get_status()==BUSY:
-		propertybag['music_path']=self.__old_music_path
-	else:
-		propertybag['music_path']=self.__music_path
+        if self.get_status()==BUSY:
+            propertybag['music_path']=self.__old_music_path
+        else:
+            propertybag['music_path']=self.__music_path
         propertybag['music_strategy']=self.get_strategy()
         propertybag['music_recursive']=self.get_recursive()
         propertybag['music_use_extensions']=self.get_use_extensions()
-     
-        
+
 
 GObject.type_register(MusicServer)

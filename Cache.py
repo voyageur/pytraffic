@@ -32,6 +32,3 @@ class Cache:
             item=self.factory(identifier)
             self.cache[identifier]=item
         return item
-
-
-        

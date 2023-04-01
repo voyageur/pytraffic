@@ -30,7 +30,7 @@ class BottomBarItem(SmartLabel.SmartLabel):
         SmartLabel.SmartLabel.__init__(self,text)
         self.frame=Gtk.Frame()
         self.frame.add(self)
-        
+
     def show(self):
         SmartLabel.show(self)
         self.frame.show()
@@ -47,5 +47,3 @@ class BottomBar(Gtk.HBox):
         l=BottomBarItem(text)
         self.pack_start(l.frame,True,True,0)
         return l
-
-

@@ -164,9 +164,9 @@ def add_install_leaf(path):
 ail=add_install_leaf
 
 if py2exe_present:
-	options['py2exe']={
+    options['py2exe']={
         "includes": "pango,atk,gobject",
-     }
+    }
 
 
 def main_command():

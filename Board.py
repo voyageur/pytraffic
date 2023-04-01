@@ -25,22 +25,22 @@
 import Hint
 
 gtrafficstrips= (
-  ( (0, 0), (0, 0) ), 
-  ( (0, 2), (0, 0) ), 
-  ( (1, 2), (0, 0) ), 
-  ( (2, 2), (0, 0) ), 
-  ( (3, 2), (0, 0) ), 
-  ( (4, 2), (0, 0) ), 
-  ( (0, 3), (0, 0) ), 
-  ( (1, 3), (0, 0) ), 
-  ( (2, 3), (0, 0) ), 
-  ( (3, 3), (0, 0) ), 
-  ( (0, 2), (2, 2) ), 
-  ( (0, 2), (3, 2) ), 
-  ( (0, 2), (4, 2) ), 
-  ( (1, 2), (3, 2) ), 
-  ( (1, 2), (4, 2) ), 
-  ( (2, 2), (4, 2) ) 
+  ( (0, 0), (0, 0) ),
+  ( (0, 2), (0, 0) ),
+  ( (1, 2), (0, 0) ),
+  ( (2, 2), (0, 0) ),
+  ( (3, 2), (0, 0) ),
+  ( (4, 2), (0, 0) ),
+  ( (0, 3), (0, 0) ),
+  ( (1, 3), (0, 0) ),
+  ( (2, 3), (0, 0) ),
+  ( (3, 3), (0, 0) ),
+  ( (0, 2), (2, 2) ),
+  ( (0, 2), (3, 2) ),
+  ( (0, 2), (4, 2) ),
+  ( (1, 2), (3, 2) ),
+  ( (1, 2), (4, 2) ),
+  ( (2, 2), (4, 2) )
 )
 
 
@@ -77,11 +77,11 @@ def unpackboard (packedboard):
     c=packedboard[1]
     unpackedboard=[]
     for i in range(0,6):
-	unpackedboard.append(r & 0xF)
-	r=r >> 4
+        unpackedboard.append(r & 0xF)
+        r=r >> 4
     for i in range(6,12):
-	unpackedboard.append(c & 0xF)
-	c=c >> 4
+        unpackedboard.append(c & 0xF)
+        c=c >> 4
     return unpackedboard
 
 
@@ -98,14 +98,14 @@ def tottrafficboard(unpackedboard):
     for i in range(0,12):
         stripnr=unpackedboard[i]
         for j in (0,1):
-	    g=  gtrafficstrips[stripnr][j]
-	    carpos=g[0]
-	    carlength=g[1]
+            g=  gtrafficstrips[stripnr][j]
+            carpos=g[0]
+            carlength=g[1]
             if carlength:
                 if i<=5:
-		    originalboard.append([i,carpos,1,carlength])
-		else:
-		    originalboard.append([carpos,i-6,0,carlength])
+                    originalboard.append([i,carpos,1,carlength])
+                else:
+                    originalboard.append([carpos,i-6,0,carlength])
     return originalboard
 
 def tounpackedboard(ttrafficboard):
@@ -137,20 +137,20 @@ def tounpackedboard(ttrafficboard):
     if len(unpackedboard)<12:
         raise KeyError
     return unpackedboard
-        
+
 def tophysicalboard (ttrafficboard):
     physicalboard={}
     for row in range(0,6):
         for column in range(0,6):
-	    physicalboard[(row,column)]=0
+            physicalboard[(row,column)]=0
 
     for car in ttrafficboard:
-	row,col,horizontal,length=car
+        row,col,horizontal,length=car
         for i in range(0,length):
             if horizontal:
-		physicalboard[(row,col+i)]=1
-	    else:
-		physicalboard[(row+i,col)]=1
+                physicalboard[(row,col+i)]=1
+            else:
+                physicalboard[(row+i,col)]=1
     return physicalboard
 
 # __ttrafficboard is always up to date
@@ -211,7 +211,7 @@ class Board:
             if not(i in t1):
                 index=t0.index(i)
         return [index,row,col]
-        
+
     #new board must have same size as old board
 
     def update(self,newboard):
@@ -223,7 +223,7 @@ class Board:
         self.__ttrafficboard=savedttrafficboard
         for i in range(0,len(newboard)):
             self.__ttrafficboard[i]=newboard[i]
-        
+
     def domove(self,index,row,column):
         oldrow,oldcolumn,horizontal,length=self.__ttrafficboard[index]
         savedttrafficboard=self.__ttrafficboard
@@ -232,71 +232,71 @@ class Board:
         self.__ttrafficboard[index]=[row,column,horizontal,length]
 
     def play_area(self,index):
-	    physicalboard=self.getphysicalboard(cache=0)
+        physicalboard=self.getphysicalboard(cache=0)
 # cache=0 is necessary since we will be changing physicalboard
-	    row,column,horizontal,length=self.__ttrafficboard[index]
-	    if(horizontal):
-		    toprow=row
-		    bottomrow=row
-	            #remove current car
-		    for i in range(0,length):
-			    physicalboard[(row,column+i)]=0
-		    #find left bound
-		    leftcolumn=column
-		    found=0
-		    while not(found):
-			    if leftcolumn==-1:
-				    found=1
-			    elif physicalboard[(row,leftcolumn)]==1:
-				    found=1
-			    else:
-				    leftcolumn=leftcolumn-1
-		    #we've overshot by one
-		    leftcolumn=leftcolumn+1
-		    #find rightbound
-		    rightcolumn=column
-		    found=0
-		    while not(found):
-			    if rightcolumn+length-1==6:
-				    found=1
-			    elif physicalboard[(row,rightcolumn+length-1)]==1:
-				    found=1
-			    else:
-				    rightcolumn=rightcolumn+1
-		    #we've overshot by one
-		    rightcolumn=rightcolumn-1
-	    else:
-		    leftcolumn=column
-		    rightcolumn=column
-	            #remove current car
-		    for i in range(0,length):
-			    physicalboard[(row+i,column)]=0
-		    #find top bound
-		    toprow=row
-		    found=0
-		    while not(found):
-			    if toprow==-1:
-				    found=1
-			    elif physicalboard[(toprow,column)]==1:
-				    found=1
-			    else:
-				    toprow=toprow-1
-		    #we've overshot by one
-		    toprow=toprow+1
-		    #find bottombound
-		    bottomrow=row
-		    found=0
-		    while not(found):
-			    if bottomrow+length-1==6:
-				    found=1
-			    elif physicalboard[(bottomrow+length-1,column)]==1:
-				    found=1
-			    else:
-				    bottomrow=bottomrow+1
-		    #we've overshot by one
-		    bottomrow=bottomrow-1
+        row,column,horizontal,length=self.__ttrafficboard[index]
+        if(horizontal):
+            toprow=row
+            bottomrow=row
+            #remove current car
+            for i in range(0,length):
+                    physicalboard[(row,column+i)]=0
+            #find left bound
+            leftcolumn=column
+            found=0
+            while not(found):
+                if leftcolumn==-1:
+                    found=1
+                elif physicalboard[(row,leftcolumn)]==1:
+                    found=1
+                else:
+                    leftcolumn=leftcolumn-1
+            #we've overshot by one
+            leftcolumn=leftcolumn+1
+            #find rightbound
+            rightcolumn=column
+            found=0
+            while not(found):
+                if rightcolumn+length-1==6:
+                    found=1
+                elif physicalboard[(row,rightcolumn+length-1)]==1:
+                    found=1
+                else:
+                    rightcolumn=rightcolumn+1
+            #we've overshot by one
+            rightcolumn=rightcolumn-1
+        else:
+            leftcolumn=column
+            rightcolumn=column
+            #remove current car
+            for i in range(0,length):
+                    physicalboard[(row+i,column)]=0
+            #find top bound
+            toprow=row
+            found=0
+            while not(found):
+                if toprow==-1:
+                    found=1
+                elif physicalboard[(toprow,column)]==1:
+                    found=1
+                else:
+                    toprow=toprow-1
+            #we've overshot by one
+            toprow=toprow+1
+            #find bottombound
+            bottomrow=row
+            found=0
+            while not(found):
+                if bottomrow+length-1==6:
+                    found=1
+                elif physicalboard[(bottomrow+length-1,column)]==1:
+                    found=1
+                else:
+                    bottomrow=bottomrow+1
+            #we've overshot by one
+            bottomrow=bottomrow-1
 
-	    return (toprow,bottomrow,leftcolumn,rightcolumn)
+        return (toprow,bottomrow,leftcolumn,rightcolumn)
 
     def redcarout(self):
         return ([2,4,1,2] in self.__ttrafficboard)
@@ -331,11 +331,11 @@ class Board:
             for i in range(row,carrow):
                 if self.getphysicalboard()[(i,column)]==1:
                     legal=0
-	return legal
+        return legal
 
     def save_bag(self,propertybag,key='board'):
         propertybag[key]=self.__ttrafficboard
-        
+
     def load_bag(self,propertybag,key='board'):
         self.init()
         self.__ttrafficboard=propertybag[key]
@@ -343,22 +343,19 @@ class Board:
 
 class TestBoard(Board):
     def __init__(self):
-        Board.__init__(self,[[0,0,0,2],[0,2,1,2],[0,4,1,2],[1,1,1,3],
-	    [1,5,0,2],[2,0,1,2],[2,2,0,2],[2,3,0,2],
-	    [3,4,1,2],[4,1,1,3],[4,4,0,2],[4,5,0,2],
-	    [5,1,1,3]])
+        Board.__init__(self,[
+            [0,0,0,2],[0,2,1,2],[0,4,1,2],[1,1,1,3],
+            [1,5,0,2],[2,0,1,2],[2,2,0,2],[2,3,0,2],
+            [3,4,1,2],[4,1,1,3],[4,4,0,2],[4,5,0,2],
+            [5,1,1,3]])
 
 class SimpleTestBoard(Board):
     def __init__(self):
         Board.__init__(self,[[2,0,1,2]])
-        
-
-
 
 
 if __name__=='__main__':
     t=TestBoard()
     print(ttrafficboardtostring(t.getttrafficboard()))
     for i in range(0,13):
-	    print(t.play_area(i))
-    
+        print(t.play_area(i))
