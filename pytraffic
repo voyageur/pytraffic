@@ -1,2 +1,3 @@
+#!/bin/sh
 # This file is replaced during install.
 exec python Main.py
