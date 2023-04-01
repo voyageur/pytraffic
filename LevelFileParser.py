@@ -26,7 +26,8 @@ np=Misc.normalize_path
 def readint(fp):
     # make sure we don't get bitten by endiannes.
     r=fp.read(4)
-    return (ord(r[3])<<24)+(ord(r[2])<<16)+(ord(r[1])<<8)+ord(r[0])
+    # TODO: Replace this logic with struct.unpack()
+    return (r[3]<<24) + (r[2]<<16) + (r[1]<<8) + r[0]
 
 class LevelFileParser:
     def __init__(self,file=np("ttraffic.levels")):
