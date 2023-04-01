@@ -116,11 +116,11 @@ class MusicServer(GObject.GObject):
         self.__sound_server=sound_server
         config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
         config_db.load(all=True)
-        self.__default_music_path=list(map(np,config_db["default_music_path"]))
+        self.__default_music_path=[np(p) for p in config_db["default_music_path"]]
         self.__music_path=self.__default_music_path
         self.__old_music_path=self.__default_music_path
         self.__default_available_music=\
-                           Chooser.Chooser(list(map(np,config_db["default_playlist"])))
+                           Chooser.Chooser([np(p) for p in config_db["default_playlist"]])
         self.__available_music=self.__default_available_music
 
         

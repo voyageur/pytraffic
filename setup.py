@@ -311,7 +311,7 @@ if py2exe_present:
     setup_kw['windows']=[{"script" : "WinMain.pyw",
                           "icon_resources":[(1,"icons/carNred.ico")]}]
 
-setup(*[], **setup_kw)
+setup(**setup_kw)
 
 
 

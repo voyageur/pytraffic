@@ -39,7 +39,7 @@ class PropertyBag(UserDict.UserDict):
 	if self.__comment!=None:
 		fp.write(";; %s\n" % self.__comment)
         fp.write("[%s]\n" % self.__title)
-        for (key,item) in list(self.items()):
+        for (key,item) in self.items():
             fp.write("%s=%s\n" % (key,repr(item)))
         fp.close()
 

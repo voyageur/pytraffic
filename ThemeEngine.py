@@ -35,7 +35,7 @@ def get_id(path):
     return iid
 
 def get_ids(list_of_paths):
-    return list(map(get_id,list_of_paths))
+    return [get_id(p) for p in list_of_paths]
 
 def get_background_ids(list_of_paths):
     return [os.path.splitext(os.path.split(x)[1])[0] for x in list_of_paths]
@@ -54,7 +54,7 @@ class ThemeEngine:
         
 
     def default_music_path(self):
-        return list(map(np,self.config_db["default_music_path"]))
+        return [np(p) for p in self.config_db["default_music_path"]]
 
     def theme_has_sound(self):
     	return os.path.exists(np(os.path.join(self.getavailable_themes_dict()[self.current_theme],
@@ -166,9 +166,7 @@ class ThemeEngine:
         return self.available_themes
 
     def getavailable_themes(self):
-        result=list(self.getavailable_themes_dict().keys())
-        result.sort()
-        return result
+        return sorted(self.getavailable_themes_dict().keys())
 
     def gettrucks(self):
         return get_ids(glob.glob(self.__find_car_image("carHTN*")))
