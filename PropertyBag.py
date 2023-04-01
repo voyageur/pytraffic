@@ -20,24 +20,24 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import UserDict
+from collections import UserDict
 import configparser
 import os
 
-class PropertyBag(UserDict.UserDict):
+class PropertyBag(UserDict):
     def __init__(self, configfile="", title="Main",comment=None):
-        UserDict.UserDict.__init__(self)
+        UserDict.__init__(self)
         self.__title=title
         self.__configfile=configfile
-	self.__comment=comment
+        self.__comment=comment
 
     def setconfigfile(self,configfile):
         self.__configfile=configfile
-            
+
     def save(self):
         fp=open(self.__configfile,"w")
-	if self.__comment!=None:
-		fp.write(";; %s\n" % self.__comment)
+        if self.__comment!=None:
+            fp.write(";; %s\n" % self.__comment)
         fp.write("[%s]\n" % self.__title)
         for (key,item) in self.items():
             fp.write("%s=%s\n" % (key,repr(item)))
@@ -52,5 +52,3 @@ class PropertyBag(UserDict.UserDict):
             if key!='__name__'  and (all or key in self):
                 item=eval(c.get(self.__title,key))
                 self[key]=item
-        
-            

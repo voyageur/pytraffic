@@ -26,7 +26,7 @@ import os,sys,string,shutil
 def gethomedir():
     default_home = os.curdir
     if os.name == "nt": default_home = "c:\\"
-    home = string.strip(os.environ.get("HOME", ""))
+    home = os.environ.get("HOME", "").strip()
     if not home or not os.path.isdir(home):
         if os.name == "nt":
             home = os.environ.get("HOMEDRIVE", "")\
