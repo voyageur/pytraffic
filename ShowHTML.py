@@ -23,31 +23,31 @@ import os
 import sys
 import os.path
 import Misc
-import urlparse
+import urllib.parse
 import string
 
 np=Misc.normalize_path
 
 
 def sanitize(file_name):
-	return string.replace(file_name,' ',r'\ ')
+    return string.replace(file_name,' ',r'\ ')
 
 def sanitize_url(url):
-	return string.replace(url,' ','%20')
+    return string.replace(url,' ','%20')
 
 def which_python(program):
-	if os.path.exists(program):
-		return 1
-	path=string.split(os.environ['PATH'],":")
-	for dir in path:
-		abs_path=os.path.join(dir,program)
-		if os.path.exists(abs_path):
-			return 1
-	return 0
+    if os.path.exists(program):
+        return 1
+    path=string.split(os.environ['PATH'],":")
+    for dir in path:
+        abs_path=os.path.join(dir,program)
+        if os.path.exists(abs_path):
+            return 1
+    return 0
 
 def program_present(program):
     if os.name=='posix':
- 	return which_python(program)
+        return which_python(program)
     else:
         return 0
 
@@ -55,18 +55,18 @@ def showhtml_program(program,file,terminal=0):
     program=sanitize(program)
     url=sanitize_url('file://'+os.path.abspath(np(file)))
     if not terminal:
-	os.system(program+" "+url+' &')
+        os.system(program+" "+url+' &')
     else:
-	os.system('xterm -sb -e '+program+" "+url+' &')
+        os.system('xterm -sb -e '+program+" "+url+' &')
 
 def showhtml_nt(file):
     sanitized_url=sanitize_url("file://"+os.path.abspath(np(file)))
     url="file://"+os.path.abspath(np(file))
     if sys.version[:3]>='2.0':
-       print "Starting " + url
+       print("Starting " + url)
        os.startfile(url)
     else:
-	os.system("start "+sanitized_url)
+        os.system("start "+sanitized_url)
 
 def showhtml_dummy(file):
     pass
@@ -80,12 +80,11 @@ def init_showhtml():
     if os.name=="nt":
         showhtml=showhtml_nt
     elif Misc.isCygwin():
-	if program_present('lynx'):	
-		showhtml=lambda file:showhtml_program('lynx',file,1)
-	else:
-	        _can_display_html=0
-	        _last_error="Please install lynx. Other browsers are broken\
-on Cygwin. Sorry."
+        if program_present('lynx'):
+            showhtml=lambda file:showhtml_program('lynx',file,1)
+        else:
+            _can_display_html=0
+            _last_error="Please install lynx. Other browsers are broken on Cygwin. Sorry."
     elif program_present('xdg-open'):
             showhtml=lambda file:showhtml_program('xdg-open',file)
     else:

@@ -45,7 +45,7 @@ if os.name=='nt':
         import py2exe
     except ImportError:
         py2exe_present=0
-        print "No py2exe :-("
+        print("No py2exe :-(")
 else:
     py2exe_present=0
 
@@ -74,10 +74,10 @@ exec python %s/share/%s/Main.py""" %\
             main_command_file.close()
             distutils.dir_util.mkpath(os.path.dirname(pytraffic_install))
             self.copy_file(pytraffic_build,pytraffic_install)
-            os.chmod(pytraffic_install,0755)
+            os.chmod(pytraffic_install,0o755)
 
         def get_libdir(self):
-            if os.environ.has_key("LIBDIR"):
+            if "LIBDIR" in os.environ:
                 return os.environ["LIBDIR"]
             else:
                 return os.path.abspath(os.path.join(self.install_base,"lib"))
@@ -125,8 +125,8 @@ exec python %s/share/%s/Main.py""" %\
 
         def run(self):
             if os.path.exists(self.install_lib):
-                print "The installation directory %s already exists.\n\
-Please delete it first." % self.install_lib
+                print("The installation directory %s already exists.\n\
+Please delete it first." % self.install_lib)
                 sys.exit()
 
             _install.run(self)
@@ -164,9 +164,9 @@ def add_install_leaf(path):
 ail=add_install_leaf
 
 if py2exe_present:
-	options['py2exe']={
+    options['py2exe']={
         "includes": "pango,atk,gobject",
-     }
+    }
 
 
 def main_command():
@@ -273,7 +273,7 @@ data_files=[(ail("."),['ttraffic.levels','COPYING','config.db']),
                               ['libglade/carNred64x64.png']),
             (ail('music'),['music/README.README']),
             (ail('sound_test'),['sound_test/tone.ogg']),
-            ('share/applications',['pytraffic.desktop']),]
+            ('share/applications',['pytraffic.desktop']),]\
             +theme_files()\
             +music_files()\
             +main_command()\
@@ -311,7 +311,7 @@ if py2exe_present:
     setup_kw['windows']=[{"script" : "WinMain.pyw",
                           "icon_resources":[(1,"icons/carNred.ico")]}]
 
-apply(setup,[],setup_kw)
+setup(**setup_kw)
 
 
 

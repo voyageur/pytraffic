@@ -20,8 +20,6 @@
 ##
 
 
-
-
 class History:
     def __init__(self):
         self.reset()
@@ -80,17 +78,8 @@ class History:
     def default_bag(self,propertybag):
         propertybag['history']=[]
         propertybag['historyindex']=0
-        
+
     def load_bag(self,propertybag):
         self.history=propertybag['history']
         self.historyindex=propertybag['historyindex']
         self.maxhistory=len(self.history)
-
-
-
-
-
-
-
-
-

@@ -32,4 +32,3 @@ class SoundCache(Cache.Cache):
 
     def getsound(self,filename):
         return self.getitem(filename)
-        

@@ -35,7 +35,7 @@ class LevelSelector:
 
     #sets slicedsolvedlevels to levels >= b and < e
     #should be done with filter!
-    
+
     def  slicesolvedlevels (self,b,e):
         if (self.slicedsolvedlevels_cache!=None)\
            and self.bprev==b and self.eprev==e:
@@ -77,7 +77,7 @@ class LevelSelector:
             if (b <= i)  and (i<e):
                 count=count+1
         return count
-    
+
     # finds a random nonsolved level between offsets >=b and <e
     # It is the responsibility of the caller that offsets are left
 
@@ -114,41 +114,40 @@ class LevelSelector:
     # it is the resposibility of the caller to make sure
     # levels are available
 
-    
+
     def tooffset(self,move):
         levelfileparser=self.levelfileparser
         place=move - levelfileparser.minmovestosolution +2
         return levelfileparser.directory[place]
-        
+
     def randomlevel(self,minmoves,maxmoves,existing):
         levelfileparser=self.levelfileparser
         beginoffset=self.tooffset(minmoves)
         endoffset=self.tooffset(maxmoves)
         offset=self.randomoffset(beginoffset,endoffset,existing)
         board=self.getboard(offset)
-        for  p in xrange(minmoves,maxmoves):
+        for  p in range(minmoves,maxmoves):
             directoryentry=\
                             levelfileparser.directory[p -\
                             levelfileparser.minmovestosolution + 2 + 1]
             if directoryentry > offset:
-                bestyoucando=p 
+                bestyoucando=p
                 break
         return (offset,bestyoucando,board)
-        
+
     def save_bag(self,propertybag):
         propertybag['solvedlevels']=self.solvedlevels
 
     def default_bag(self,propertybag):
         propertybag['solvedlevels']=[]
-         
+
     def load_bag(self,propertybag):
         self.solvedlevels=propertybag['solvedlevels']
-# backwards compatibility
-# earlier versions inserted zeroes,
-# eliminate these
-	self.solvedlevels=filter(lambda x:x!=0,self.solvedlevels)
+        # backwards compatibility
+        # earlier versions inserted zeroes,
+        # eliminate these
+        self.solvedlevels=[x for x in self.solvedlevels if x!=0]
 
 if __name__=='__main__':
     l=LevelSelector()
-    print l.randomlevel(30,40)
-
+    print(l.randomlevel(30,40))

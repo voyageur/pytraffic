@@ -36,7 +36,7 @@ class Timer(GObject.GObject):
                       GObject.PARAM_READWRITE)
         }
     def __init__(self, interval=1000):
-        self.__gobject_init__()
+        super().__init__()
         self.__interval=interval
         self.__afterid=None
         self.running=0
@@ -49,13 +49,13 @@ class Timer(GObject.GObject):
             else:
                 self.__stop()
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
     def do_get_property(self,pspec,value):
         if pspec.name=='running':
             return self.running
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
     def set_running(self,value):
         self.set_property('running',value)
@@ -100,7 +100,7 @@ class Idler(GObject.GObject):
                       GObject.PARAM_READWRITE)
         }
     def __init__(self):
-        self.__gobject_init__()
+        super().__init__()
         self.__afterid=None
         self.running=0
 
@@ -112,13 +112,13 @@ class Idler(GObject.GObject):
             else:
                 self.__stop()
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
     def do_get_property(self,pspec,value):
         if pspec.name=='running':
             return self.running
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
     def set_running(self,value):
         self.set_property('running',value)
@@ -150,19 +150,15 @@ class Idler(GObject.GObject):
 GObject.type_register(Idler)
 
 
-
-
-
 if __name__=='__main__':
     def print_something(timer):
         global t
-        print timer
-        print "Hallo"
+        print(timer)
+        print("Hallo")
         t=None
     t=Timer(interval=1000)
 #    t.connect("tick",print_something)
 #    t.set_property('running',True)
-    print t.__grefcount__
+    print(t.__grefcount__)
     del t
     Gtk.main()
-

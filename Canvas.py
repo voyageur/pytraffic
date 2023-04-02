@@ -164,7 +164,7 @@ class CanvasItem:
         return False
 
     def connect(self,event_type,function):
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             self.event_handlers[event_type]=[function]
         else:
             self.event_handlers[event_type].append(function)
@@ -174,8 +174,8 @@ class CanvasItem:
             self.canvas.window.set_cursor(self.cursor)
         elif  event_type=="leave_notify_event":
             self.canvas.window.set_cursor(None)
-            
-        if not self.event_handlers.has_key(event_type):
+
+        if event_type not in self.event_handlers:
             return False
         else:
             handled=False
@@ -195,7 +195,7 @@ class CanvasItem:
 #         return str(self.bbox)
 
 # Specifies an image on screen.  No coordinate transform is
-# applied to it (I know no good way of transforming images in 
+# applied to it (I know no good way of transforming images in
 # in gtk). Hence the specified image should be pregenerated.
 # Note that generally coordinates are still world coordinates.
 
@@ -229,7 +229,7 @@ class ScreenImageItem(CanvasItem):
                 ord(self.pixels[(self.row_stride*y_screen+x_screen*4)+1]),
                 ord(self.pixels[(self.row_stride*y_screen+x_screen*4)+2]),
                 ord(self.pixels[(self.row_stride*y_screen+x_screen*4)+3]))
-                            
+
 
 # (x,y) is specified in world coordinates!
 
@@ -273,8 +273,8 @@ class ScreenImageItem(CanvasItem):
            if A!=0:
                return True
         return False
-        
-        
+
+
 
 # This contains a lot of overlap with the constructor.
 # Originally the common code was refactored but then it was
@@ -298,29 +298,29 @@ class ScreenImageItem(CanvasItem):
         self.row_stride = pixbuf.get_rowstride()
         if self.canvas!=None:
             self.canvas.refresh(self.bbox.union(old_bbox))
-        
+
 
 class FakeEvent:
     pass
-    
+
 
 class Canvas(Gtk.DrawingArea):
     def __init__(self):
         Gtk.DrawingArea.__init__(self)
         self.set_double_buffered(False)
-        Gtk.DrawingArea.connect(self,"expose_event", 
+        gtk.DrawingArea.connect(self,"draw",
                                      self.expose_event)
-        Gtk.DrawingArea.connect(self,"configure_event", 
+        gtk.DrawingArea.connect(self,"configure-event",
                                      self.configure_event)
-        Gtk.DrawingArea.connect(self,"motion_notify_event", 
+        gtk.DrawingArea.connect(self,"motion-notify-event",
                                      self.motion_notify_event)
-        Gtk.DrawingArea.connect(self,"button_press_event", 
+        gtk.DrawingArea.connect(self,"button-press-event",
                                      self.button_press_event)
-        Gtk.DrawingArea.connect(self,"button_release_event", 
+        gtk.DrawingArea.connect(self,"button-release-event",
                                      self.button_release_event)
-        Gtk.DrawingArea.connect(self,"enter_notify_event", 
+        gtk.DrawingArea.connect(self,"enter-notify-event",
                                      self.enter_notify_event)
-        Gtk.DrawingArea.connect(self,"leave_notify_event", 
+        gtk.DrawingArea.connect(self,"leave-notify-event",
                                      self.leave_notify_event)
         self.set_events(Gdk.EventMask.EXPOSURE_MASK
                             | Gdk.EventMask.LEAVE_NOTIFY_MASK
@@ -339,10 +339,10 @@ class Canvas(Gtk.DrawingArea):
         self.event_handlers={}
         self.mb=SmartRectangle(0,0,0,0)
         self.set_world_to_screen_transform(Affine2D.identity_affine)
-	
+
     def refresh(self,clip_rectangle):
-	if self.window:
-		self.window.invalidate_rect(clip_rectangle,False)
+        if self.window:
+            self.window.invalidate_rect(clip_rectangle,False)
 
 # Note the nature of the "set_size_request".
 # As stated above we ignore things with negative coordinates.
@@ -381,14 +381,14 @@ class Canvas(Gtk.DrawingArea):
         self.objects.append(object)
         self.handle_mouse_over()
         self.refresh(clip_rectangle)
-        
+
     def get_gc(self):
         return self.gc
 
     def set_size_request(self,w,h):
         self.size_set=1
         Gtk.DrawingArea.set_size_request(self,w,h)
-        
+
     def configure_event(self, widget, event):
         x, y, self.width, self.height = self.get_allocation()
         self.gc=self.window.new_gc()
@@ -401,24 +401,24 @@ class Canvas(Gtk.DrawingArea):
             return
         if not clip_rectangle:
             clip_rectangle=self.default_clip_rectangle
-	self.window.begin_paint_rect(clip_rectangle)
+        self.window.begin_paint_rect(clip_rectangle)
         self.window.draw_rectangle(self.get_style().white_gc,
                           True, clip_rectangle.x, clip_rectangle.y,
                                    clip_rectangle.width, clip_rectangle.height)
         for object in self.objects:
 
             object.draw(clip_rectangle)
-	self.window.end_paint()
+        self.window.end_paint()
 
 # (x_screen,y_screen) are screen coordinates
     def find_object(self,x_screen,y_screen):
         count=len(self.objects)
-        for i in xrange(0,count):
+        for i in range(0,count):
             object=self.objects[count-1-i]
             if object.contains(x_screen,y_screen):
                 return object
         return None
-            
+
     def expose_event(self, widget,event):
         x , y, width, height = event.area
         self.draw_objects(clip_rectangle=event.area)
@@ -426,13 +426,13 @@ class Canvas(Gtk.DrawingArea):
 
 
     def connect(self,event_type,function):
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             self.event_handlers[event_type]=[function]
         else:
             self.event_handlers[event_type].append(function)
-    
+
     def handle_event(self,event_type,event):
-        if not self.event_handlers.has_key(event_type):
+        if event_type not in self.event_handlers:
             return False
         else:
             handled=False
@@ -465,7 +465,7 @@ class Canvas(Gtk.DrawingArea):
         if handled==False:
             return self.handle_event("button_release_event",event)
         return True
-            
+
 
 
     def motion_notify_event(self, widget,event):
@@ -483,7 +483,7 @@ class Canvas(Gtk.DrawingArea):
             handled=self.selection.handle_event("motion_notify_event",e)
         if handled==False:
             return self.handle_event("motion_notify_event",e)
-        
+
         return True
 
     def enter_notify_event(self,widget,event):
@@ -542,7 +542,7 @@ class Canvas(Gtk.DrawingArea):
 #    def convert_vector_to_screen_coordinates(self,x,y):
 #        return Affine2D.multiply_matrix_vector(self.world_to_screen[0:4],
 #                                                   (x,y))
-        
+
 
 
 import Timer
@@ -551,7 +551,7 @@ class SimpleTestApp:
     def __init__(self):
         window=Gtk.Window(Gtk.WindowType.TOPLEVEL)
         window.set_title("PyTraffic")
-	window.set_resizable(False)
+        window.set_resizable(False)
         window.connect("delete_event",self.quit)
         window.connect("destroy",self.quit)
         self.canvas=Canvas()
@@ -565,8 +565,8 @@ class SimpleTestApp:
                                         worldtoscreen[0:4],
                                         SmartRectangle(0,0,370,320))
         image_object=ScreenImageItem(image,bpx,bpy)
-        print image_object.row_stride
-        print len(image_object.pixels)
+        print(image_object.row_stride)
+        print(len(image_object.pixels))
         self.canvas.add(0,0,image_object)
         image_car2=Gtk.Image()
         image_car2.set_from_file("car_rotated.png")
@@ -575,8 +575,8 @@ class SimpleTestApp:
                                         SmartRectangle(0,0,150,50))
         self.image_object_car2=ScreenImageItem(image_car2,bpx,bpy)
         self.canvas.add(10,10,self.image_object_car2)
-        print self.canvas.find_object(100,40)
-        print self.canvas.find_object(200,200)
+        print(self.canvas.find_object(100,40))
+        print(self.canvas.find_object(200,200))
         self.image_object_car2.set_cursor(Gdk.Cursor.new(\
                                          Gdk.SB_H_DOUBLE_ARROW))
         window.add(self.canvas)
@@ -590,7 +590,7 @@ class TestApp:
     def __init__(self):
         window=Gtk.Window(Gtk.WindowType.TOPLEVEL)
         window.set_title("PyTraffic")
-	window.set_resizable(False)
+        window.set_resizable(False)
         window.connect("delete_event",self.quit)
         window.connect("destroy",self.quit)
         self.canvas=Canvas()
@@ -650,7 +650,7 @@ class TestApp:
         return True
 
     def enddrag(self,widget,event):
-        print "Well done!"
+        print("Well done!")
         return True
 
     def move_image(self,*args):
@@ -665,11 +665,11 @@ class TestApp:
         if self.x1 > 220 or self.x1 < 0: self.dx1=-self.dx1
         if self.y1 > 270 or self.y1 < 0: self.dy1=-self.dy1
         self.image_object_car2.set_coords(self.x1,self.y1)
-   
+
     def quit(self,*args):
         Gtk.main_quit()
-    
+
 
 if __name__=='__main__':
     a=TestApp()
-    Gtk.main()    
+    Gtk.main()

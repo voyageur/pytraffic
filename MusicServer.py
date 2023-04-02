@@ -101,9 +101,9 @@ class MusicServer(GObject.GObject):
     def get_status(self):
         return self.get_property('status')
 
-    
+
     def __init__(self,sound_server):
-        self.__gobject_init__()
+        super().__init__()
         self.__playing=0
         self.__status=FREE
         self.__strategy=Chooser.REPEAT
@@ -116,14 +116,14 @@ class MusicServer(GObject.GObject):
         self.__sound_server=sound_server
         config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
         config_db.load(all=True)
-        self.__default_music_path=map(np,config_db["default_music_path"])
+        self.__default_music_path=[np(p) for p in config_db["default_music_path"]]
         self.__music_path=self.__default_music_path
         self.__old_music_path=self.__default_music_path
         self.__default_available_music=\
-                           Chooser.Chooser(map(np,config_db["default_playlist"]))
+                           Chooser.Chooser([np(p) for p in config_db["default_playlist"]])
         self.__available_music=self.__default_available_music
 
-        
+
     def __check_music(self,*args):
             if not self.__sound_server.mixer.music.get_busy() \
                    and self.get_status()==FREE:
@@ -145,7 +145,7 @@ class MusicServer(GObject.GObject):
 # many files which seem supported but are not.
 # We go back to the default setting here. We should emit a signal
 # accordingly.
-                            print "Can't find suitable music... Reverting to default."
+                            print("Can't find suitable music... Reverting to default.")
                             self.__music_path=\
                                           self.__default_music_path
                             self.__available_music=\
@@ -170,7 +170,7 @@ class MusicServer(GObject.GObject):
         elif pspec.name=='use-extensions':
             self.__use_extensions=value
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
     def do_get_property(self,pspec):
         if pspec.name=='playing':
@@ -184,7 +184,7 @@ class MusicServer(GObject.GObject):
         elif pspec.name=='use-extensions':
             return self.__use_extensions
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
 # temporary hack
     def get_music_path(self):
@@ -200,8 +200,8 @@ class MusicServer(GObject.GObject):
         if self.__sound_server.sound_works():
             if type(music_path)!=type([]):
                 raise Exception("Music path is not a list")
-	    if self.get_status()!=BUSY:
-	        self.__old_music_path=self.__music_path
+            if self.get_status()!=BUSY:
+                self.__old_music_path=self.__music_path
             self.__music_path=music_path
             self.__set_status(BUSY)
             if self.get_recursive():
@@ -215,7 +215,7 @@ class MusicServer(GObject.GObject):
 
     def __make_some_progress(self,*args):
         try:
-            file_name=self.__file_list_generator.next()
+            file_name=next(self.__file_list_generator)
             self.emit("progress")
             if self.__sound_server.is_supported(file_name,self.get_use_extensions()):
                 self.__partial_list.append(file_name)
@@ -246,18 +246,17 @@ class MusicServer(GObject.GObject):
         self.set_strategy(propertybag['music_strategy'])
         self.load(propertybag['music_path'])
         self.set_playing(propertybag['music_playing'])
-        
+
 
     def save_bag(self,propertybag):
         propertybag['music_playing']=self.get_playing()
-	if self.get_status()==BUSY:
-		propertybag['music_path']=self.__old_music_path
-	else:
-		propertybag['music_path']=self.__music_path
+        if self.get_status()==BUSY:
+            propertybag['music_path']=self.__old_music_path
+        else:
+            propertybag['music_path']=self.__music_path
         propertybag['music_strategy']=self.get_strategy()
         propertybag['music_recursive']=self.get_recursive()
         propertybag['music_use_extensions']=self.get_use_extensions()
-     
-        
+
 
 GObject.type_register(MusicServer)

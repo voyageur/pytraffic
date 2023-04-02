@@ -72,4 +72,3 @@ def do_os_stuff(output):
         for data in sound_data:
             if data['id']==output:
                 os.environ['SDL_AUDIODRIVER']=data['env']
-    

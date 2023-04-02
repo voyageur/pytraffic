@@ -55,13 +55,13 @@ class GameState:
             b=8
             e=21
         elif type=='Intermediate':
-            b=21 
+            b=21
             e=31
         elif type=='Advanced':
-            b=31 
+            b=31
             e=41
         elif type=='Expert':
-            b=41 
+            b=41
             e=52
         return (b,e)
 
@@ -71,10 +71,10 @@ class GameState:
             self.history.addtohistory(index,origrow,origcol,row,col)
             self.board.domove(index,row,col)
             self.endboard=self.board
-            
+
     def insertinsolvedlevels(self):
-	if not self.dontinsert:
-        	self.levelselector.insertinsolvedlevels(self.offset)
+        if not self.dontinsert:
+            self.levelselector.insertinsolvedlevels(self.offset)
 
     def offsetsavailable(self,type,existing=0):
         if type=='Trivial' or type=='Easy':
@@ -82,7 +82,7 @@ class GameState:
         else:
             min,max=self.movebounds(type)
             return self.levelselector.offsetsavailableEx(min,max,existing)
-    
+
     def resetsolvedlevels(self,type):
         min,max=self.movebounds(type)
         self.statistics[type]['Solved']=0
@@ -137,13 +137,13 @@ class GameState:
     def gotoend(self):
         self.history.gotoendofhistory()
         self.board.update(self.endboard)
-        
+
     def nextmove(self):
         return self.history.nextmove()
 
     def lastmove(self):
         return self.history.lastmove()
-    
+
     def redo(self):
         index,origrow,origcol,row,col=self.nextmove()
         self.history.forwardinhistory()
@@ -188,7 +188,7 @@ class GameState:
         propertybag['ptversion']=self.ptversion
         propertybag['solvedinnrofmoves']=self.solvedinnrofmoves
         propertybag['dontinsert']=self.dontinsert
-	propertybag['easteregg']=self.easteregg
+        propertybag['easteregg']=self.easteregg
 
     def default_bag(self,propertybag):
         self.history.default_bag(propertybag)
@@ -202,8 +202,8 @@ class GameState:
         propertybag['type']="Intermediate"
         propertybag['solvedinnrofmoves']=0
         propertybag['ptversion']=self.ptversion
-	propertybag['easteregg']=1
-        
+        propertybag['easteregg']=1
+
     def load_bag(self,propertybag):
         self.history.load_bag(propertybag)
         self.levelselector.load_bag(propertybag)
@@ -216,7 +216,7 @@ class GameState:
         self.type=propertybag['type']
         self.solvedinnrofmoves=propertybag['solvedinnrofmoves']
         self.dontinsert=propertybag['dontinsert']
-	self.easteregg=propertybag['easteregg']
+        self.easteregg=propertybag['easteregg']
 # feeble attempt at backwards compatibility for earlier versions of the
 # save file
         if self.offset!=0:
@@ -248,8 +248,3 @@ class GameState:
             if moveindex<self.history.historyindex:
                 self.board.domove(index,row,col)
             moveindex=moveindex+1
-            
-        
-
-
-

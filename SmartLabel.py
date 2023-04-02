@@ -44,7 +44,7 @@ class SmartLabel(Gtk.EventBox):
 
     def set_char_width(self,n):
         self.set_size_request(n*self.approximate_char_width/Pango.SCALE,-1)
-    
+
     def set_anchor(self,s=''):
         if s=='e':
             Gtk.Misc.set_alignment(self.label,1.0,1.0)
@@ -58,5 +58,3 @@ class SmartLabel(Gtk.EventBox):
 
     def set_sensitive(self,gtk_boolean):
         self.label.set_sensitive(gtk_boolean)
-
-

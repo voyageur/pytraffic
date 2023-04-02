@@ -26,7 +26,7 @@ import os,sys,string,shutil
 def gethomedir():
     default_home = os.curdir
     if os.name == "nt": default_home = "c:\\"
-    home = string.strip(os.environ.get("HOME", ""))
+    home = os.environ.get("HOME", "").strip()
     if not home or not os.path.isdir(home):
         if os.name == "nt":
             home = os.environ.get("HOMEDRIVE", "")\
@@ -49,8 +49,8 @@ def save_configfile():
     try:
         shutil.copyfile(default_configfile,backup_configfile)
     except:
-        print "Renaming configfile failed."
-    
+        print("Renaming configfile failed.")
+
 cellheight=50
 cellwidth=50
 borderwidth=10
@@ -85,7 +85,7 @@ def torowcol (x, y,rounding=1):
     else:
         row=int(rowfrac)
         column=int(columnfrac)
-    
+
     return (row,column)
 
 #converts row, col pair to grid coordinates
@@ -98,12 +98,12 @@ def togridpoint (row,col):
 # works on cygwin 2.3 and 2.4
 
 def isCygwin():
-	return string.find(string.lower(sys.version),'cyg')<>-1	
+    return string.find(string.lower(sys.version),'cyg')!=-1
 
 
 def walk(file_list,recursion_depth=None):
     for f in file_list:
-#	print f
+        # print f
         if not os.path.exists(f):
             continue
         elif os.path.isfile(f):
@@ -116,7 +116,7 @@ def walk(file_list,recursion_depth=None):
             except:
                 pass
             if l:
-                l=map(lambda x: os.path.join(f,x),l)
+                l=[os.path.join(f,x) for x in l]
                 if recursion_depth:
                     recursion_depth=recursion_depth-1
                 for ff in walk(l,recursion_depth):
@@ -131,6 +131,3 @@ def walk(file_list,recursion_depth=None):
 #
 #while(1):
 #    print g.next()
-
-
-

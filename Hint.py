@@ -23,30 +23,29 @@ hint_enabled=0
 import os,sys,string
 
 def version_suffix():
-	if os.name=='nt':
-		return string.replace(sys.version[:3],'.','')
-	else:
-		return ''
+    if os.name=='nt':
+        return string.replace(sys.version[:3],'.','')
+    else:
+        return ''
 
 if os.name=='nt' or os.name=='posix':
     try:
-	print "Trying build binary..."
-	import _hint
-	hint_enabled=1
-    except ImportError,e:
+        print("Trying build binary...")
+        import _hint
+        hint_enabled=1
+    except ImportError as e:
         _last_error=str(e)
-	try:
-		print "Trying included binary..."
-	        _hint=__import__("python"+version_suffix()+"._hint",
-			locals(),
-			globals(),
-			'_hint')
-	        hint_enabled=1
-	except ImportError,e:
-		_last_error=str(e)
-		pass
+        try:
+            print("Trying included binary...")
+            _hint=__import__("python"+version_suffix()+"._hint",
+                             locals(),
+                             globals(),
+                             '_hint')
+            hint_enabled=1
+        except ImportError as e:
+            _last_error=str(e)
 else:
-    print "The hint feature only works on Windows and Unix."
+    print("The hint feature only works on Windows and Unix.")
 
 if hint_enabled:
     _hint.init()
@@ -59,16 +58,10 @@ def bestmove(packedboard):
 
 
 def findlevel(start,end):
-	_hint.findlevel(start,end)
-	return (_hint.getbestyoucando(),
-                _hint.getpackedrows(),
-                _hint.getpackedcolumns())
+    _hint.findlevel(start,end)
+    return (_hint.getbestyoucando(),
+            _hint.getpackedrows(),
+            _hint.getpackedcolumns())
 
 def last_error():
-	return _last_error
-
-
-
-
-
-
+    return _last_error

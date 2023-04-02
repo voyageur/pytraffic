@@ -28,7 +28,7 @@ import Hint
 import Arena,Board,Misc
 import History,BottomBar
 import LevelSelector
-import ConfigParser
+import configparser
 import Timer
 import GameState
 import CondMessageBox
@@ -98,8 +98,8 @@ class Game:
             ("/Help/_About","<control>H",self.about,0,None)
             )
         accel_group=Gtk.AccelGroup()
-        self.item_factory=item_factory=Gtk.ItemFactory(Gtk.MenuBar, 
-                                                       "<main>", 
+        self.item_factory=item_factory=Gtk.ItemFactory(Gtk.MenuBar,
+                                                       "<main>",
                                                        accel_group)
         item_factory.create_items(self.menu_items)
         self.window.add_accel_group(accel_group)
@@ -161,7 +161,7 @@ class Game:
                                              "Goto end of history",
                                              "",
                                              self.gotoend,
-                                             None,   
+                                             None,
                                              -1)
         self.hint_button=toolbar.insert_stock(Gtk.STOCK_HELP,
                                               "Ask for hint",
@@ -195,8 +195,8 @@ class Game:
         self.artwork=ArtWork.ArtWork(self)
         self.gamestate=GameState.GameState()
         self.propertybag=PropertyBag.PropertyBag(
-                configfile=np(Misc.default_configfile),
-		comment="This is a generated file!")
+            configfile=np(Misc.default_configfile),
+            comment="This is a generated file!")
 
         self.arena=Arena.Arena(self)
         vbox.pack_start(self.arena,False,False)
@@ -217,9 +217,9 @@ class Game:
         self.about_dialog.set_version("%s-%s" % (config_db["version"],
                                                  config_db["release"]))
         events={"on_AboutDialog_response": self.about_dialog_close,
-		"on_AboutDialog_close": self.about_dialog_close,
-		"on_AboutDialog_delete_event": self.about_dialog_close
-	}	
+                "on_AboutDialog_close": self.about_dialog_close,
+                "on_AboutDialog_delete_event": self.about_dialog_close
+                }
         self.builder.connect_signals(events)
         self.callbacks_enabled=1
         self.newgame()
@@ -242,8 +242,8 @@ class Game:
             self.step=-self.step
         self.al+=self.step
         Gtk.Misc.set_alignment(self.time_label.label,self.al,1.0)
-       
-            
+
+
     def stop_demo_key(self,widget,event,*args):
         if not(event.get_state() & Gdk.ModifierType.MODIFIER_MASK) and \
                event.keyval & 255==27:  # compare with ESC
@@ -352,7 +352,7 @@ class Game:
             self.hint()
             if self.gamestate.redcarout():
                 self.doredcarout()
-		
+
 
     def enable_easteregg(self,*args):
         print("Enabling easter egg")
@@ -389,7 +389,7 @@ class Game:
                             CondMessageBox.showwarning(
                                 message="This change will only take effect after you restart PyTraffic.",
                                 window=self.window)
-                    
+
 
     def setmusic(self,*args):
         if self.callbacks_enabled:
@@ -450,9 +450,9 @@ files.
         return True
 
     def about(self,*args):
-       	self.about_dialog.show()
+        self.about_dialog.show()
         return True
- 
+
     def new(self,action=None,menu=None):
             if self.demomode:
                 self.gamestate.new(existing=1)
@@ -482,7 +482,7 @@ type! Do you want to reset these levels?",
                 self.gamestate.new(existing)
                 self.arena.setupboard()
                 self.updateGUI()
-        
+
     def newgame(self):
         something_bad_happened=0
         try:
@@ -492,11 +492,11 @@ type! Do you want to reset these levels?",
         except Exception as e:
             something_bad_happened=1
             last_error=str(e)
-            print ("Exception in newgame",last_error)
+            print(("Exception in newgame",last_error))
         except Error as e:
             something_bad_happened=1
             last_error=str(e)
-            print ("Error in newgame", last_error)
+            print(("Error in newgame", last_error))
         if something_bad_happened:
             Misc.save_configfile()
             self.default_all()
@@ -508,7 +508,7 @@ I have tried to save a copy as: %s.
 The error was: %s. """ % (Misc.default_configfile,Misc.backup_configfile,last_error),
                    window=self.window)
 
-        if (not self.sound_server.sound_works()) and self.sound_server.sound_has_worked(): 
+        if (not self.sound_server.sound_works()) and self.sound_server.sound_has_worked():
             CondMessageBox.showwarning(
                 message="""There was an error while initializing the sound. Please consult the readme file (via the Help menu)
 The error was: """+self.sound_server.last_error(),
@@ -551,19 +551,19 @@ PyTraffic reported: """+ShowHTML.last_error(),
             if self.gamestate.hint==0 and \
                     self.gamestate.bestyoucando-1==self.gamestate.nrofmovestaken():
                 CondMessageBox.showinfo(
-			 message="Congratulations...you found the shortest possible solution to this level!",
-			 window=self.window,
-			 disable=self.expertmode)
+                    message="Congratulations...you found the shortest possible solution to this level!",
+                    window=self.window,
+                    disable=self.expertmode)
             elif self.gamestate.hint==0:
                 CondMessageBox.showinfo(
-                         message="Congratulations...you solved this level!",
-                         window=self.window,
-                         disable=self.expertmode)
+                    message="Congratulations...you solved this level!",
+                    window=self.window,
+                    disable=self.expertmode)
             else:
                 CondMessageBox.showinfo(
-                       message="You solved this level...now next time try to do it all by yourself:-)",
-                       window=self.window,
-                       disable=self.expertmode)
+                    message="You solved this level...now next time try to do it all by yourself:-)",
+                    window=self.window,
+                    disable=self.expertmode)
             self.gamestate.won()
         elif self.demomode:
             self.gamestate.won()
@@ -665,18 +665,18 @@ PyTraffic reported: """+ShowHTML.last_error(),
             self.music_.set_active(True)
         else:
             self.music_.set_active(False)
-        
-        if self.theme_engine.theme_has_sound():  
+
+        if self.theme_engine.theme_has_sound():
             self.sound_.set_sensitive(True)
         else:
             self.sound_.set_sensitive(False)
             self.sound_.set_active(False)
 
-#        if self.sound_server.has_music():  
+#        if self.sound_server.has_music():
 #            self.music_.set_sensitive(True)
-#	else:
+#        else:
 #            self.sound_.set_active(False)
-#	    self.music_.set_sensitive(False)
+#            self.music_.set_sensitive(False)
 
         if not self.sound_server.sound_works():
             self.sound_.set_sensitive(False)

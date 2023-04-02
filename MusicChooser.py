@@ -46,7 +46,7 @@ class MusicChooser:
         if not settings.get_property("gtk_button_images"):
             self.browse_image.destroy()
             self.default_image.destroy()
-	
+
         events={"on_browse_button_clicked" : self.browse,
               "on_default_button_clicked": self.default,
               "on_cancel_button_clicked" : self.cancel,
@@ -75,8 +75,8 @@ class MusicChooser:
                  self.music_browser_response}
         self.builder.connect_signals(events1)
         self.music_browser=self.builder.get_object("MusicBrowser")
-		
-        
+
+
     def run(self):
         self.browse_button.grab_focus()
         self.advanced_button.set_expanded(False)
@@ -109,7 +109,7 @@ class MusicChooser:
         self.use_extensions_button.set_active(True)
         self.music_server.set_use_extensions(True)
         return True
-        
+
 
     def cancel(self, *args):
         self.dialog.hide()
@@ -140,7 +140,7 @@ class MusicChooser:
 
     def music_browser_response(self,*args):
         return True
-        
+
     def music_browser_open(self,*args):
         selection=self.music_browser.get_filename()
         if selection and not os.path.isdir(selection):

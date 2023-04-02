@@ -45,7 +45,7 @@ class SoundServer:
 
     def sound_works(self):
         return self.__sound_works
-          
+
     def enable_sound(self):
         if self.__sound_works:
             self.__sound_enabled=1
@@ -55,7 +55,7 @@ class SoundServer:
 
     def sound_enabled(self):
         return self.__sound_enabled
-            
+
 
     def play(self,sound):
         if self.__sound_works and self.__sound_enabled and sound!=None:
@@ -77,9 +77,9 @@ class SoundServer:
     def is_supported(self,filename,use_extensions=1):
         if not os.path.exists(np(filename)):
             return False
-	mode=os.stat(filename)[stat.ST_MODE]
-	if not stat.S_ISREG(mode):
-		return False
+        mode=os.stat(filename)[stat.ST_MODE]
+        if not stat.S_ISREG(mode):
+            return False
         extension=os.path.splitext(filename)[1].lower()
         if use_extensions and self.__supported_dict.get(extension)==True:
             return True
@@ -96,8 +96,8 @@ class SoundServer:
                 if use_extensions:
                     self.__supported_dict[extension]=False
                 return False
-        
-                
+
+
 
     def sound_has_worked(self):
         return self.__sound_has_worked
@@ -127,7 +127,7 @@ class SoundServer:
             self.init_supported()
             if self.is_supported(np('sound_test/tone.ogg')):
                 self.__sound_works=1
-        except Exception,e:
+        except Exception as e:
             self.__last_error=str(e)
 
 
@@ -137,8 +137,8 @@ class SoundServer:
                 self.enable_sound()
         elif self.__sound_works:
             self.enable_sound()
-            
-        
+
+
 
     def save_bag(self,propertybag):
         propertybag['sound_enabled']=self.__sound_enabled

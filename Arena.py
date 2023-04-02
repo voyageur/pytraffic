@@ -66,11 +66,11 @@ class Car:
         if event.button!=3:
             return False
         if self.arena.gamestate.easteregg:
-	        self.arena.popup.popup(None,
-                                       None,
-                                       None,
-                                       event.button,
-                                       event.get_time())
+            self.arena.popup.popup(None,
+                                   None,
+                                   None,
+                                   event.button,
+                                   event.get_time())
         return True
 
     def init_drag_and_drop(self):
@@ -90,8 +90,8 @@ class Car:
             else:
 #                self.im.set_cursor(Gdk.Cursor.new(Gdk.SB_V_DOUBLE_ARROW))
                 self.im.set_cursor(Gdk.Cursor.new(Gdk.HAND2))
-	else:
-		self.im.set_cursor(None)
+        else:
+            self.im.set_cursor(None)
 
 
     def destroy(self):
@@ -112,33 +112,33 @@ class Car:
 # Written by Jesse Weinstein
 
     def move_a_bit_inner(self,cnt, dest, other, axis):
-	    mu=5
-	    delay_ms=10
-            if cnt>dest and cnt-mu>=dest:
-                cnt=cnt-mu
-            elif cnt<dest and cnt+mu<=dest:
-                cnt=cnt+mu
-            else:
-                cnt=dest
-            if axis==0:
-                self.im.set_coords(other, cnt)
-            else:
-                self.im.set_coords(cnt, other)
-            if cnt!=dest:
-                GObject.timeout_add(\
-                    delay_ms, lambda f= self.move_a_bit_inner,
-                    cnt=cnt,
-                    dest=dest,
-                    other=other,
-                    axis=axis:f(cnt, dest, other, axis))
+        mu=5
+        delay_ms=10
+        if cnt>dest and cnt-mu>=dest:
+            cnt=cnt-mu
+        elif cnt<dest and cnt+mu<=dest:
+            cnt=cnt+mu
+        else:
+            cnt=dest
+        if axis==0:
+            self.im.set_coords(other, cnt)
+        else:
+            self.im.set_coords(cnt, other)
+        if cnt!=dest:
+            GObject.timeout_add(
+                delay_ms, lambda f= self.move_a_bit_inner,
+                cnt=cnt,
+                dest=dest,
+                other=other,
+                axis=axis:f(cnt, dest, other, axis))
 
-            return False
+        return False
 
 #    """Annimate the movement of a Car from one square to another.
 #    All written by Jesse Weinstein."""
 
-    def animated_move(self, row, col): 
-	ox, oy=Misc.togridpoint(self.row, self.col)
+    def animated_move(self, row, col):
+        ox, oy=Misc.togridpoint(self.row, self.col)
         x,y=Misc.togridpoint(row,col)
         if x==ox:
             self.move_a_bit_inner(oy, y, x, 0)
@@ -146,7 +146,7 @@ class Car:
             self.move_a_bit_inner(ox, x, y, 1)
         self.row=row
         self.col=col
-        
+
     def startdrag(self,window,e):
         if e.button!=1 or \
            e.type!=Gdk.EventType.BUTTON_PRESS or \
@@ -171,7 +171,7 @@ class Car:
         return True
 
     def drag(self,window,e):
-        ex,ey=self.arena.convert_to_world_coordinates(e.x,e.y)       
+        ex,ey=self.arena.convert_to_world_coordinates(e.x,e.y)
         if self.dragging:
             coords=self.ddobject.get_coords()
             upperleftx,upperlefty=coords
@@ -204,7 +204,7 @@ class Car:
             if self.arena.gamestate.redcarout():
                 self.arena.doredcarout()
         return True
-                    
+
 
 
 class Arena(Canvas.Canvas):
@@ -240,7 +240,7 @@ class Arena(Canvas.Canvas):
             car.enable()
 
     def order(self,*args):
-    	self.gamestate.easteregg=0
+        self.gamestate.easteregg=0
         CondMessageBox.showinfo(message="""This feature is being worked on. Please check in later. ;-)""",
                                 window=self.game.window)
 
@@ -274,7 +274,7 @@ class Arena(Canvas.Canvas):
             index=index+1
             self.carlist.append(c)
         self.pack()
-        
+
     def destroycars(self):
         for c in self.carlist:
             c.destroy()
@@ -307,7 +307,7 @@ class Arena(Canvas.Canvas):
         self.gamestate.redo()
         self.setanimation(False)
         self.updateGUI()
-        
+
     def undo(self):
         self.setanimation(True)
         index,origrow,origcol,row,col=self.gamestate.lastmove()
@@ -322,7 +322,7 @@ class Arena(Canvas.Canvas):
 
     def getanimation(self):
         return self.animation
-        
+
 
     def default_bag(self,propertybag):
         pass
@@ -332,6 +332,3 @@ class Arena(Canvas.Canvas):
 
     def save_bag(self,propertybag):
         pass
-
-
-
