@@ -21,6 +21,26 @@ def init(frequency=44100, **kwargs):
     pass
 
 
+def _probe_file(path):
+    """Return True if GStreamer can decode *path*, False otherwise.
+
+    We push to PAUSED (not just READY) so that decodebin actually negotiates
+    a decoder — READY alone succeeds even for unsupported formats.
+    A 2-second timeout is generous enough for local files.
+    """
+    pipe = Gst.parse_launch(
+        'filesrc location="{}" ! decodebin ! fakesink'.format(
+            path.replace('"', '\\"')))
+    ret = pipe.set_state(Gst.State.PAUSED)
+    if ret == Gst.StateChangeReturn.FAILURE:
+        pipe.set_state(Gst.State.NULL)
+        return False
+    # Wait up to 2 s for the state change to complete.
+    ret, _, _ = pipe.get_state(2 * Gst.SECOND)
+    pipe.set_state(Gst.State.NULL)
+    return ret != Gst.StateChangeReturn.FAILURE
+
+
 # ---------------------------------------------------------------------------
 # Sound effect — fire-and-forget playback of a single OGG/WAV file.
 # ---------------------------------------------------------------------------
@@ -29,15 +49,8 @@ class Sound:
     _active = []   # class-level list of in-flight pipelines
 
     def __init__(self, file):
-        # Probe that the file is actually playable.
-        probe = Gst.parse_launch(
-            'filesrc location="{}" ! decodebin ! fakesink'.format(
-                file.replace('"', '\\"')))
-        ret = probe.set_state(Gst.State.READY)
-        if ret == Gst.StateChangeReturn.FAILURE:
-            probe.set_state(Gst.State.NULL)
-            raise sdl_mixer_error("Cannot load sound file: {}".format(file))
-        probe.set_state(Gst.State.NULL)
+        if not _probe_file(file):
+            raise sdl_mixer_error("Cannot decode sound file: {}".format(file))
         self._file = file
 
     def play(self):
@@ -69,34 +82,39 @@ class Sound:
 class _MusicPlayer:
     def __init__(self):
         self._pipeline = None
+        self._playing = False   # explicit flag; avoids get_state() race
 
     def load(self, file):
+        if not _probe_file(file):
+            raise sdl_mixer_error("Cannot decode music file: {}".format(file))
         self.stop()
-        self._pipeline = Gst.parse_launch(
+        pipeline = Gst.parse_launch(
             'filesrc location="{}" ! decodebin ! audioconvert ! audioresample'
             ' ! autoaudiosink'.format(file.replace('"', '\\"')))
-        bus = self._pipeline.get_bus()
+        bus = pipeline.get_bus()
         bus.add_signal_watch()
         bus.connect('message', self._on_message)
+        self._pipeline = pipeline
 
     def _on_message(self, bus, msg):
         if msg.type in (Gst.MessageType.EOS, Gst.MessageType.ERROR):
-            self._pipeline.set_state(Gst.State.NULL)
+            if self._pipeline:
+                self._pipeline.set_state(Gst.State.NULL)
+            self._playing = False
 
     def play(self):
         if self._pipeline:
             self._pipeline.set_state(Gst.State.PLAYING)
+            self._playing = True
 
     def stop(self):
         if self._pipeline:
             self._pipeline.set_state(Gst.State.NULL)
             self._pipeline = None
+        self._playing = False
 
     def get_busy(self):
-        if self._pipeline is None:
-            return False
-        _, state, _ = self._pipeline.get_state(0)
-        return state == Gst.State.PLAYING
+        return self._playing
 
 
 music = _MusicPlayer()
