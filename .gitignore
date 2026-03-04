@@ -1,3 +1,8 @@
 *.pyc
 .*.swp
-build/*
+build/
+*.egg-info/
+dist/
+__pycache__/
+# C extension built in-place by 'make' / 'python setup.py build_ext --inplace'
+*.so

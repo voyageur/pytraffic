@@ -1,24 +1,58 @@
-The generic, non-binary, install for a posix system is done
-using the command
+PyTraffic – Installation
+========================
 
-      python3 setup.py install --prefix=<prefix>
+Requirements
+------------
+  * Python 3.8 or newer
+  * GTK 3 with Python bindings: PyGObject (python3-gi / python-gobject)
+  * GStreamer 1.x with Python bindings (python3-gst-1.0 / gst-python)
+    and plugins: gst-plugins-base, gst-plugins-good (OGG/Vorbis playback)
+  * GCC toolchain (to build the _hint C extension)
 
-You will need a working gcc toolchain, python3 (including headers and
-libraries), PyGObject (gi.repository) with GTK3, and SDL/SDL_mixer
-development libraries for the sound extension.
+On Fedora/RHEL:
+    sudo dnf install python3-gobject gtk3 \
+                     python3-gstreamer1 gstreamer1-plugins-good \
+                     gcc python3-devel
 
-PyTraffic requires:
-  - Python 3
-  - GTK 3 with Python bindings (PyGObject / python3-gi)
-  - SDL and SDL_mixer (for the _sdl_mixer C extension)
-  - GCC toolchain (to build C extensions)
+On Debian/Ubuntu:
+    sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-3.0 \
+                     python3-gst-1.0 gir1.2-gstreamer-1.0 \
+                     gstreamer1.0-plugins-good gstreamer1.0-plugins-base \
+                     gcc python3-dev
 
-The default prefix is /usr/local. If you use a standard prefix such
-as /usr or /usr/local then a menu item will be created for pytraffic.
-Otherwise issue the command
 
-     <prefix>/bin/pytraffic
+Running directly from the source checkout (development)
+-------------------------------------------------------
+Build the _hint C extension in-place and launch the game:
 
-to play.
+    make          # builds _hint.cpython-<ver>-<arch>.so in the project root
+    make run      # build + launch
 
-For other installation methods see doc/readme.htm.
+Or equivalently:
+
+    python setup.py build_ext --inplace
+    python Main.py
+
+The Makefile also provides:
+
+    make clean        # remove build/ artefacts (keeps the .so)
+    make distclean    # full clean including the compiled extension
+
+
+Installing system-wide or into a virtual environment (pip)
+----------------------------------------------------------
+    pip install .                # into the active environment
+    pip install --user .         # into ~/.local  (no root needed)
+
+After installation the game is launched with:
+
+    pytraffic
+
+Data files (themes, music, UI, …) are installed under
+<prefix>/share/pytraffic/ and the pytraffic script sets the working
+directory there automatically.
+
+
+Uninstalling
+------------
+    pip uninstall pytraffic
