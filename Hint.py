@@ -19,56 +19,51 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-hint_enabled=0
-import os,sys,string
+hint_enabled = 0
+_last_error = ""
+import os, sys
 
 def version_suffix():
-	if os.name=='nt':
-		return string.replace(sys.version[:3],'.','')
-	else:
-		return ''
+    if os.name == 'nt':
+        return sys.version[:3].replace('.', '')
+    else:
+        return ''
 
-if os.name=='nt' or os.name=='posix':
+if os.name == 'nt' or os.name == 'posix':
     try:
-	print "Trying build binary..."
-	import _hint
-	hint_enabled=1
-    except ImportError,e:
-        _last_error=str(e)
-	try:
-		print "Trying included binary..."
-	        _hint=__import__("python"+version_suffix()+"._hint",
-			locals(),
-			globals(),
-			'_hint')
-	        hint_enabled=1
-	except ImportError,e:
-		_last_error=str(e)
-		pass
+        print("Trying build binary...")
+        import _hint
+        hint_enabled = 1
+    except ImportError as e:
+        _last_error = str(e)
+        try:
+            print("Trying included binary...")
+            _hint = __import__("python"+version_suffix()+"._hint",
+                    locals(),
+                    globals(),
+                    '_hint')
+            hint_enabled = 1
+        except ImportError as e:
+            _last_error = str(e)
+            pass
 else:
-    print "The hint feature only works on Windows and Unix."
+    print("The hint feature only works on Windows and Unix.")
 
 if hint_enabled:
     _hint.init()
 
 def bestmove(packedboard):
-    rows,cols=packedboard
-    _hint.bestmove(rows,cols)
+    rows, cols = packedboard
+    _hint.bestmove(rows, cols)
     return (_hint.getbestmoverows(),
             _hint.getbestmovecolumns())
 
 
-def findlevel(start,end):
-	_hint.findlevel(start,end)
-	return (_hint.getbestyoucando(),
-                _hint.getpackedrows(),
-                _hint.getpackedcolumns())
+def findlevel(start, end):
+    _hint.findlevel(start, end)
+    return (_hint.getbestyoucando(),
+            _hint.getpackedrows(),
+            _hint.getpackedcolumns())
 
 def last_error():
-	return _last_error
-
-
-
-
-
-
+    return _last_error

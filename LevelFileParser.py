@@ -21,38 +21,33 @@
 
 import random
 import Misc, Board
-np=Misc.normalize_path
+np = Misc.normalize_path
 
 def readint(fp):
-    # make sure we don't get bitten by endiannes.
-    r=fp.read(4)
-    return (ord(r[3])<<24)+(ord(r[2])<<16)+(ord(r[1])<<8)+ord(r[0])
+    # make sure we don't get bitten by endianness.
+    # In Python 3, reading bytes returns bytes; indexing bytes gives int directly.
+    r = fp.read(4)
+    return (r[3] << 24) + (r[2] << 16) + (r[1] << 8) + r[0]
 
 class LevelFileParser:
-    def __init__(self,file=np("ttraffic.levels")):
-        self.file=file
+    def __init__(self, file=np("ttraffic.levels")):
+        self.file = file
         self.readdirectory()
-        
+
     def readdirectory(self):
-        self.directory={}
-        self.fp=open(self.file,"rb")
-        self.minmovestosolution=readint(self.fp)
-        self.mostcomplexsolution=readint(self.fp)
-        self.directory[0]=self.minmovestosolution
-        self.directory[1]=self.mostcomplexsolution
-        self.entriesindirectory=self.mostcomplexsolution\
-                                 -self.minmovestosolution+2
-        for  i in xrange(1,self.entriesindirectory+1):
-            self.directory[i+1]=readint(self.fp)
+        self.directory = {}
+        self.fp = open(self.file, "rb")
+        self.minmovestosolution = readint(self.fp)
+        self.mostcomplexsolution = readint(self.fp)
+        self.directory[0] = self.minmovestosolution
+        self.directory[1] = self.mostcomplexsolution
+        self.entriesindirectory = self.mostcomplexsolution \
+                                 - self.minmovestosolution + 2
+        for i in range(1, self.entriesindirectory+1):
+            self.directory[i+1] = readint(self.fp)
 
-    def getboard(self,offset):
+    def getboard(self, offset):
         self.fp.seek(offset)
-        rows=readint(self.fp)
-        columns=readint(self.fp)
-        return Board.Board((rows,columns))
-
-
-
-
-
-
+        rows = readint(self.fp)
+        columns = readint(self.fp)
+        return Board.Board((rows, columns))
