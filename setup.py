@@ -252,7 +252,8 @@ py_modules=['Affine2D',
                   'music',
                   'extra_path']
 
-ext_modules=[Extension("_hint",["src/hint/asci.c",
+ext_modules=[Extension("_hint",["src/hint/globals.c",
+                                       "src/hint/asci.c",
                                        "src/hint/debug.c",
                                        "src/hint/hint.c",
                                        "src/hint/masterfile.c",
