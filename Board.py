@@ -299,7 +299,17 @@ class Board:
         return (toprow, bottomrow, leftcolumn, rightcolumn)
 
     def redcarout(self):
-        return ([2, 4, 1, 2] in self.__ttrafficboard)
+        # The red car is always horizontal on row 2 with the smallest column.
+        # A car at [2, 4, 1, 2] could be a *blocking* car when strip 12/14/15
+        # is used for row 2 (two horizontal cars on that row).  Find the
+        # leftmost horizontal car on row 2 and check whether it has reached
+        # the right edge (col + length >= 6).
+        row2_cars = [c for c in self.__ttrafficboard
+                     if c[0] == 2 and c[2] == 1]  # row==2, horizontal
+        if not row2_cars:
+            return False
+        red_car = min(row2_cars, key=lambda c: c[1])  # smallest column
+        return red_car[1] + red_car[3] >= 6
 
     def testlegality(self, index, row, column):
         legal = 1
