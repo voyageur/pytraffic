@@ -28,6 +28,7 @@ np = Misc.normalize_path
 
 class StatisticsDialog:
     def __init__(self, parent=None):
+        self._visible = 0
         self.builder = Gtk.Builder()
         self.builder.add_from_file("libglade/StatisticsWindow.ui")
         self.window = self.builder.get_object("StatisticsWindow")
@@ -60,8 +61,8 @@ class StatisticsDialog:
         propertybag['statistics'] = 0
 
     def load_bag(self, propertybag):
-        self.visible = propertybag['statistics']
-        if self.visible:
+        self._visible = propertybag['statistics']
+        if self._visible:
             self.show()
         else:
             self.hide()

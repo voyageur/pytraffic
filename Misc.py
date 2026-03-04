@@ -70,15 +70,15 @@ jamoriginy=borderwidth
 # the returned point maybe outside board
 
 def nearestgridpoint (x, y):
-    roundy=round((y-jamoriginy+0.0)/cellheight)*cellheight+jamoriginy
-    roundx=round ((x-jamoriginx+0.0)/cellwidth)*cellwidth+jamoriginx
+    roundy=round((y-jamoriginy)/cellheight)*cellheight+jamoriginy
+    roundx=round ((x-jamoriginx)/cellwidth)*cellwidth+jamoriginx
     return (roundx,roundy)
 
 #converts x,y coordinates on grid to row col pairs
 
 def torowcol (x, y,rounding=1):
-    rowfrac=(y-jamoriginy+0.0)/cellheight
-    columnfrac=(x-jamoriginx+0.0)/cellwidth
+    rowfrac=(y-jamoriginy)/cellheight
+    columnfrac=(x-jamoriginx)/cellwidth
     if rounding:
         row=round(rowfrac)
         column=round(columnfrac)
@@ -92,7 +92,7 @@ def torowcol (x, y,rounding=1):
 
 def togridpoint (row,col):
     x=col*cellwidth +jamoriginx
-    y=row*cellwidth +jamoriginx
+    y=row*cellheight+jamoriginy
     return (x,y)
 
 # works on cygwin 2.3 and 2.4

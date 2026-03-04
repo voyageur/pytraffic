@@ -400,7 +400,6 @@ class Game:
 
 
     def enable_easteregg(self, *args):
-        print("Enabling easter egg")
         self.gamestate.easteregg = 1
 
     def show_statistics(self, *args):
@@ -466,12 +465,9 @@ files.
     def clock(self, *args):
         if self.music_server.get_status() == MusicServer.FREE:
             self.time_label.set_anchor('e')
-            if self.on:
-                format = "%H:%M"
-            else:
-                format = "%H:%M"
+            fmt = "%H:%M" if self.on else "%H:%M\u2022"
             self.on = not(self.on)
-            strtime = time.strftime(format, time.localtime(time.time()))
+            strtime = time.strftime(fmt, time.localtime(time.time()))
             self.time_label.set_text(strtime)
 
     def about_dialog_close(self, *args):

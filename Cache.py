@@ -25,13 +25,9 @@ class Cache:
         self.factory=factory
 
     def getitem(self,identifier):
-        item=self.cache.get(identifier)
-        if item:
-            pass
-        else:
-            item=self.factory(identifier)
-            self.cache[identifier]=item
-        return item
+        if identifier not in self.cache:
+            self.cache[identifier] = self.factory(identifier)
+        return self.cache[identifier]
 
 
         

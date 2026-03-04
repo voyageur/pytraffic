@@ -36,18 +36,19 @@ class LevelFileParser:
 
     def readdirectory(self):
         self.directory = {}
-        self.fp = open(self.file, "rb")
-        self.minmovestosolution = readint(self.fp)
-        self.mostcomplexsolution = readint(self.fp)
-        self.directory[0] = self.minmovestosolution
-        self.directory[1] = self.mostcomplexsolution
-        self.entriesindirectory = self.mostcomplexsolution \
-                                 - self.minmovestosolution + 2
-        for i in range(1, self.entriesindirectory+1):
-            self.directory[i+1] = readint(self.fp)
+        with open(self.file, "rb") as fp:
+            self.minmovestosolution = readint(fp)
+            self.mostcomplexsolution = readint(fp)
+            self.directory[0] = self.minmovestosolution
+            self.directory[1] = self.mostcomplexsolution
+            self.entriesindirectory = self.mostcomplexsolution \
+                                     - self.minmovestosolution + 2
+            for i in range(1, self.entriesindirectory+1):
+                self.directory[i+1] = readint(fp)
 
     def getboard(self, offset):
-        self.fp.seek(offset)
-        rows = readint(self.fp)
-        columns = readint(self.fp)
+        with open(self.file, "rb") as fp:
+            fp.seek(offset)
+            rows = readint(fp)
+            columns = readint(fp)
         return Board.Board((rows, columns))

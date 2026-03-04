@@ -128,7 +128,7 @@ def tounpackedboard(ttrafficboard):
     for j in range(0, 12):
         validcarlist = temp[j]
         validcarlist.sort()
-        for i in range(len(validcarlist), 2):
+        while len(validcarlist) < 2:
             validcarlist.append((0, 0))
         validcarlist = tuple(validcarlist)
         for k in range(0, len(gtrafficstrips)):
@@ -158,11 +158,13 @@ def tophysicalboard(ttrafficboard):
 # computed on the fly and cached
 
 class Board:
-    def __init__(self, a=[]):
+    def __init__(self, a=None):
         self.init()
-        if type(a) == type([]):
+        if a is None:
+            a = []
+        if isinstance(a, list):
             self.__ttrafficboard = a
-        elif type(a) == type(()):
+        elif isinstance(a, tuple):
             self.__unpackedboard = unpackboard(a)
             self.__ttrafficboard = tottrafficboard(self.__unpackedboard)
 

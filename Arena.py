@@ -28,7 +28,7 @@ import copy
 import CondMessageBox
 import GameState
 import Canvas
-from gi.repository import Gdk, GObject, GLib, Gtk
+from gi.repository import Gdk, GLib, Gtk
 
 import Board
 
@@ -82,7 +82,7 @@ class Car:
             if self.horizontal:
                 self.im.set_cursor(Gdk.Cursor.new(Gdk.CursorType.HAND2))
             else:
-                self.im.set_cursor(Gdk.Cursor.new(Gdk.CursorType.HAND2))
+                self.im.set_cursor(Gdk.Cursor.new(Gdk.CursorType.SB_V_DOUBLE_ARROW))
         else:
             self.im.set_cursor(None)
 
