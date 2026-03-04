@@ -67,7 +67,7 @@ void printlinkedlist(){
     tophysicalboard();
     printphysicalboard();
     printf("moves to solution=%d\n",(*l).movestosolution);
-    fflush(stdin);
+    fflush(stdout);
   }
 }
 
@@ -104,12 +104,12 @@ void printmoves(){
 void randomboard(){
   int i;
   
-  unpackedboard.strips[0]=floor((rand()*16.0/(RAND_MAX+1.0)));
-  unpackedboard.strips[1]=floor((rand()*16.0/(RAND_MAX+1.0)));
-  unpackedboard.strips[2]=typedatas[1].start+floor((rand()*5.0/(RAND_MAX+1.0)));
-  unpackedboard.strips[3]=floor((rand()*16.0/(RAND_MAX+1.0)));
-  unpackedboard.strips[4]=floor((rand()*16.0/(RAND_MAX+1.0)));
-  unpackedboard.strips[5]=floor((rand()*16.0/(RAND_MAX+1.0)));
+  unpackedboard.strips[0]=floor((rand()*16.0/((double)RAND_MAX+1.0)));
+  unpackedboard.strips[1]=floor((rand()*16.0/((double)RAND_MAX+1.0)));
+  unpackedboard.strips[2]=typedatas[1].start+floor((rand()*5.0/((double)RAND_MAX+1.0)));
+  unpackedboard.strips[3]=floor((rand()*16.0/((double)RAND_MAX+1.0)));
+  unpackedboard.strips[4]=floor((rand()*16.0/((double)RAND_MAX+1.0)));
+  unpackedboard.strips[5]=floor((rand()*16.0/((double)RAND_MAX+1.0)));
   unpackedboard.strips[6]=findcompatiblecolumn(0);
   unpackedboard.strips[7]=findcompatiblecolumn(1);
   unpackedboard.strips[8]=findcompatiblecolumn(2);

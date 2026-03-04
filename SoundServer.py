@@ -22,13 +22,12 @@
 import os
 import Misc
 import ThemeEngine
-import SoundData
 import Chooser
 import Timer
-import glob,copy
+import glob, copy
 import stat
 
-np=Misc.normalize_path
+np = Misc.normalize_path
 
 
 # SoundServer is a singleton object!
@@ -36,116 +35,93 @@ np=Misc.normalize_path
 
 class SoundServer:
 
-    def __init__(self,theme_engine):
-        self.__sound_output_explicitly_set=0
-        self.theme_engine=theme_engine
+    def __init__(self, theme_engine):
+        self.theme_engine = theme_engine
 
     def last_error(self):
         return self.__last_error
 
     def sound_works(self):
         return self.__sound_works
-          
+
     def enable_sound(self):
         if self.__sound_works:
-            self.__sound_enabled=1
+            self.__sound_enabled = 1
 
     def disable_sound(self):
-        self.__sound_enabled=0
+        self.__sound_enabled = 0
 
     def sound_enabled(self):
         return self.__sound_enabled
-            
 
-    def play(self,sound):
-        if self.__sound_works and self.__sound_enabled and sound!=None:
+    def play(self, sound):
+        if self.__sound_works and self.__sound_enabled and sound is not None:
             sound.play()
 
     def init_supported(self):
-        self.__supported_dict={}
-        self.__supported_dict['']=False
-        self.__supported_dict['.readme']=False
-        self.__supported_dict['.copyright']=False
+        self.__supported_dict = {}
+        self.__supported_dict[''] = False
+        self.__supported_dict['.readme'] = False
+        self.__supported_dict['.copyright'] = False
         for file in glob.glob(np('sound_test/*')):
-            extension=os.path.splitext(file)[1].lower()
+            extension = os.path.splitext(file)[1].lower()
             try:
-                dummy_test=self.mixer.Sound(np(file))
-                self.__supported_dict[extension]=True
-            except:
-                self.__supported_dict[extension]=False
+                dummy_test = self.mixer.Sound(np(file))
+                self.__supported_dict[extension] = True
+            except Exception:
+                self.__supported_dict[extension] = False
 
-    def is_supported(self,filename,use_extensions=1):
+    def is_supported(self, filename, use_extensions=1):
         if not os.path.exists(np(filename)):
             return False
-	mode=os.stat(filename)[stat.ST_MODE]
-	if not stat.S_ISREG(mode):
-		return False
-        extension=os.path.splitext(filename)[1].lower()
-        if use_extensions and self.__supported_dict.get(extension)==True:
+        mode = os.stat(filename).st_mode
+        if not stat.S_ISREG(mode):
+            return False
+        extension = os.path.splitext(filename)[1].lower()
+        if use_extensions and self.__supported_dict.get(extension) == True:
             return True
-        elif use_extensions and self.__supported_dict.get(extension)==False:
+        elif use_extensions and self.__supported_dict.get(extension) == False:
             return False
         else:
-#            print "Doing real work with %s" % filename
             try:
                 self.mixer.music.load(np(filename))
                 if use_extensions:
-                    self.__supported_dict[extension]=True
+                    self.__supported_dict[extension] = True
                 return True
-            except:
+            except Exception:
                 if use_extensions:
-                    self.__supported_dict[extension]=False
+                    self.__supported_dict[extension] = False
                 return False
-        
-                
 
     def sound_has_worked(self):
         return self.__sound_has_worked
 
-    def setsoundoutput(self,output):
-        self.__output=output
-        self.__sound_output_explicitly_set=1
+    def default_bag(self, propertybag):
+        propertybag['sound_has_worked'] = 1
+        propertybag['sound_enabled'] = 1
 
-    def getsoundoutput(self):
-        return self.__output
-
-    def default_bag(self,propertybag):
-        propertybag['sound_has_worked']=1
-        propertybag['sound_output']='Default'
-        propertybag['sound_enabled']=1
-
-    def load_bag(self,propertybag):
-        self.__output=output=propertybag['sound_output']
-        self.__chooser=None
-        SoundData.do_os_stuff(output)
-        self.__sound_works=0
-        self.__sound_enabled=0
+    def load_bag(self, propertybag):
+        self.__chooser = None
+        self.__sound_works = 0
+        self.__sound_enabled = 0
+        self.__last_error = ""
         try:
             import sdl_mixer as mixer
-            self.mixer=mixer
+            self.mixer = mixer
             self.mixer.init(frequency=44100)
             self.init_supported()
             if self.is_supported(np('sound_test/tone.ogg')):
-                self.__sound_works=1
-        except Exception,e:
-            self.__last_error=str(e)
+                self.__sound_works = 1
+        except Exception as e:
+            self.__last_error = str(e)
 
-
-        self.__sound_has_worked=propertybag['sound_has_worked']
+        self.__sound_has_worked = propertybag['sound_has_worked']
         if self.__sound_has_worked and self.__sound_works:
             if propertybag['sound_enabled']:
                 self.enable_sound()
         elif self.__sound_works:
             self.enable_sound()
-            
-        
 
-    def save_bag(self,propertybag):
-        propertybag['sound_enabled']=self.__sound_enabled
-        if not self.__sound_output_explicitly_set:
-            propertybag['sound_has_worked']=self.__sound_works
-        else:
-            propertybag['sound_has_worked']=1 # force dialog box after restart
-            propertybag['sound_enabled']=1  # enable sound
-
-        propertybag['sound_output']=self.__output
+    def save_bag(self, propertybag):
+        propertybag['sound_enabled'] = self.__sound_enabled
+        propertybag['sound_has_worked'] = self.__sound_works

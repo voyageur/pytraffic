@@ -13,7 +13,7 @@ def add_vector_vector(v1,v2):
     return (v1[0]+v2[0],v1[1]+v2[1])
 
 def add_vector(*v):
-    if v==[]:
+    if not v:
         return zero_vector
     result=v[0]
     for v1 in v[1:]:
@@ -33,7 +33,7 @@ def multiply_matrix_matrix(m1,m2):
             m1[2]*m2[1]+m1[3]*m2[3])
 
 def multiply_matrix(*m):
-    if m==[]:
+    if not m:
         return identity_matrix
     result=m[0]
     for m1 in m[1:]:
@@ -63,7 +63,7 @@ def multiply_affine_affine(a1,a2):
     return m+t
 
 def multiply_affine(*a):
-    if a==[]:
+    if not a:
         return identity_affine
     result=a[0]
     for a1 in a[1:]:

@@ -22,7 +22,8 @@ If not, write to the Free Software Foundation, Inc.,
 
 */
 
-
+#ifndef GTLEVEL_H
+#define GTLEVEL_H
 
 #include <stdlib.h>
 #include <time.h>
@@ -30,10 +31,16 @@ If not, write to the Free Software Foundation, Inc.,
 #include <string.h>
 #include <math.h>
 #include <sys/stat.h>
- 
+
 #define MAXSTRIPS 16
-#define TRUE 1
-#define FALSE 0
+/* Use plain 1/0 for boolean values; avoid redefining TRUE/FALSE if already
+   defined (e.g. by some system headers). */
+#ifndef TRUE
+#  define TRUE  1
+#endif
+#ifndef FALSE
+#  define FALSE 0
+#endif
 
 #define HASHTABLESIZE 0x40000
 #define LINKEDLISTSIZE 150000 
@@ -49,10 +56,10 @@ If not, write to the Free Software Foundation, Inc.,
 /* counting in gtlevel is off by one! */
 #define FAST 
 
-unsigned int  directory[MAXMOVESTOSOLUTION];
-int entriesindirectory;
-unsigned int  statistics[MAXMOVESTOSOLUTION];
-unsigned char  mostcomplexsolution;
+extern unsigned int  directory[MAXMOVESTOSOLUTION];
+extern int entriesindirectory;
+extern unsigned int  statistics[MAXMOVESTOSOLUTION];
+extern unsigned char  mostcomplexsolution;
 
 
 
@@ -71,18 +78,18 @@ struct linkedlistboardentry{
 };
 
 /* Was  a linked list long ago */
-struct linkedlistboardentry  linkedlist[LINKEDLISTSIZE];  
-struct linkedlistboardentry * movelist[MOVELISTSIZE];
+extern struct linkedlistboardentry  linkedlist[LINKEDLISTSIZE];
+extern struct linkedlistboardentry * movelist[MOVELISTSIZE];
 
-struct linkedlistboardentry * solution[MAXSOLUTION];
+extern struct linkedlistboardentry * solution[MAXSOLUTION];
 
-struct linkedlistboardentry * linkedlistpointer;   /* initialized in initlinkedlist */
-struct linkedlistboardentry **  movelistpointer;   /* initialized in initlinkedlist */
+extern struct linkedlistboardentry * linkedlistpointer;   /* initialized in initlinkedlist */
+extern struct linkedlistboardentry **  movelistpointer;   /* initialized in initlinkedlist */
 
-struct linkedlistboardentry * endofboards; /* set in computemoves */
-  
+extern struct linkedlistboardentry * endofboards; /* set in computemoves */
 
-struct linkedlistboardentry * hashtable[HASHTABLESIZE];
+
+extern struct linkedlistboardentry * hashtable[HASHTABLESIZE];
 
 
 
@@ -94,7 +101,6 @@ struct strip {
 };
 
 
-  
 
 
 struct typedata {
@@ -103,34 +109,35 @@ struct typedata {
   int numberofstrips;
 };
 
-struct {
+struct unpackedboardtype {
   int strips[12];
-} unpackedboard;
+};
+extern struct unpackedboardtype unpackedboard;
 
-int striptypes[12];
+extern int striptypes[12];
 
 struct gtrafficcar{
     int carpos;
     int carlength;
   };
-struct gtrafficcar gtrafficstrips[16][2];
+extern struct gtrafficcar gtrafficstrips[16][2];
 
 
-struct strip strips[16];
+extern struct strip strips[16];
 
 
 
-struct  typedata typedatas[4];
+extern struct  typedata typedatas[4];
 
 /* index is packedversion of first three rows 3,2,1 (3x4 bits), a column (4 bits) and
    a columnindex (3 bits) */
-unsigned char columninsert1[COLUMNINSERTSIZE];
+extern unsigned char columninsert1[COLUMNINSERTSIZE];
 
 /* index is packedversion of last three rows 6,5,4 (3x4 bits), a column (4 bits) and
    a columnindex (3 bits) */
-unsigned char columninsert2[COLUMNINSERTSIZE];
+extern unsigned char columninsert2[COLUMNINSERTSIZE];
 
-char gtrafficboard[512];
+extern char gtrafficboard[512];
 
 
 void showoffset(int offset);
@@ -288,3 +295,15 @@ void randomboard(void);
 void testtypes(void);
 
 double profile(int quantity);
+
+/*
+ * Error-signalling mechanism for the Python wrapper.
+ * Internal C code calls hint_set_error() instead of exit() to signal a
+ * fatal error.  The wrapper checks hint_error_pending() after each call
+ * and raises RuntimeError if set.
+ */
+void hint_set_error(const char *msg);
+int  hint_error_pending(void);
+const char *hint_error_msg(void);
+
+#endif /* GTLEVEL_H */

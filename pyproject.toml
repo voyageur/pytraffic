@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ---------------------------------------------------------------------------
+# Project metadata  (PEP 621)
+# ---------------------------------------------------------------------------
+[project]
+name = "pytraffic"
+version = "3.0b1"
+description = "A Python simulation of the board game Rush Hour"
+readme = "README"
+license = "GPL-2.0-or-later"
+authors = [{ name = "Michel Van den Bergh", email = "michel.vandenbergh@uhasselt.be" }]
+requires-python = ">=3.8"
+# Runtime dependency on PyGObject (gi) and GStreamer Python bindings.
+# These are system packages on most distros and not on PyPI, so we leave the
+# list empty here and document them in INSTALL instead.
+dependencies = []
+
+[project.scripts]
+# Installed console entry-point; works after "pip install ." or "pip install -e ."
+pytraffic = "pytraffic_launcher:main"
+
+[project.urls]
+Homepage = "http://alpha.uhasselt.be/Research/Algebra"
+
+# ---------------------------------------------------------------------------
+# Setuptools knobs
+# ---------------------------------------------------------------------------
+[tool.setuptools]
+# All game modules live in the project root, not in a sub-package.
+# We enumerate them explicitly; the C extension (_hint) is declared in
+# setup.py because pyproject.toml cannot express source file lists.
+py-modules = [
+    "Affine2D",
+    "Arena",
+    "ArtWork",
+    "Board",
+    "BottomBar",
+    "Cache",
+    "Canvas",
+    "Chooser",
+    "CondMessageBox",
+    "Game",
+    "GameState",
+    "Hint",
+    "History",
+    "ImageCache",
+    "LevelFileParser",
+    "LevelSelector",
+    "Main",
+    "Misc",
+    "MusicChooser",
+    "MusicServer",
+    "PropertyBag",
+    "pytraffic_launcher",
+    "sdl_mixer",
+    "ShowHTML",
+    "SmartLabel",
+    "SoundCache",
+    "SoundServer",
+    "Statistics",
+    "ThemeEngine",
+    "Timer",
+]
+# data-files with glob patterns must be provided by setup.py (see below).
+# We do NOT set include-package-data here because there is no package.

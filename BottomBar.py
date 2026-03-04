@@ -20,26 +20,28 @@
 ##
 
 
-import gtk
-import pango
+from gi.repository import Gtk
+from gi.repository import GObject
+from gi.repository import Pango
 import SmartLabel
 
 
 class BottomBarItem(SmartLabel.SmartLabel):
     def __init__(self,text=""):
         SmartLabel.SmartLabel.__init__(self,text)
-        self.frame=gtk.Frame()
+        self.frame=Gtk.Frame()
         self.frame.add(self)
         
     def show(self):
-        SmartLabel.show(self)
+        SmartLabel.SmartLabel.show(self)
         self.frame.show()
 
-class BottomBar(gtk.HBox):
+class BottomBar(Gtk.Box):
     def __init__(self,homogeneous=False,spacing=0):
-        gtk.HBox.__init__(self,homogeneous,spacing)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.HORIZONTAL,
+                         homogeneous=homogeneous, spacing=spacing)
         self.empty=BottomBarItem()
-#        self.empty=gtk.ProgressBar()
+#        self.empty=Gtk.ProgressBar()
         self.pack_end(self.empty.frame,True,True,0)
 #        self.pack_end(self.empty,True,True,0)
 

@@ -21,7 +21,7 @@
 ##
 
 
-import sys,glob,random,os
+import sys, glob, random, os, ast
 import ImageCache
 import SoundCache
 import Misc
@@ -30,212 +30,198 @@ import Chooser
 import Affine2D
 
 
-np=Misc.normalize_path
+np = Misc.normalize_path
 
 
 class ArtWork:
-    def __init__(self,root):
-        self.image_cache=ImageCache.ImageCache()
-	self.theme_engine=root.theme_engine
-        self.sound_server=root.sound_server
-        self.sound_cache=SoundCache.SoundCache(self.sound_server)
+    def __init__(self, root):
+        self.image_cache = ImageCache.ImageCache()
+        self.theme_engine = root.theme_engine
+        self.sound_server = root.sound_server
+        self.sound_cache = SoundCache.SoundCache(self.sound_server)
 
-    def load_bag(self,propertybag):
-        self.saved_list=propertybag['saved_list']
-        self.saved_background=propertybag['background']
-	self.theme_change()
- 
-    def save_bag(self,propertybag):
-        propertybag['saved_list']=self.new_saved_list
-        propertybag['background']=self.last_background
+    def load_bag(self, propertybag):
+        self.saved_list = propertybag['saved_list']
+        self.saved_background = propertybag['background']
+        self.theme_change()
 
-    def default_bag(self,propertybag):
-        propertybag['saved_list']=[]
-        propertybag['background']=''
+    def save_bag(self, propertybag):
+        propertybag['saved_list'] = self.new_saved_list
+        propertybag['background'] = self.last_background
+
+    def default_bag(self, propertybag):
+        propertybag['saved_list'] = []
+        propertybag['background'] = ''
 
     def theme_change(self):
-    	if self.sound_server.sound_works() and \
+        if self.sound_server.sound_works() and \
            self.theme_engine.theme_has_sound():
-            self.applause_clip=self.sound_cache.getsound(\
+            self.applause_clip = self.sound_cache.getsound(
                             self.theme_engine.find_sound("applause"))
-            self.engine_clip=self.sound_cache.getsound(\
+            self.engine_clip = self.sound_cache.getsound(
                              self.theme_engine.find_sound("engine"))
-            self.horn_clip=self.sound_cache.getsound(\
+            self.horn_clip = self.sound_cache.getsound(
                              self.theme_engine.find_sound("horn"))
-        self.truck_chooser=Chooser.Chooser(self.theme_engine.gettrucks(),
+        self.truck_chooser = Chooser.Chooser(self.theme_engine.gettrucks(),
                                            "Resetting trucks")
-        self.car_chooser=Chooser.Chooser(self.theme_engine.getcars(),
+        self.car_chooser = Chooser.Chooser(self.theme_engine.getcars(),
                                          "Resetting cars")
-        self.bg_chooser=Chooser.Chooser(self.theme_engine.getbackgrounds(),
+        self.bg_chooser = Chooser.Chooser(self.theme_engine.getbackgrounds(),
                                         "Resetting background")
-        basepoints_path=self.theme_engine.find_background_basepoints()
+        basepoints_path = self.theme_engine.find_background_basepoints()
         if os.path.exists(basepoints_path):
-            f=open(basepoints_path,"r")
-            self.background_basepoints=eval(f.read())
-            f.close()
+            with open(basepoints_path, "r") as f:
+                self.background_basepoints = ast.literal_eval(f.read())
         else:
-            self.background_basepoints=None
-        basepoints_path=self.theme_engine.find_car_basepoints()
+            self.background_basepoints = None
+        basepoints_path = self.theme_engine.find_car_basepoints()
         if os.path.exists(basepoints_path):
-            f=open(basepoints_path,"r")
-            self.car_basepoints=eval(f.read())
-            f.close
+            with open(basepoints_path, "r") as f:
+                self.car_basepoints = ast.literal_eval(f.read())
         else:
-            self.car_basepoints=None
+            self.car_basepoints = None
 
     def gettransform(self):
-        transform_path=self.theme_engine.find_transform()
+        transform_path = self.theme_engine.find_transform()
         if os.path.exists(transform_path):
-            f=open(transform_path,"r")
-            transform=eval(f.read())
-            f.close()
+            with open(transform_path, "r") as f:
+                transform = ast.literal_eval(f.read())
         else:
-            transform=Affine2D.identity_affine
+            transform = Affine2D.identity_affine
         return transform
-            
+
     def getbackground(self):
-        if self.saved_background!='':
-            self.last_background=self.saved_background
-            self.saved_background=''
+        if self.saved_background != '':
+            self.last_background = self.saved_background
+            self.saved_background = ''
         else:
-            self.last_background=self.bg_chooser.get()
-	try:
-        	image=self.image_cache.getimage(\
+            self.last_background = self.bg_chooser.get()
+        try:
+            image = self.image_cache.getimage(
                      self.theme_engine.find_background(self.last_background))
-	except:
-		print "Background image in save file does not exist"
-		print "Using place holder"
-		self.last_background=self.bg_chooser.get()
-		image=self.image_cache.getimage(\
+        except Exception:
+            print("Background image in save file does not exist")
+            print("Using place holder")
+            self.last_background = self.bg_chooser.get()
+            image = self.image_cache.getimage(
                         self.theme_engine.find_background(self.last_background))
         if not self.background_basepoints:
-            return (image,(0,0))
+            return (image, (0, 0))
         else:
-            return (image,self.background_basepoints[self.last_background+".png"])
+            return (image, self.background_basepoints[self.last_background+".png"])
 
 
 
     def reset(self):
         self.truck_chooser.reset()
         self.car_chooser.reset()
-        self.new_saved_list=[]
+        self.new_saved_list = []
 
 
     def getapplause(self):
-    	if self.sound_server.sound_works() and \
+        if self.sound_server.sound_works() and \
            self.theme_engine.theme_has_sound():
             return self.applause_clip
         else:
             return None
 
-    def getartwork(self,horizontal=1,truck=0):
-        H={0:'V', 1:'H'}
-        T={0:'C', 1:'T'}
-        S={'normal':'N', 'ghost':'G'}
-        if self.saved_list!=[]:
-            color=self.saved_list[0]
+    def getartwork(self, horizontal=1, truck=0):
+        H = {0: 'V', 1: 'H'}
+        T = {0: 'C', 1: 'T'}
+        S = {'normal': 'N', 'ghost': 'G'}
+        if self.saved_list != []:
+            color = self.saved_list[0]
             del self.saved_list[0]
         else:
             if truck:
-                color=self.truck_chooser.get()
+                color = self.truck_chooser.get()
             else:
-                color=self.car_chooser.get()
-        self.new_saved_list=self.new_saved_list+[color]
-    
-        artwork={}
-        filename=self.theme_engine.find_car_image(horizontal,
+                color = self.car_chooser.get()
+        self.new_saved_list = self.new_saved_list+[color]
+
+        artwork = {}
+        filename = self.theme_engine.find_car_image(horizontal,
                                                   truck,
                                                   str(color))
         try:
             if not self.car_basepoints:
-                artwork['normal']=(self.image_cache.getimage(filename),(0,0))
+                artwork['normal'] = (self.image_cache.getimage(filename), (0, 0))
             else:
-                artwork['normal']=(self.image_cache.getimage(filename),
-                            self.car_basepoints[\
+                artwork['normal'] = (self.image_cache.getimage(filename),
+                            self.car_basepoints[
                                    os.path.basename(filename)])
-        except:
-            print "Using place holder for %s" % filename
-            filename=self.theme_engine.find_car_image(horizontal,
+        except Exception:
+            print("Using place holder for %s" % filename)
+            filename = self.theme_engine.find_car_image(horizontal,
                                                          truck,
                                                          '0')
             if not self.car_basepoints:
-                artwork['normal']=(self.image_cache.getimage(filename),(0,0))
+                artwork['normal'] = (self.image_cache.getimage(filename), (0, 0))
             else:
-                artwork['normal']=(self.image_cache.getimage(filename),
-                            self.car_basepoints[\
+                artwork['normal'] = (self.image_cache.getimage(filename),
+                            self.car_basepoints[
                                     os.path.basename(filename)])
 
-
-
-
-    	if self.sound_server.sound_works() and \
+        if self.sound_server.sound_works() and \
            self.theme_engine.theme_has_sound():
-           try:
-               filename_horn=self.theme_engine.find_sound(\
-                              'car'+T[truck]+'horn'+str(color))
-               artwork['horn']=self.sound_cache.getsound(filename_horn)
-           except:
-               artwork['horn']=self.horn_clip
-           try:
-               filename_engine=self.theme_engine.find_sound(\
-                          'car'+T[truck]+'engine'+str(color))
-               artwork['engine']=self.sound_cache.getsound(filename_engine)
-           except:
-               artwork['engine']=self.engine_clip
+            try:
+                filename_horn = self.theme_engine.find_sound(
+                               'car'+T[truck]+'horn'+str(color))
+                artwork['horn'] = self.sound_cache.getsound(filename_horn)
+            except Exception:
+                artwork['horn'] = self.horn_clip
+            try:
+                filename_engine = self.theme_engine.find_sound(
+                           'car'+T[truck]+'engine'+str(color))
+                artwork['engine'] = self.sound_cache.getsound(filename_engine)
+            except Exception:
+                artwork['engine'] = self.engine_clip
         else:
-            artwork['horn']=None
-            artwork['engine']=None
-            
+            artwork['horn'] = None
+            artwork['engine'] = None
+
 
         return artwork
 
-    
+
 
     def getRedCar(self):
-        artwork={}
+        artwork = {}
         try:
-            filename=self.theme_engine.find_car_image(0,0,'red')
+            filename = self.theme_engine.find_car_image(0, 0, 'red')
             if not self.car_basepoints:
-                artwork['normal']=(self.image_cache.getimage(filename),(0,0))
+                artwork['normal'] = (self.image_cache.getimage(filename), (0, 0))
             else:
-                artwork['normal']=(self.image_cache.getimage(filename),
-                            self.car_basepoints[\
+                artwork['normal'] = (self.image_cache.getimage(filename),
+                            self.car_basepoints[
                                    os.path.basename(filename)])
-        except:
-            print "Using a place holder for %s." % filename
-            filename=self.theme_engine.find_car_image(horizontal=1,
+        except Exception:
+            print("Using a place holder for red car.")
+            filename = self.theme_engine.find_car_image(horizontal=1,
                                                          truck=0,
                                                          type='0')
             if not self.car_basepoints:
-                artwork[s]=(self.image_cache.getimage(filename),(0,0))
+                artwork['normal'] = (self.image_cache.getimage(filename), (0, 0))
             else:
-                artwork[s]=(self.image_cache.getimage(filename),
-                            self.car_basepoints[\
+                artwork['normal'] = (self.image_cache.getimage(filename),
+                            self.car_basepoints[
                                    os.path.basename(filename)])
 
-                
-                
-    	if self.sound_server.sound_works() and \
+        if self.sound_server.sound_works() and \
            self.theme_engine.theme_has_sound():
-           try:
-               filename_horn=self.theme_engine.find_sound('carhornred')
-               artwork['horn']=self.sound_cache.getsound(filename_horn)
-           except:
-               artwork['horn']=self.horn_clip
-           try:
-               filename_engine=self.theme_engine.find_sound('carenginered')
-               artwork['engine']=self.sound_cache.getsound(filename_engine)
-           except:
-               artwork['engine']=self.engine_clip
+            try:
+                filename_horn = self.theme_engine.find_sound('carhornred')
+                artwork['horn'] = self.sound_cache.getsound(filename_horn)
+            except Exception:
+                artwork['horn'] = self.horn_clip
+            try:
+                filename_engine = self.theme_engine.find_sound('carenginered')
+                artwork['engine'] = self.sound_cache.getsound(filename_engine)
+            except Exception:
+                artwork['engine'] = self.engine_clip
         else:
-            artwork['horn']=None
-            artwork['engine']=None
-            
+            artwork['horn'] = None
+            artwork['engine'] = None
+
 
         return artwork
-
-        
-
-
-
-

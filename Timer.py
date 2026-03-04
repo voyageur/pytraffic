@@ -20,149 +20,127 @@
 ##
 
 
-import gtk
-import gobject
+from gi.repository import GObject
+from gi.repository import GLib
 
-class Timer(gobject.GObject):
+class Timer(GObject.GObject):
     __gsignals__ = {
-        'tick' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+        'tick' : (GObject.SignalFlags.RUN_FIRST, None,
                       ())
     }
     __gproperties__ = {
-        'running' :  (gobject.TYPE_BOOLEAN,
+        'running' :  (GObject.TYPE_BOOLEAN,
                       'running property',
                       'indicates if the timer has started',
-                      0,
-                      gobject.PARAM_READWRITE)
+                      False,
+                      GObject.ParamFlags.READWRITE)
         }
     def __init__(self, interval=1000):
-        self.__gobject_init__()
-        self.__interval=interval
-        self.__afterid=None
-        self.running=0
+        super().__init__()
+        self.__interval = interval
+        self.__afterid = None
+        self.running = 0
 
-    def do_set_property(self,pspec,value):
-        if pspec.name=='running':
-            self.running=value
+    def do_set_property(self, pspec, value):
+        if pspec.name == 'running':
+            self.running = value
             if value:
                 self.__start()
             else:
                 self.__stop()
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
-    def do_get_property(self,pspec,value):
-        if pspec.name=='running':
+    def do_get_property(self, pspec):
+        if pspec.name == 'running':
             return self.running
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
-    def set_running(self,value):
-        self.set_property('running',value)
+    def set_running(self, value):
+        self.set_property('running', value)
 
     def get_running(self):
         return self.get_property('running')
 
 
     def __start(self):
-        if self.__afterid==None:
-            self.__afterid=gobject.timeout_add(self.__interval,
-                                       self.__commandwrapper)
+        if self.__afterid is None:
+            self.__afterid = GLib.timeout_add(self.__interval,
+                                      self.__commandwrapper)
 
     def __stop(self):
-        if self.__afterid!=None:
-            gobject.source_remove(self.__afterid)
-            self.__afterid=None
+        if self.__afterid is not None:
+            GLib.source_remove(self.__afterid)
+            self.__afterid = None
 
     def __commandwrapper(self):
         self.emit("tick")
         return True
 
-#
-#    def __del__(self):
-#        print "stopping timer"
-#        self.__stop()
 
 
-gobject.type_register(Timer)
 
-
-class Idler(gobject.GObject):
+class Idler(GObject.GObject):
     __gsignals__ = {
-        'tick' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+        'tick' : (GObject.SignalFlags.RUN_FIRST, None,
                       ())
     }
     __gproperties__ = {
-        'running' :  (gobject.TYPE_BOOLEAN,
+        'running' :  (GObject.TYPE_BOOLEAN,
                       'running property',
                       'indicates if the timer has started',
-                      0,
-                      gobject.PARAM_READWRITE)
+                      False,
+                      GObject.ParamFlags.READWRITE)
         }
     def __init__(self):
-        self.__gobject_init__()
-        self.__afterid=None
-        self.running=0
+        super().__init__()
+        self.__afterid = None
+        self.running = 0
 
-    def do_set_property(self,pspec,value):
-        if pspec.name=='running':
-            self.running=value
+    def do_set_property(self, pspec, value):
+        if pspec.name == 'running':
+            self.running = value
             if value:
                 self.__start()
             else:
                 self.__stop()
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
-    def do_get_property(self,pspec,value):
-        if pspec.name=='running':
+    def do_get_property(self, pspec):
+        if pspec.name == 'running':
             return self.running
         else:
-            raise AttributeError, 'unknown property %s' % pspec.name
+            raise AttributeError('unknown property %s' % pspec.name)
 
-    def set_running(self,value):
-        self.set_property('running',value)
+    def set_running(self, value):
+        self.set_property('running', value)
 
     def get_running(self):
         return self.get_property('running')
 
 
     def __start(self):
-        if self.__afterid==None:
-            self.__afterid=gobject.idle_add(self.__commandwrapper)
+        if self.__afterid is None:
+            self.__afterid = GLib.idle_add(self.__commandwrapper)
 
     def __stop(self):
-        if self.__afterid!=None:
-            gobject.source_remove(self.__afterid)
-            self.__afterid=None
+        if self.__afterid is not None:
+            GLib.source_remove(self.__afterid)
+            self.__afterid = None
 
     def __commandwrapper(self):
         self.emit("tick")
         return True
 
-#    Sigh...del method do not work...
-#   http://www.daa.com.au/pipermail/pygtk/2003-March/004624.html
-#
-#
-#    def __del__(self):
-#        self.__stop()
 
-gobject.type_register(Idler)
-
-
-
-
-
-if __name__=='__main__':
+if __name__ == '__main__':
+    from gi.repository import Gtk
     def print_something(timer):
-        global t
-        print timer
-        print "Hallo"
-        t=None
-    t=Timer(interval=1000)
-#    t.connect("tick",print_something)
-#    t.set_property('running',True)
-    print t.__grefcount__
-    del t
-    gtk.main()
-
+        print(timer)
+        print("Hallo")
+    t = Timer(interval=1000)
+    t.connect("tick", print_something)
+    t.set_running(1)
+    Gtk.main()

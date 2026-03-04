@@ -19,85 +19,20 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import os
-import sys
-import os.path
+import subprocess
+import shutil
+from pathlib import Path
 import Misc
-import urlparse
-import string
 
-np=Misc.normalize_path
+np = Misc.normalize_path
 
-
-def sanitize(file_name):
-	return string.replace(file_name,' ',r'\ ')
-
-def sanitize_url(url):
-	return string.replace(url,' ','%20')
-
-def which_python(program):
-	if os.path.exists(program):
-		return 1
-	path=string.split(os.environ['PATH'],":")
-	for dir in path:
-		abs_path=os.path.join(dir,program)
-		if os.path.exists(abs_path):
-			return 1
-	return 0
-
-def program_present(program):
-    if os.name=='posix':
- 	return which_python(program)
-    else:
-        return 0
-
-def showhtml_program(program,file,terminal=0):
-    program=sanitize(program)
-    url=sanitize_url('file://'+os.path.abspath(np(file)))
-    if not terminal:
-	os.system(program+" "+url+' &')
-    else:
-	os.system('xterm -sb -e '+program+" "+url+' &')
-
-def showhtml_nt(file):
-    sanitized_url=sanitize_url("file://"+os.path.abspath(np(file)))
-    url="file://"+os.path.abspath(np(file))
-    if sys.version[:3]>='2.0':
-       print "Starting " + url
-       os.startfile(url)
-    else:
-	os.system("start "+sanitized_url)
-
-def showhtml_dummy(file):
-    pass
-
-def init_showhtml():
-    global showhtml, _can_display_html, _last_error
-
-    _can_display_html=1
-    _last_error=''
-
-    if os.name=="nt":
-        showhtml=showhtml_nt
-    elif Misc.isCygwin():
-	if program_present('lynx'):	
-		showhtml=lambda file:showhtml_program('lynx',file,1)
-	else:
-	        _can_display_html=0
-	        _last_error="Please install lynx. Other browsers are broken\
-on Cygwin. Sorry."
-    elif program_present('xdg-open'):
-            showhtml=lambda file:showhtml_program('xdg-open',file)
-    else:
-        _can_display_html=0
-        _last_error="Please install xdg-utils"
+_can_display_html = shutil.which('xdg-open') is not None
 
 
 def can_display_html():
     return _can_display_html
 
-def last_error():
-    return _last_error
 
-
-init_showhtml()
+def showhtml(file):
+    url = Path(np(file)).resolve().as_uri()
+    subprocess.Popen(['xdg-open', url])

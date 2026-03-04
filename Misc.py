@@ -19,14 +19,14 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import os,sys,string,shutil
+import os, sys, shutil
 
 #Taken from the pysol source.
 
 def gethomedir():
     default_home = os.curdir
     if os.name == "nt": default_home = "c:\\"
-    home = string.strip(os.environ.get("HOME", ""))
+    home = os.environ.get("HOME", "").strip()
     if not home or not os.path.isdir(home):
         if os.name == "nt":
             home = os.environ.get("HOMEDRIVE", "")\
@@ -48,8 +48,8 @@ default_config_db="config.db"
 def save_configfile():
     try:
         shutil.copyfile(default_configfile,backup_configfile)
-    except:
-        print "Renaming configfile failed."
+    except Exception:
+        print("Renaming configfile failed.")
     
 cellheight=50
 cellwidth=50
@@ -70,15 +70,15 @@ jamoriginy=borderwidth
 # the returned point maybe outside board
 
 def nearestgridpoint (x, y):
-    roundy=round((y-jamoriginy+0.0)/cellheight)*cellheight+jamoriginy
-    roundx=round ((x-jamoriginx+0.0)/cellwidth)*cellwidth+jamoriginx
+    roundy=round((y-jamoriginy)/cellheight)*cellheight+jamoriginy
+    roundx=round ((x-jamoriginx)/cellwidth)*cellwidth+jamoriginx
     return (roundx,roundy)
 
 #converts x,y coordinates on grid to row col pairs
 
 def torowcol (x, y,rounding=1):
-    rowfrac=(y-jamoriginy+0.0)/cellheight
-    columnfrac=(x-jamoriginx+0.0)/cellwidth
+    rowfrac=(y-jamoriginy)/cellheight
+    columnfrac=(x-jamoriginx)/cellwidth
     if rounding:
         row=round(rowfrac)
         column=round(columnfrac)
@@ -92,18 +92,17 @@ def torowcol (x, y,rounding=1):
 
 def togridpoint (row,col):
     x=col*cellwidth +jamoriginx
-    y=row*cellwidth +jamoriginx
+    y=row*cellheight+jamoriginy
     return (x,y)
 
 # works on cygwin 2.3 and 2.4
 
 def isCygwin():
-	return string.find(string.lower(sys.version),'cyg')<>-1	
+    return 'cyg' in sys.version.lower()
 
 
 def walk(file_list,recursion_depth=None):
     for f in file_list:
-#	print f
         if not os.path.exists(f):
             continue
         elif os.path.isfile(f):
@@ -113,24 +112,13 @@ def walk(file_list,recursion_depth=None):
             l=None
             try:
                 l=os.listdir(f)
-            except:
+            except Exception:
                 pass
             if l:
-                l=map(lambda x: os.path.join(f,x),l)
+                l=[os.path.join(f,x) for x in l]
                 if recursion_depth:
                     recursion_depth=recursion_depth-1
                 for ff in walk(l,recursion_depth):
                     yield ff
-            else:
-                yield f
         else:
             yield f
-
-
-#g=walk(['.'])
-#
-#while(1):
-#    print g.next()
-
-
-

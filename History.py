@@ -33,14 +33,6 @@ class History:
         self.historyindex=self.historyindex +1
         self.maxhistory=self.historyindex
 
-    def backinhistory(self):
-        self.historyindex=self.historyindex-1
-        return self.history(self.historyindex)
-
-    def forwardinhistory(self):
-        self.historyindex=self.historyindex+1
-        return self.history(self.historyindex)
-
     def beginningofhistory(self):
         self.historyindex=0
 

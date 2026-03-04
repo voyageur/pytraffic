@@ -21,54 +21,52 @@
 
 import os
 import Misc
-import gtk
-import gtk.glade
-import sys
+from gi.repository import Gtk
 
-np=Misc.normalize_path
+np = Misc.normalize_path
 
 class StatisticsDialog:
-    def __init__(self,parent=None):
-        tree=gtk.glade.XML(np("libglade/StatisticsWindow.glade"))
-        self.window=tree.get_widget("StatisticsWindow")
+    def __init__(self, parent=None):
+        self._visible = 0
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file("libglade/StatisticsWindow.ui")
+        self.window = self.builder.get_object("StatisticsWindow")
         self.window.set_destroy_with_parent(True)
-	# transient does not work well on nt
-        if parent and os.name!='nt':
-	        self.window.set_transient_for(parent)
-        self.intermediate_solved=tree.get_widget("intermediate_solved")
-        self.intermediate_total=tree.get_widget("intermediate_total")
-        self.advanced_solved=tree.get_widget("advanced_solved")
-        self.advanced_total=tree.get_widget("advanced_total")
-        self.expert_solved=tree.get_widget("expert_solved")
-        self.expert_total=tree.get_widget("expert_total")
-        events={"on_StatisticsWindow_delete_event" : self.hide}
-        tree.signal_autoconnect(events)
-        
+        # transient does not work well on nt
+        if parent and os.name != 'nt':
+            self.window.set_transient_for(parent)
+        self.intermediate_solved = self.builder.get_object("intermediate_solved")
+        self.intermediate_total = self.builder.get_object("intermediate_total")
+        self.advanced_solved = self.builder.get_object("advanced_solved")
+        self.advanced_total = self.builder.get_object("advanced_total")
+        self.expert_solved = self.builder.get_object("expert_solved")
+        self.expert_total = self.builder.get_object("expert_total")
+        events = {"on_StatisticsWindow_delete_event" : self.hide}
+        self.builder.connect_signals(events)
+
     def show(self):
         self.window.show_all()
-        self._visible=1
+        self._visible = 1
 
-    def hide(self,*args):
-	self.window.hide_all()
-# at one point this seemed necessary...don't remember why...
-#        self.window.unrealize()
-        self._visible=0
-	return True
-        
-    def save_bag(self,propertybag):
-        propertybag['statistics']=self._visible
+    def hide(self, *args):
+        self.window.hide()
+        self._visible = 0
+        return True
 
-    def default_bag(self,propertybag):
-        propertybag['statistics']=0
+    def save_bag(self, propertybag):
+        propertybag['statistics'] = self._visible
 
-    def load_bag(self,propertybag):
-        self.visible=propertybag['statistics']
-        if self.visible:
+    def default_bag(self, propertybag):
+        propertybag['statistics'] = 0
+
+    def load_bag(self, propertybag):
+        self._visible = propertybag['statistics']
+        if self._visible:
             self.show()
         else:
             self.hide()
 
-    def update_statistics(self,statistics):
+    def update_statistics(self, statistics):
         self.intermediate_solved.set_text(
             str(statistics['Intermediate']['Solved']))
         self.intermediate_total.set_text(
@@ -82,5 +80,3 @@ class StatisticsDialog:
         self.expert_solved.set_text(
             str(statistics['Expert']['Solved']))
         self.expert_total.set_text(str(statistics['Expert']['Total']))
-
-        

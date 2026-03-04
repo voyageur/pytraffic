@@ -1,19 +1,58 @@
-The generic, non-binary, install for a posix system is done 
-using the command
+PyTraffic – Installation
+========================
 
-      python setup.py install --prefix=<prefix>
+Requirements
+------------
+  * Python 3.8 or newer
+  * GTK 3 with Python bindings: PyGObject (python3-gi / python-gobject)
+  * GStreamer 1.x with Python bindings (python3-gst-1.0 / gst-python)
+    and plugins: gst-plugins-base, gst-plugins-good (OGG/Vorbis playback)
+  * GCC toolchain (to build the _hint C extension)
 
-You will need a working gcc toolchain, python (including headers and
-libraries), pygtk and pygame. PyTraffic was tested with python 2.3,
-pygtk 2.4 and pygame 1.6. Somewhat lower versions will probably also
-work but this is not guaranteed!
+On Fedora/RHEL:
+    sudo dnf install python3-gobject gtk3 \
+                     python3-gstreamer1 gstreamer1-plugins-good \
+                     gcc python3-devel
 
-The default prefix is /usr/local. If you use a standard prefix such
-as /usr or /usr/local then a menu item will be created for pytraffic. 
-Otherwise issue the command
+On Debian/Ubuntu:
+    sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-3.0 \
+                     python3-gst-1.0 gir1.2-gstreamer-1.0 \
+                     gstreamer1.0-plugins-good gstreamer1.0-plugins-base \
+                     gcc python3-dev
 
-     <prefix>/bin/pytraffic
 
-to play. 
+Running directly from the source checkout (development)
+-------------------------------------------------------
+Build the _hint C extension in-place and launch the game:
 
-For other installation methods (including Windows) see doc/readme.htm.
+    make          # builds _hint.cpython-<ver>-<arch>.so in the project root
+    make run      # build + launch
+
+Or equivalently:
+
+    python setup.py build_ext --inplace
+    python Main.py
+
+The Makefile also provides:
+
+    make clean        # remove build/ artefacts (keeps the .so)
+    make distclean    # full clean including the compiled extension
+
+
+Installing system-wide or into a virtual environment (pip)
+----------------------------------------------------------
+    pip install .                # into the active environment
+    pip install --user .         # into ~/.local  (no root needed)
+
+After installation the game is launched with:
+
+    pytraffic
+
+Data files (themes, music, UI, …) are installed under
+<prefix>/share/pytraffic/ and the pytraffic script sets the working
+directory there automatically.
+
+
+Uninstalling
+------------
+    pip uninstall pytraffic
