@@ -19,57 +19,7 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-import os
-
-sound_data=[]
-
-# We assume that on Windows everything "just works" :-)
-
-if os.name=='nt':
-    sound_data=None
-else:
-    sound_data=[
-    {
-    'id' : 'Default',
-    'env' : None,
-    'menu_label' : 'Default',
-    'action' : None,
-    'menu_item' : None
-    },
-    {
-    'id' : 'OSS',
-    'env' : 'oss',
-    'menu_label' : 'OSS',
-    'action' : None,
-    'menu_item' : None
-    },
-    {
-    'id' : 'Alsa',
-    'env' : 'alsa',
-    'menu_label' : 'Alsa',
-    'action' : None,
-    'menu_item' : None
-    },
-    {
-    'id' : 'Artsd',
-    'env' : 'artsc',
-    'menu_label' : 'Artsd',
-    'action' : None,
-    'menu_item' : None
-    },
-    {
-    'id' : 'Esd',
-    'env' : 'esd',
-    'menu_label' : 'Esd',
-    'action' : None,
-    'menu_item' : None
-    }
-    ]
-
-
-def do_os_stuff(output):
-    if output and output!='Default' and os.name=='posix':
-        for data in sound_data:
-            if data['id']==output:
-                os.environ['SDL_AUDIODRIVER']=data['env']
-    
+# Sound output device selection was removed in the Python 3 / GTK3 port.
+# SDL2 auto-detects the appropriate audio backend (PulseAudio, PipeWire,
+# ALSA, etc.) on modern Linux systems; manual SDL_AUDIODRIVER overrides
+# are no longer needed.

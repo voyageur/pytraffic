@@ -37,7 +37,6 @@ import SoundServer
 import MusicServer
 import ThemeEngine
 import Canvas
-import SoundData
 import traceback
 import MusicChooser
 import SmartLabel
@@ -280,29 +279,6 @@ class Game:
         self.choose_music_.connect("activate", self.choosemusic)
         settings_menu.append(self.choose_music_)
 
-        # Sound output submenu (Unix only)
-        if os.name != 'nt':
-            sound_output_item = Gtk.MenuItem(label="Sound _output")
-            sound_output_item.set_use_underline(True)
-            sound_output_menu = Gtk.Menu()
-            sound_output_item.set_submenu(sound_output_menu)
-            first_sound_item = None
-            for data in SoundData.sound_data:
-                if first_sound_item is None:
-                    item = Gtk.RadioMenuItem(label=data['menu_label'])
-                    first_sound_item = item
-                else:
-                    item = Gtk.RadioMenuItem.new_from_widget(first_sound_item)
-                    item.set_label(data['menu_label'])
-                item.connect("toggled", self.setsoundoutput, data['action'])
-                data['menu_item'] = item
-                sound_output_menu.append(item)
-            sound_output_menu.append(Gtk.SeparatorMenuItem())
-            self.soundabout_ = Gtk.MenuItem(label="What is this about?")
-            self.soundabout_.connect("activate", self.showsounddoc)
-            sound_output_menu.append(self.soundabout_)
-            settings_menu.append(sound_output_item)
-
         menubar.append(settings_item)
 
         # --- Help menu ---
@@ -414,9 +390,6 @@ class Game:
     def readme(self, *args):
         ShowHTML.showhtml("doc/readme.htm")
 
-    def showsounddoc(self, *args):
-        ShowHTML.showhtml("doc/sound.htm")
-
     def demo_step(self, timer):
         if self.gamestate.redcarout():
             self.new()
@@ -448,17 +421,6 @@ class Game:
                 self.sound_server.enable_sound()
             else:
                 self.sound_server.disable_sound()
-
-    def setsoundoutput(self, menu, soundoutput, *args):
-        if self.callbacks_enabled:
-            if os.name != 'nt' and menu.get_active():
-                for data in SoundData.sound_data:
-                    if data['action'] == soundoutput:
-                        if self.sound_server.getsoundoutput() != data['id']:
-                            self.sound_server.setsoundoutput(data['id'])
-                            CondMessageBox.showwarning(
-                                message="This change will only take effect after you restart PyTraffic.",
-                                window=self.window)
 
     def setmusic(self, *args):
         if self.callbacks_enabled:
@@ -720,10 +682,6 @@ PyTraffic reported: """+ShowHTML.last_error(),
             rgba.parse("green")
             self.finished.modify_bg(rgba)
         self.statisticsdialog.update_statistics(self.gamestate.statistics)
-        if os.name != 'nt':
-            for data in SoundData.sound_data:
-                if data['id'] == self.sound_server.getsoundoutput():
-                    data['menu_item'].set_active(True)
         if self.sound_server.sound_enabled():
             self.sound_.set_active(True)
         else:
@@ -745,8 +703,6 @@ PyTraffic reported: """+ShowHTML.last_error(),
             self.choose_music_.set_sensitive(False)
         if not ShowHTML.can_display_html():
             self.readme_.set_sensitive(False)
-            if os.name != 'nt':
-                self.soundabout_.set_sensitive(False)
         if self.demomode:
             self.demo_.set_active(True)
             self.hint_button.set_sensitive(False)

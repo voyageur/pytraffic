@@ -22,7 +22,6 @@
 import os
 import Misc
 import ThemeEngine
-import SoundData
 import Chooser
 import Timer
 import glob, copy
@@ -37,7 +36,6 @@ np = Misc.normalize_path
 class SoundServer:
 
     def __init__(self, theme_engine):
-        self.__sound_output_explicitly_set = 0
         self.theme_engine = theme_engine
 
     def last_error(self):
@@ -55,7 +53,6 @@ class SoundServer:
 
     def sound_enabled(self):
         return self.__sound_enabled
-
 
     def play(self, sound):
         if self.__sound_works and self.__sound_enabled and sound is not None:
@@ -96,26 +93,15 @@ class SoundServer:
                     self.__supported_dict[extension] = False
                 return False
 
-
     def sound_has_worked(self):
         return self.__sound_has_worked
 
-    def setsoundoutput(self, output):
-        self.__output = output
-        self.__sound_output_explicitly_set = 1
-
-    def getsoundoutput(self):
-        return self.__output
-
     def default_bag(self, propertybag):
         propertybag['sound_has_worked'] = 1
-        propertybag['sound_output'] = 'Default'
         propertybag['sound_enabled'] = 1
 
     def load_bag(self, propertybag):
-        self.__output = output = propertybag['sound_output']
         self.__chooser = None
-        SoundData.do_os_stuff(output)
         self.__sound_works = 0
         self.__sound_enabled = 0
         self.__last_error = ""
@@ -136,13 +122,6 @@ class SoundServer:
         elif self.__sound_works:
             self.enable_sound()
 
-
     def save_bag(self, propertybag):
         propertybag['sound_enabled'] = self.__sound_enabled
-        if not self.__sound_output_explicitly_set:
-            propertybag['sound_has_worked'] = self.__sound_works
-        else:
-            propertybag['sound_has_worked'] = 1  # force dialog box after restart
-            propertybag['sound_enabled'] = 1  # enable sound
-
-        propertybag['sound_output'] = self.__output
+        propertybag['sound_has_worked'] = self.__sound_works
