@@ -22,6 +22,7 @@
 
 from gi.repository import Gtk
 from gi.repository import GObject
+from gi.repository import GLib
 
 class Timer(GObject.GObject):
     __gsignals__ = {
@@ -66,12 +67,12 @@ class Timer(GObject.GObject):
 
     def __start(self):
         if self.__afterid is None:
-            self.__afterid = GObject.timeout_add(self.__interval,
-                                       self.__commandwrapper)
+            self.__afterid = GLib.timeout_add(self.__interval,
+                                      self.__commandwrapper)
 
     def __stop(self):
         if self.__afterid is not None:
-            GObject.source_remove(self.__afterid)
+            GLib.source_remove(self.__afterid)
             self.__afterid = None
 
     def __commandwrapper(self):
@@ -124,11 +125,11 @@ class Idler(GObject.GObject):
 
     def __start(self):
         if self.__afterid is None:
-            self.__afterid = GObject.idle_add(self.__commandwrapper)
+            self.__afterid = GLib.idle_add(self.__commandwrapper)
 
     def __stop(self):
         if self.__afterid is not None:
-            GObject.source_remove(self.__afterid)
+            GLib.source_remove(self.__afterid)
             self.__afterid = None
 
     def __commandwrapper(self):

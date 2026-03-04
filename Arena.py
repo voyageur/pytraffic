@@ -28,7 +28,7 @@ import copy
 import CondMessageBox
 import GameState
 import Canvas
-from gi.repository import Gdk, GObject, Gtk
+from gi.repository import Gdk, GObject, GLib, Gtk
 
 import Board
 
@@ -118,7 +118,7 @@ class Car:
         else:
             self.im.set_coords(cnt, other)
         if cnt != dest:
-            GObject.timeout_add(
+            GLib.timeout_add(
                 delay_ms, lambda f=self.move_a_bit_inner,
                 cnt=cnt,
                 dest=dest,

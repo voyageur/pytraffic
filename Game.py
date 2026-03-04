@@ -323,32 +323,32 @@ class Game:
         """Build Gtk.Toolbar replacing deprecated insert_stock."""
         toolbar = Gtk.Toolbar()
 
-        self.new_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW)
+        self.new_button = Gtk.ToolButton(icon_name="document-new")
         self.new_button.set_tooltip_text("New level")
         self.new_button.connect("clicked", self.new)
         toolbar.insert(self.new_button, -1)
 
-        self.restart_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_GOTO_FIRST)
+        self.restart_button = Gtk.ToolButton(icon_name="go-first")
         self.restart_button.set_tooltip_text("Restart level")
         self.restart_button.connect("clicked", self.restart)
         toolbar.insert(self.restart_button, -1)
 
-        self.undo_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_UNDO)
+        self.undo_button = Gtk.ToolButton(icon_name="edit-undo")
         self.undo_button.set_tooltip_text("Undo last move")
         self.undo_button.connect("clicked", self.undo)
         toolbar.insert(self.undo_button, -1)
 
-        self.redo_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_REDO)
+        self.redo_button = Gtk.ToolButton(icon_name="edit-redo")
         self.redo_button.set_tooltip_text("Redo last move")
         self.redo_button.connect("clicked", self.redo)
         toolbar.insert(self.redo_button, -1)
 
-        self.end_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_GOTO_LAST)
+        self.end_button = Gtk.ToolButton(icon_name="go-last")
         self.end_button.set_tooltip_text("Goto end of history")
         self.end_button.connect("clicked", self.gotoend)
         toolbar.insert(self.end_button, -1)
 
-        self.hint_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_HELP)
+        self.hint_button = Gtk.ToolButton(icon_name="help-contents")
         self.hint_button.set_tooltip_text("Ask for hint")
         self.hint_button.connect("clicked", self.hint)
         toolbar.insert(self.hint_button, -1)

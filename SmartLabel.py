@@ -27,8 +27,8 @@ class SmartLabel(Gtk.EventBox):
         Gtk.EventBox.__init__(self)
         self.label = Gtk.Label(label=text)
         self.add(self.label)
-        # GTK3: get font metrics via Pango context
-        font_desc = self.label.get_style_context().get_font(Gtk.StateFlags.NORMAL)
+        # GTK3: get font metrics via Pango context (get_font is deprecated)
+        font_desc = self.label.get_pango_context().get_font_description()
         font_metrics = self.label.get_pango_context().get_metrics(font_desc)
         self.approximate_char_width = font_metrics.get_approximate_char_width()
         self._css_provider = Gtk.CssProvider()
