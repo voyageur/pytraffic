@@ -131,6 +131,7 @@ class Car:
 #    All written by Jesse Weinstein."""
 
     def animated_move(self, row, col):
+        self.arena.sound_server.play(self.artwork['engine'])
         ox, oy = Misc.togridpoint(self.row, self.col)
         x, y = Misc.togridpoint(row, col)
         if x == ox:
