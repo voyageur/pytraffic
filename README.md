@@ -54,10 +54,6 @@ suitable for young children.
 | GStreamer + plugins | For sound effects and music playback |
 | gcc | Only needed to build the C solver extension |
 
-All audio (sound effects and background music) uses GStreamer via PyGObject — no SDL2
-or SDL2_mixer dependency. The `sdl_mixer.py` module in the source tree is a pure-Python
-GStreamer wrapper that presents the same API as the old SDL 1.x C extension it replaced.
-
 On Fedora/RHEL:
 ```
 sudo dnf install python3-gobject gtk3 gstreamer1-plugins-base gstreamer1-plugins-good python3-devel gcc

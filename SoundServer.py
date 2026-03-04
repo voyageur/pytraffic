@@ -106,7 +106,7 @@ class SoundServer:
         self.__sound_enabled = 0
         self.__last_error = ""
         try:
-            import sdl_mixer as mixer
+            import mixer
             self.mixer = mixer
             self.mixer.init(frequency=44100)
             self.init_supported()

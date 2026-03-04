@@ -1,9 +1,7 @@
 ## PyTraffic -- GStreamer-based audio backend.
 ##
-## Replaces the old _sdl_mixer C extension (SDL 1.x) with a pure-Python
-## implementation that uses GStreamer via gi.repository.Gst.  The public
-## API is identical to the old sdl_mixer module so no other files need
-## changing.
+## Pure-Python implementation using GStreamer via gi.repository.Gst.
+## Provides Sound (fire-and-forget effects) and a music player object.
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -12,7 +10,7 @@ from gi.repository import Gst, GLib
 Gst.init(None)
 
 
-class sdl_mixer_error(RuntimeError):
+class MixerError(RuntimeError):
     pass
 
 
@@ -42,7 +40,7 @@ def _probe_file(path):
 
 
 # ---------------------------------------------------------------------------
-# Sound effect — fire-and-forget playback of a single OGG/WAV file.
+# Sound effect — fire-and-forget playback of a single audio file.
 # ---------------------------------------------------------------------------
 
 class Sound:
@@ -50,7 +48,7 @@ class Sound:
 
     def __init__(self, file):
         if not _probe_file(file):
-            raise sdl_mixer_error("Cannot decode sound file: {}".format(file))
+            raise MixerError("Cannot decode sound file: {}".format(file))
         self._file = file
 
     def play(self):
@@ -86,7 +84,7 @@ class _MusicPlayer:
 
     def load(self, file):
         if not _probe_file(file):
-            raise sdl_mixer_error("Cannot decode music file: {}".format(file))
+            raise MixerError("Cannot decode music file: {}".format(file))
         self.stop()
         pipeline = Gst.parse_launch(
             'filesrc location="{}" ! decodebin ! audioconvert ! audioresample'

@@ -8,11 +8,10 @@
 <h2>Sound</h2>
 
 <p>
-PyTraffic uses <a href="https://www.libsdl.org/">SDL</a> (via the
-<code>SDL_mixer</code> library) for sound effects and music playback.
-On modern Linux systems SDL automatically selects the appropriate audio
-backend — typically <strong>PipeWire</strong> or
-<strong>PulseAudio</strong> — so no manual configuration is needed.
+PyTraffic uses <strong>GStreamer</strong> (via PyGObject) for sound effects and music
+playback.  On modern Linux systems GStreamer automatically selects the appropriate audio
+backend — typically <strong>PipeWire</strong> or <strong>PulseAudio</strong> — so no
+manual configuration is needed.
 </p>
 
 <h2>Troubleshooting</h2>
@@ -27,15 +26,13 @@ backend — typically <strong>PipeWire</strong> or
   <li>Check that PyTraffic is not muted in your desktop volume mixer
       (e.g. <em>pavucontrol</em>, <em>pw-top</em>, or the system tray
       volume applet).</li>
-  <li>Ensure the <code>SDL_mixer</code> library is installed.  On Fedora:
-      <code>dnf install SDL2_mixer</code>; on Debian/Ubuntu:
-      <code>apt install libsdl2-mixer-2.0-0</code>.</li>
-  <li>If SDL is picking the wrong audio device you can override it by
-      setting the <code>SDL_AUDIODRIVER</code> environment variable before
-      launching PyTraffic, for example:
-      <pre>SDL_AUDIODRIVER=pipewire python3 Main.py</pre>
-      Common values are <code>pipewire</code>, <code>pulseaudio</code>,
-      and <code>alsa</code>.</li>
+  <li>Ensure the required GStreamer plugins are installed.  On Fedora:
+      <code>dnf install gstreamer1-plugins-base gstreamer1-plugins-good</code>;
+      on Debian/Ubuntu:
+      <code>apt install gstreamer1.0-plugins-good</code>.</li>
+  <li>For additional format support (mp3, flac, etc.) install the extra plugin
+      packages: <code>gstreamer1-plugins-ugly</code> /
+      <code>gstreamer1.0-plugins-ugly</code>.</li>
 </ul>
 </body>
 </html>
