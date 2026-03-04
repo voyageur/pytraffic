@@ -32,7 +32,6 @@ np=Misc.normalize_path
 class MusicChooser:
 
     def __init__(self,theme_engine,music_server):
-        settings=Gtk.Settings.get_default()
         self.builder=Gtk.Builder()
         self.builder.add_from_file("libglade/MusicDialog.ui")
         self.dialog=self.builder.get_object("ChooseMusicDialog")
@@ -42,12 +41,6 @@ class MusicChooser:
         self.shuffle_button=self.builder.get_object("shuffle_button")
         self.recursive_button=self.builder.get_object("recursive_button")
         self.use_extensions_button=self.builder.get_object("use_extensions_button")
-        self.browse_image=self.builder.get_object("browse_image")
-        self.default_image=self.builder.get_object("default_image")
-        if not settings.get_property("gtk_button_images"):
-            self.browse_image.destroy()
-            self.default_image.destroy()
-
         events={"on_browse_button_clicked" : self.browse,
               "on_default_button_clicked": self.default,
               "on_cancel_button_clicked" : self.cancel,

@@ -36,16 +36,16 @@ class PropertyBag(collections.UserDict):
         self.__configfile = configfile
 
     def save(self):
-        fp = open(self.__configfile, "w")
-        if self.__comment is not None:
-            fp.write(";; %s\n" % self.__comment)
-        fp.write("[%s]\n" % self.__title)
-        for (key, item) in self.items():
-            fp.write("%s=%s\n" % (key, repr(item)))
-        fp.close()
+        with open(self.__configfile, "w") as fp:
+            if self.__comment is not None:
+                fp.write(";; %s\n" % self.__comment)
+            fp.write("[%s]\n" % self.__title)
+            for (key, item) in self.items():
+                fp.write("%s=%s\n" % (key, repr(item)))
 
     def load(self, all=False):
         c = configparser.ConfigParser()
+        c.optionxform = str
         if not os.access(self.__configfile, os.F_OK):
             return
         c.read(self.__configfile)

@@ -20,7 +20,6 @@
 ##
 
 
-from gi.repository import Gtk
 from gi.repository import GObject
 from gi.repository import GLib
 
@@ -80,7 +79,6 @@ class Timer(GObject.GObject):
         return True
 
 
-GObject.type_register(Timer)
 
 
 class Idler(GObject.GObject):
@@ -136,16 +134,13 @@ class Idler(GObject.GObject):
         self.emit("tick")
         return True
 
-GObject.type_register(Idler)
-
 
 if __name__ == '__main__':
+    from gi.repository import Gtk
     def print_something(timer):
-        global t
         print(timer)
         print("Hallo")
-        t = None
     t = Timer(interval=1000)
-    print(t.__grefcount__)
-    del t
+    t.connect("tick", print_something)
+    t.set_running(1)
     Gtk.main()

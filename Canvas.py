@@ -319,8 +319,7 @@ class Canvas(Gtk.DrawingArea):
                             | Gdk.EventMask.ENTER_NOTIFY_MASK
                             | Gdk.EventMask.BUTTON_PRESS_MASK
                             | Gdk.EventMask.BUTTON_RELEASE_MASK
-                            | Gdk.EventMask.POINTER_MOTION_MASK
-                            | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
+                             | Gdk.EventMask.POINTER_MOTION_MASK)
 
         self.objects = []
         self.selection = None
@@ -575,23 +574,20 @@ class TestApp:
         window.connect("delete_event", self.quit)
         window.connect("destroy", self.quit)
         self.canvas = Canvas()
-        f = open("themes/DeLuxe3D/transform")
-        worldtoscreen = ast.literal_eval(f.read())
-        f.close()
+        with open("themes/DeLuxe3D/transform") as f:
+            worldtoscreen = ast.literal_eval(f.read())
         image = Gtk.Image()
         image.set_from_file("themes/DeLuxe3D/background/background.png")
-        f = open("themes/DeLuxe3D/background/basepoints", "r")
-        bpx, bpy = ast.literal_eval(f.read())['background.png']
-        f.close()
+        with open("themes/DeLuxe3D/background/basepoints", "r") as f:
+            bpx, bpy = ast.literal_eval(f.read())['background.png']
         self.canvas.set_world_to_screen_transform(worldtoscreen)
         image_object = ScreenImageItem(image, bpx, bpy)
         self.canvas.add(0, 0, image_object)
         image_car2 = Gtk.Image()
         image_car2.set_from_file("themes/DeLuxe3D/cars/carHTN3.png")
-        f = open("themes/DeLuxe3D/cars/basepoints", "r")
-        basepoints = ast.literal_eval(f.read())
+        with open("themes/DeLuxe3D/cars/basepoints", "r") as f:
+            basepoints = ast.literal_eval(f.read())
         bpx, bpy = basepoints['carHTN3.png']
-        f.close()
         self.image_object_car2 = ScreenImageItem(image_car2, bpx, bpy)
         self.image_object_car2.set_cursor(Gdk.Cursor.new(
                                          Gdk.CursorType.SB_H_DOUBLE_ARROW))

@@ -19,7 +19,6 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-from gi.repository import Gtk
 from gi.repository import GObject
 import Timer, Chooser
 import Misc
@@ -193,7 +192,7 @@ class MusicServer(GObject.GObject):
 
     def load(self, music_path):
         if self.__sound_server.sound_works():
-            if type(music_path) != type([]):
+            if not isinstance(music_path, list):
                 raise Exception("Music path is not a list")
             if self.get_status() != BUSY:
                 self.__old_music_path = self.__music_path
@@ -252,4 +251,4 @@ class MusicServer(GObject.GObject):
         propertybag['music_use_extensions'] = self.get_use_extensions()
 
 
-GObject.type_register(MusicServer)
+

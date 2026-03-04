@@ -39,12 +39,12 @@ class GameState:
         self.statistics['Intermediate'] = {}
         self.statistics['Advanced'] = {}
         self.statistics['Expert'] = {}
-        for type in ('Trivial', 'Easy'):
-            self.statistics[type]['Solved'] = 0
-        for type in ('Intermediate', 'Advanced', 'Expert'):
-            movebounds = self.movebounds(type)
-            self.statistics[type]['Solved'] = 0
-            self.statistics[type]['Total'] = self.levelselector.offsetstotal(
+        for level_type in ('Trivial', 'Easy'):
+            self.statistics[level_type]['Solved'] = 0
+        for level_type in ('Intermediate', 'Advanced', 'Expert'):
+            movebounds = self.movebounds(level_type)
+            self.statistics[level_type]['Solved'] = 0
+            self.statistics[level_type]['Total'] = self.levelselector.offsetstotal(
                 movebounds[0], movebounds[1])
 
     def movebounds(self, type):
@@ -79,17 +79,17 @@ class GameState:
         if not self.dontinsert:
             self.levelselector.insertinsolvedlevels(self.offset)
 
-    def offsetsavailable(self, type, existing=0):
-        if type == 'Trivial' or type == 'Easy':
+    def offsetsavailable(self, level_type, existing=0):
+        if level_type == 'Trivial' or level_type == 'Easy':
             return 1
         else:
-            min, max = self.movebounds(type)
-            return self.levelselector.offsetsavailableEx(min, max, existing)
+            lo, hi = self.movebounds(level_type)
+            return self.levelselector.offsetsavailableEx(lo, hi, existing)
 
-    def resetsolvedlevels(self, type):
-        min, max = self.movebounds(type)
-        self.statistics[type]['Solved'] = 0
-        return self.levelselector.resetsolvedlevelsEx(min, max)
+    def resetsolvedlevels(self, level_type):
+        lo, hi = self.movebounds(level_type)
+        self.statistics[level_type]['Solved'] = 0
+        return self.levelselector.resetsolvedlevelsEx(lo, hi)
 
     def randomlevel(self, type, existing):
         b, e = self.movebounds(type)
@@ -176,8 +176,8 @@ class GameState:
                       self.statistics[self.type]['Solved']+1
             self.insertinsolvedlevels()
 
-    def solvedlevelsbetweenbounds(self, min, max):
-        return self.levelselector.solvedlevelsbetweenbounds(min, max)
+    def solvedlevelsbetweenbounds(self, lo, hi):
+        return self.levelselector.solvedlevelsbetweenbounds(lo, hi)
 
     def save_bag(self, propertybag):
         self.history.save_bag(propertybag)

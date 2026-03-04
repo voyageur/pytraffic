@@ -22,7 +22,6 @@
 import os
 import Misc
 from gi.repository import Gtk
-import sys
 
 np = Misc.normalize_path
 

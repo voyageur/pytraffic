@@ -36,9 +36,10 @@ class BottomBarItem(SmartLabel.SmartLabel):
         SmartLabel.SmartLabel.show(self)
         self.frame.show()
 
-class BottomBar(Gtk.HBox):
+class BottomBar(Gtk.Box):
     def __init__(self,homogeneous=False,spacing=0):
-        Gtk.HBox.__init__(self, homogeneous=homogeneous, spacing=spacing)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.HORIZONTAL,
+                         homogeneous=homogeneous, spacing=spacing)
         self.empty=BottomBarItem()
 #        self.empty=Gtk.ProgressBar()
         self.pack_end(self.empty.frame,True,True,0)

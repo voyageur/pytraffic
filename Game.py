@@ -770,10 +770,8 @@ The error was: """+Hint.last_error(),
 
     def quit(self, *args):
         self.save_all()
+        self.music_server.set_playing(0)
         Gtk.main_quit()
-        # there is a problem with using sys.exit() if the program has
-        # been suspended while the music is playing.
-        os._exit(0)
 
 
     def save_all(self):

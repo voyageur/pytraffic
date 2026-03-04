@@ -74,7 +74,7 @@ class SoundServer:
     def is_supported(self, filename, use_extensions=1):
         if not os.path.exists(np(filename)):
             return False
-        mode = os.stat(filename)[stat.ST_MODE]
+        mode = os.stat(filename).st_mode
         if not stat.S_ISREG(mode):
             return False
         extension = os.path.splitext(filename)[1].lower()

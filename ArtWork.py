@@ -70,25 +70,22 @@ class ArtWork:
                                         "Resetting background")
         basepoints_path = self.theme_engine.find_background_basepoints()
         if os.path.exists(basepoints_path):
-            f = open(basepoints_path, "r")
-            self.background_basepoints = ast.literal_eval(f.read())
-            f.close()
+            with open(basepoints_path, "r") as f:
+                self.background_basepoints = ast.literal_eval(f.read())
         else:
             self.background_basepoints = None
         basepoints_path = self.theme_engine.find_car_basepoints()
         if os.path.exists(basepoints_path):
-            f = open(basepoints_path, "r")
-            self.car_basepoints = ast.literal_eval(f.read())
-            f.close()
+            with open(basepoints_path, "r") as f:
+                self.car_basepoints = ast.literal_eval(f.read())
         else:
             self.car_basepoints = None
 
     def gettransform(self):
         transform_path = self.theme_engine.find_transform()
         if os.path.exists(transform_path):
-            f = open(transform_path, "r")
-            transform = ast.literal_eval(f.read())
-            f.close()
+            with open(transform_path, "r") as f:
+                transform = ast.literal_eval(f.read())
         else:
             transform = Affine2D.identity_affine
         return transform
