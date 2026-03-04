@@ -769,6 +769,11 @@ The error was: """+Hint.last_error(),
         self.callbacks_enabled = 1
 
     def quit(self, *args):
+        # Guard against being called twice (delete_event then destroy both
+        # connect here; the second call would save with music already stopped).
+        if getattr(self, '_quitting', False):
+            return
+        self._quitting = True
         self.save_all()
         self.music_server.set_playing(0)
         Gtk.main_quit()
