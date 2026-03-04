@@ -546,8 +546,7 @@ The error was: """+Hint.last_error(),
                 window=self.window)
         if not ShowHTML.can_display_html():
             CondMessageBox.showwarning(
-                message="""I don't seem to know how to display html on your system.
-PyTraffic reported: """+ShowHTML.last_error(),
+                message="xdg-open is not available. Please install xdg-utils to enable help.",
                 window=self.window)
 
     def hint(self, *args):
