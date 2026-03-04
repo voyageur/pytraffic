@@ -57,10 +57,12 @@ class MusicChooser:
         self.builder.connect_signals(events)
         self.theme_engine=theme_engine
         self.music_server=music_server
-        self.create_browser()
+        self.music_browser=None
         self.myloop=GLib.MainLoop()
 
     def create_browser(self):
+        if self.music_browser is not None:
+            return
         self.builder.add_from_file("libglade/MusicBrowser.ui")
         events1={"on_music_browser_cancel_button_clicked" :
                  self.music_browser_cancel,
@@ -98,6 +100,7 @@ class MusicChooser:
         self.myloop.run()
 
     def browse(self, *args):
+        self.create_browser()
         path=os.path.abspath(self.chosen_location.get_text())
         self.music_browser.select_filename(path)
         self.music_browser.run()
