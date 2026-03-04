@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 # ---------------------------------------------------------------------------
 [project]
 name = "pytraffic"
-version = "2.5.4"
+version = "3.0b1"
 description = "A Python simulation of the board game Rush Hour"
 readme = "README"
 license = "GPL-2.0-or-later"
