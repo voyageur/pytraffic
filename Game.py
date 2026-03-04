@@ -434,10 +434,8 @@ class Game:
 You have selected no playable music.
 Reverting to previous selection.
 
-Note: wav, ogg and mod are usually
-supported. Because of license issues
-it is often not possible to play mp3
-files.
+Note: ogg, mp3, wav and flac are
+usually supported.
 """,
                window=self.window)
 
