@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name = "pytraffic"
 version = "3.0b1"
 description = "A Python simulation of the board game Rush Hour"
-readme = "README"
+readme = "README.md"
 license = "GPL-2.0-or-later"
 authors = [{ name = "Michel Van den Bergh", email = "michel.vandenbergh@uhasselt.be" }]
 requires-python = ">=3.8"
