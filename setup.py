@@ -23,7 +23,7 @@
 
 
 
-import os,glob,sys,string,Misc,PropertyBag
+import os,glob,sys,Misc,PropertyBag
 
 
 np=Misc.normalize_path
@@ -32,10 +32,10 @@ config_db=PropertyBag.PropertyBag(configfile=np(Misc.default_config_db))
 config_db.load(all=True)
 
 if os.name=='posix':
-    from distutils.command.install import install as _install
+    from setuptools.command.install import install as _install
 
 import shutil
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 from distutils import log
 import distutils.util, distutils.dir_util
 
@@ -45,7 +45,7 @@ if os.name=='nt':
         import py2exe
     except ImportError:
         py2exe_present=0
-        print "No py2exe :-("
+        print("No py2exe :-(")  # noqa: T201
 else:
     py2exe_present=0
 
@@ -74,10 +74,10 @@ exec python %s/share/%s/Main.py""" %\
             main_command_file.close()
             distutils.dir_util.mkpath(os.path.dirname(pytraffic_install))
             self.copy_file(pytraffic_build,pytraffic_install)
-            os.chmod(pytraffic_install,0755)
+            os.chmod(pytraffic_install,0o755)
 
         def get_libdir(self):
-            if os.environ.has_key("LIBDIR"):
+            if "LIBDIR" in os.environ:
                 return os.environ["LIBDIR"]
             else:
                 return os.path.abspath(os.path.join(self.install_base,"lib"))
@@ -125,8 +125,8 @@ exec python %s/share/%s/Main.py""" %\
 
         def run(self):
             if os.path.exists(self.install_lib):
-                print "The installation directory %s already exists.\n\
-Please delete it first." % self.install_lib
+                print("The installation directory %s already exists.\n"
+                      "Please delete it first." % self.install_lib)
                 sys.exit()
 
             _install.run(self)
@@ -267,19 +267,19 @@ ext_modules=[Extension("_hint",["src/hint/asci.c",
                              libraries=["SDL","SDL_mixer"]
                             )]
 
-data_files=[(ail("."),['ttraffic.levels','COPYING','config.db']),
-            (ail('doc'),glob.glob('doc/*.htm')+glob.glob('doc/*.png')),
-            (ail('libglade'),glob.glob('libglade/*.glade')+\
-                              ['libglade/carNred64x64.png']),
-            (ail('music'),['music/README.README']),
-            (ail('sound_test'),['sound_test/tone.ogg']),
-            ('share/applications',['pytraffic.desktop']),]
-            +theme_files()\
-            +music_files()\
-            +main_command()\
-            +windows_installer()\
-            +icons()\
-            +desktop_file()
+data_files=([(ail("."),['ttraffic.levels','COPYING','config.db']),
+             (ail('doc'),glob.glob('doc/*.htm')+glob.glob('doc/*.png')),
+             (ail('libglade'),glob.glob('libglade/*.ui')+\
+                               ['libglade/carNred64x64.png']),
+             (ail('music'),['music/README.README']),
+             (ail('sound_test'),['sound_test/tone.ogg']),
+             ('share/applications',['pytraffic.desktop'])]
+            +theme_files()
+            +music_files()
+            +main_command()
+            +windows_installer()
+            +icons()
+            +desktop_file())
 
 
 long_description="""\
@@ -311,7 +311,7 @@ if py2exe_present:
     setup_kw['windows']=[{"script" : "WinMain.pyw",
                           "icon_resources":[(1,"icons/carNred.ico")]}]
 
-apply(setup,[],setup_kw)
+setup(**setup_kw)
 
 
 
