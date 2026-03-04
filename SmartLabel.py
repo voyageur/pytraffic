@@ -20,43 +20,55 @@
 ##
 
 
-from gi.repository import Gtk
-from gi.repository import Pango
+from gi.repository import Gtk, Gdk, Pango
 
 class SmartLabel(Gtk.EventBox):
-    def __init__(self,text=""):
-        GObject.GObject.__init__(self)
-        self.label=Gtk.Label(label=text)
+    def __init__(self, text=""):
+        Gtk.EventBox.__init__(self)
+        self.label = Gtk.Label(label=text)
         self.add(self.label)
-        style=self.label.rc_get_style()
-        self.default_bg=style.bg[Gtk.StateType.NORMAL]
-        self.font_desc=style.font_desc
-        self.font_metrics=\
-             self.label.get_pango_context().get_metrics(self.font_desc)
-        self.approximate_char_width=\
-             self.font_metrics.get_approximate_char_width()
+        # GTK3: get font metrics via Pango context
+        font_desc = self.label.get_style_context().get_font(Gtk.StateFlags.NORMAL)
+        font_metrics = self.label.get_pango_context().get_metrics(font_desc)
+        self.approximate_char_width = font_metrics.get_approximate_char_width()
+        self._css_provider = Gtk.CssProvider()
+        self.get_style_context().add_provider(self._css_provider,
+                                              Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def modify_bg(self,color):
-        Gtk.EventBox.modify_bg(self,Gtk.StateType.NORMAL,color)
+    def modify_bg(self, color):
+        # GTK3: use CSS for background color instead of deprecated modify_bg
+        if isinstance(color, Gdk.RGBA):
+            rgba = color
+        elif isinstance(color, Gdk.Color):
+            rgba = Gdk.RGBA(color.red / 65535.0,
+                            color.green / 65535.0,
+                            color.blue / 65535.0, 1.0)
+        else:
+            rgba = Gdk.RGBA()
+            rgba.parse(str(color))
+        css = "* { background-color: rgba(%d,%d,%d,%f); }" % (
+            int(rgba.red * 255),
+            int(rgba.green * 255),
+            int(rgba.blue * 255),
+            rgba.alpha)
+        self._css_provider.load_from_data(css.encode())
 
     def reset_bg(self):
-        Gtk.EventBox.modify_bg(self,Gtk.StateType.NORMAL,self.default_bg)
+        self._css_provider.load_from_data(b"")
 
-    def set_char_width(self,n):
-        self.set_size_request(n*self.approximate_char_width/Pango.SCALE,-1)
-    
-    def set_anchor(self,s=''):
-        if s=='e':
-            Gtk.Misc.set_alignment(self.label,1.0,1.0)
-        elif s=='w':
-            Gtk.Misc.set_alignment(self.label,0.0,1.0)
+    def set_char_width(self, n):
+        self.set_size_request(n * self.approximate_char_width // Pango.SCALE, -1)
+
+    def set_anchor(self, s=''):
+        if s == 'e':
+            self.label.set_halign(Gtk.Align.END)
+        elif s == 'w':
+            self.label.set_halign(Gtk.Align.START)
         else:
-            Gtk.Misc.set_alignment(self.label,0.5,1.0)
+            self.label.set_halign(Gtk.Align.CENTER)
 
-    def set_text(self,text):
+    def set_text(self, text):
         self.label.set_text(text)
 
-    def set_sensitive(self,gtk_boolean):
+    def set_sensitive(self, gtk_boolean):
         self.label.set_sensitive(gtk_boolean)
-
-

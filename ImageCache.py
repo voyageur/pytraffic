@@ -19,29 +19,23 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 import Cache
 
 class ImageCache(Cache.Cache):
     def __init__(self):
-        Cache.Cache.__init__(self,self.__factory)
+        Cache.Cache.__init__(self, self.__factory)
 
-    def __factory(self,filename):
-        pixbuf=GdkPixbuf.Pixbuf.new_from_file(filename)
-        image=Gtk.Image()
+    def __factory(self, filename):
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
+        image = Gtk.Image()
         image.set_from_pixbuf(pixbuf)
         return image
 
-    def getimage(self,filename):
+    def getimage(self, filename):
         return self.getitem(filename)
 
-class PixmapCache(Cache.Cache):
-    def __init__(self):
-        Cache.Cache.__init__(self,self.__factory)
-
-    def __factory(self,image):
-        return GdkPixbuf.Pixbuf.render_pixmap_and_mask(image.get_pixbuf())
-
-    def getpixmaps(self,image):
-        return self.getitem(image)
-        
+# PixmapCache has been removed: GTK3/Cairo uses GdkPixbuf directly
+# (no more GDK pixmaps or render_pixmap_and_mask).
+# ScreenImageItem in Canvas.py now uses GdkPixbuf directly via
+# Gdk.cairo_set_source_pixbuf().

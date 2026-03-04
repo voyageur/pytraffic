@@ -21,65 +21,63 @@
 
 from gi.repository import Gtk
 
-    
 
-def askokcancel(message,window=None,disable=0):
+def askokcancel(message, window=None, disable=0):
     if not disable:
-        dialog=Gtk.MessageDialog(type=Gtk.MessageType.QUESTION,
-                                 flags=Gtk.DialogFlags.MODAL|\
-                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                 buttons=Gtk.ButtonsType.OK_CANCEL,
-                                 message_format=message)
-        if window:
-            dialog.set_transient_for(window)
-        response_id=dialog.run()
-        dialog.destroy()
-        if response_id==Gtk.ResponseType.OK:
-            return 1
-        else:
-            return 0
-    else:
-        return 1
-
-def askyesno(message,window=None,disable=0):
-    if not disable:
-        dialog=Gtk.MessageDialog(type=Gtk.MessageType.QUESTION,
-                                 flags=Gtk.DialogFlags.MODAL|\
-                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                 buttons=Gtk.ButtonsType.YES_NO,
-                                 message_format=message)
+        dialog = Gtk.MessageDialog(
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.OK_CANCEL)
+        dialog.set_markup(message)
         if window:
             dialog.set_transient_for(window)
         dialog.set_modal(True)
-        response_id=dialog.run()
+        response_id = dialog.run()
         dialog.destroy()
-        if response_id==Gtk.ResponseType.YES:
+        if response_id == Gtk.ResponseType.OK:
             return 1
         else:
             return 0
     else:
         return 1
 
-def showinfo(message,window=None,disable=0):
+def askyesno(message, window=None, disable=0):
     if not disable:
-        dialog=Gtk.MessageDialog(type=Gtk.MessageType.INFO,
-                                 flags=Gtk.DialogFlags.MODAL|\
-                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                 buttons=Gtk.ButtonsType.OK,
-                                 message_format=message)
+        dialog = Gtk.MessageDialog(
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO)
+        dialog.set_markup(message)
         if window:
             dialog.set_transient_for(window)
+        dialog.set_modal(True)
+        response_id = dialog.run()
+        dialog.destroy()
+        if response_id == Gtk.ResponseType.YES:
+            return 1
+        else:
+            return 0
+    else:
+        return 1
+
+def showinfo(message, window=None, disable=0):
+    if not disable:
+        dialog = Gtk.MessageDialog(
+            message_type=Gtk.MessageType.INFO,
+            buttons=Gtk.ButtonsType.OK)
+        dialog.set_markup(message)
+        if window:
+            dialog.set_transient_for(window)
+        dialog.set_modal(True)
         dialog.run()
         dialog.destroy()
 
-def showwarning(message,window=None,disable=0):
+def showwarning(message, window=None, disable=0):
     if not disable:
-        dialog=Gtk.MessageDialog(type=Gtk.MessageType.WARNING,
-                                 flags=Gtk.DialogFlags.MODAL|\
-                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                 buttons=Gtk.ButtonsType.OK,
-                                 message_format=message)
+        dialog = Gtk.MessageDialog(
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK)
+        dialog.set_markup(message)
         if window:
             dialog.set_transient_for(window)
+        dialog.set_modal(True)
         dialog.run()
         dialog.destroy()
