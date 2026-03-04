@@ -77,7 +77,8 @@ int generatesolution(struct linkedlistboardentry * l){
 	  if(i==MAXSOLUTION){
 	    fprintf(stderr,"Solution to big\n");
 	    dumpstrips(stderr);
-	    exit(-1);
+	    hint_set_error("generatesolution: solution array overflow (MAXSOLUTION exceeded)");
+	    return -1;
 	  }
 	  l=*p;
 	}else{
@@ -161,7 +162,8 @@ int insertinhashtable(packedboardtype packedboard, struct linkedlistboardentry *
       if(equal(packedboard,packedboard1)){
         fprintf(stderr,"Error: trying to insert %d%d twice\n",packedboard.rows,packedboard.columns);
 	dumpstrips(stderr);
-	exit(-1);
+	hint_set_error("insertinhashtable: duplicate board entry");
+	return -1;
       }else{
 	hashed++;
 	if(hashed==HASHTABLESIZE){
@@ -390,7 +392,7 @@ int findcompatiblecolumn(int column){
   int compatiblecolumnfound=FALSE;
   int teststripnr;
   while(compatiblecolumnfound==FALSE){
-    teststripnr=floor((rand()*16.0/(RAND_MAX+1.0)));
+    teststripnr=floor((rand()*16.0/((double)RAND_MAX+1.0)));
     compatiblecolumnfound=testcompatibilitycolumn(column, teststripnr);
     }
 
@@ -506,7 +508,8 @@ int searchspace(int rowcolnr){
     if(!equal((*l).packedboard,packedboard)){
       fprintf(stderr,"Error in insertinlinkedlist\n");
       dumpstrips(stderr);
-      exit(-1);
+      hint_set_error("searchspace: insertinlinkedlist integrity check failed");
+      return -1;
     }
 	
     if(insertinhashtable(packedboard,l)==-1){
@@ -548,8 +551,14 @@ struct linkedlistboardentry *lookupinhashtable(packedboardtype packedboard){
   struct linkedlistboardentry *l;
   hashed=hash(packedboard);
   originalhash=hashed;
-  while(TRUE){
+  while(1){
     l=hashtable[hashed];
+    if(l==NULL){
+      fprintf(stderr,"lookupinhashtable: NULL slot encountered\n");
+      dumpstrips(stderr);
+      hint_set_error("lookupinhashtable: board not found (NULL slot)");
+      return NULL;
+    }
     packedboard1=(*l).packedboard;
     if(equal(packedboard,packedboard1)){
       return l;
@@ -559,9 +568,10 @@ struct linkedlistboardentry *lookupinhashtable(packedboardtype packedboard){
 	hashed=0;
       }
       if(hashed==originalhash){
-	fprintf(stderr,"trying to lookup non existant board");
+	fprintf(stderr,"trying to lookup non existant board\n");
 	dumpstrips(stderr);
-	  exit(-1);
+	hint_set_error("lookupinhashtable: board not found in hash table");
+	return NULL;
       }
     }
 
@@ -602,7 +612,8 @@ struct linkedlistboardentry * computemovestosolution(){
 	      if(resultofmove!=depth){
 		fprintf(stderr,"Problem\n");
 		dumpstrips(stderr);
-		exit(-1);
+		hint_set_error("computemovestosolution: inconsistent move depth");
+		return NULL;
 	      }
 	      (*l).movestosolution=resultofmove+1;
 	      if(!changed){
@@ -743,7 +754,7 @@ int movestosolution(packedboardtype packedboard){
 void randomtypes(){
   int i;
   for(i=0;i<=11;i++){
-    striptypes[i]=floor((rand()*4.0/(RAND_MAX+1.0)));
+    striptypes[i]=floor((rand()*4.0/((double)RAND_MAX+1.0)));
   }
   striptypes[2]=1;
 }

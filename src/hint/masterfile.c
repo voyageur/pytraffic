@@ -86,7 +86,10 @@ void testintegrity(int start, int end){
 
 int lengthofmasterfile(){
   struct stat buf;
-  stat("masterfile",&buf);
+  if(stat("masterfile",&buf)!=0){
+    fprintf(stderr,"lengthofmasterfile: stat('masterfile') failed\n");
+    exit(-1); /* level-generation tool only — not called from Python game path */
+  }
   return buf.st_size;
 }
 
@@ -108,6 +111,10 @@ void generatemasterfile(){
   testintegritylast(1024);
   filelength=lengthofmasterfile();
   fp=fopen("masterfile","a");
+  if(fp==NULL){
+    fprintf(stderr,"generatemasterfile: cannot open 'masterfile' for writing\n");
+    exit(-1); /* level-generation tool only — not called from Python game path */
+  }
   for(striptypes[0]=0;striptypes[0]<4;striptypes[0]++){
   for(striptypes[1]=0;striptypes[1]<4;striptypes[1]++){
   for(striptypes[3]=0;striptypes[3]<4;striptypes[3]++){

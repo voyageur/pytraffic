@@ -40,14 +40,14 @@ static int oldstriptypes[12]={-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 
 
 int newstriptypes(void){
-  int i, new;
-  new=FALSE;
+  int i, is_new;
+  is_new=0;
   for(i=0;i<=11;i++){
     if(striptypes[i]!=oldstriptypes[i]){
-      new=TRUE;
+      is_new=1;
     }
   }
-  return new;
+  return is_new;
 }
   
 void copystriptypes(void){
@@ -86,8 +86,8 @@ void bestmove(int packedrows, int packedcolumns){
     l=doprep();
     if(l==NULL){
 	dumpstrips(stderr);
-	fprintf(stderr,"Not enough memory\n");
-	exit(-1);
+	hint_set_error("bestmove: not enough memory (linkedlist/hashtable full)");
+	return;
     }
   }
   /* we do too much here! */

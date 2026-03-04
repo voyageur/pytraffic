@@ -22,7 +22,8 @@ If not, write to the Free Software Foundation, Inc.,
 
 */
 
-
+#ifndef GTLEVEL_H
+#define GTLEVEL_H
 
 #include <stdlib.h>
 #include <time.h>
@@ -30,10 +31,16 @@ If not, write to the Free Software Foundation, Inc.,
 #include <string.h>
 #include <math.h>
 #include <sys/stat.h>
- 
+
 #define MAXSTRIPS 16
-#define TRUE 1
-#define FALSE 0
+/* Use plain 1/0 for boolean values; avoid redefining TRUE/FALSE if already
+   defined (e.g. by some system headers). */
+#ifndef TRUE
+#  define TRUE  1
+#endif
+#ifndef FALSE
+#  define FALSE 0
+#endif
 
 #define HASHTABLESIZE 0x40000
 #define LINKEDLISTSIZE 150000 
@@ -288,3 +295,15 @@ void randomboard(void);
 void testtypes(void);
 
 double profile(int quantity);
+
+/*
+ * Error-signalling mechanism for the Python wrapper.
+ * Internal C code calls hint_set_error() instead of exit() to signal a
+ * fatal error.  The wrapper checks hint_error_pending() after each call
+ * and raises RuntimeError if set.
+ */
+void hint_set_error(const char *msg);
+int  hint_error_pending(void);
+const char *hint_error_msg(void);
+
+#endif /* GTLEVEL_H */

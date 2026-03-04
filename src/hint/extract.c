@@ -78,6 +78,10 @@ void makedirectory(){
 void writedirectory() {
   FILE * fp;
   fp=fopen("munch","w");
+  if(fp==NULL){
+    fprintf(stderr,"writedirectory: cannot open 'munch' for writing\n");
+    exit(-1); /* level-generation tool only — not called from Python game path */
+  }
   fwrite(directory,sizeof(int),entriesindirectory+2,fp);
   fclose(fp);
 }
@@ -85,6 +89,10 @@ void writedirectory() {
 void readdirectory(){
   FILE * fp;
   fp=fopen("../ttraffic.levels","r");
+  if(fp==NULL){
+    fprintf(stderr,"readdirectory: cannot open '../ttraffic.levels'\n");
+    exit(-1); /* level-generation tool only — not called from Python game path */
+  }
   fread(directory,sizeof(int),2,fp);
   if(directory[0]!=MINMOVESTOSOLUTION){
     fprintf(stderr,"error reading directory");

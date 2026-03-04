@@ -66,7 +66,7 @@ char *colors[18]={
    "LavenderBlush1",
    "LemonChiffon1",
     "MistyRose2",
-    "NavajoWhite4"
+    "NavajoWhite4",
    "thistle2",
 };
 
