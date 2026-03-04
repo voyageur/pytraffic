@@ -20,16 +20,16 @@
 ##
 
 
-import gtk
-import pango
+from gi.repository import Gtk
+from gi.repository import Pango
 
-class SmartLabel(gtk.EventBox):
+class SmartLabel(Gtk.EventBox):
     def __init__(self,text=""):
-        gtk.EventBox.__init__(self)
-        self.label=gtk.Label(text)
+        GObject.GObject.__init__(self)
+        self.label=Gtk.Label(label=text)
         self.add(self.label)
         style=self.label.rc_get_style()
-        self.default_bg=style.bg[gtk.STATE_NORMAL]
+        self.default_bg=style.bg[Gtk.StateType.NORMAL]
         self.font_desc=style.font_desc
         self.font_metrics=\
              self.label.get_pango_context().get_metrics(self.font_desc)
@@ -37,21 +37,21 @@ class SmartLabel(gtk.EventBox):
              self.font_metrics.get_approximate_char_width()
 
     def modify_bg(self,color):
-        gtk.EventBox.modify_bg(self,gtk.STATE_NORMAL,color)
+        Gtk.EventBox.modify_bg(self,Gtk.StateType.NORMAL,color)
 
     def reset_bg(self):
-        gtk.EventBox.modify_bg(self,gtk.STATE_NORMAL,self.default_bg)
+        Gtk.EventBox.modify_bg(self,Gtk.StateType.NORMAL,self.default_bg)
 
     def set_char_width(self,n):
-        self.set_size_request(n*self.approximate_char_width/pango.SCALE,-1)
+        self.set_size_request(n*self.approximate_char_width/Pango.SCALE,-1)
     
     def set_anchor(self,s=''):
         if s=='e':
-            gtk.Misc.set_alignment(self.label,1.0,1.0)
+            Gtk.Misc.set_alignment(self.label,1.0,1.0)
         elif s=='w':
-            gtk.Misc.set_alignment(self.label,0.0,1.0)
+            Gtk.Misc.set_alignment(self.label,0.0,1.0)
         else:
-            gtk.Misc.set_alignment(self.label,0.5,1.0)
+            Gtk.Misc.set_alignment(self.label,0.5,1.0)
 
     def set_text(self,text):
         self.label.set_text(text)

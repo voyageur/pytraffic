@@ -28,8 +28,8 @@ import copy
 import CondMessageBox
 import GameState
 import Canvas
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
 
 import Board
 
@@ -85,11 +85,11 @@ class Car:
         if ((toprow!=bottomrow) or (leftcolumn!=rightcolumn)) \
                              and not(self.disabled):
             if self.horizontal:
-#                self.im.set_cursor(gtk.gdk.Cursor(gtk.gdk.SB_H_DOUBLE_ARROW))
-                self.im.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+#                self.im.set_cursor(Gdk.Cursor.new(Gdk.SB_H_DOUBLE_ARROW))
+                self.im.set_cursor(Gdk.Cursor.new(Gdk.HAND2))
             else:
-#                self.im.set_cursor(gtk.gdk.Cursor(gtk.gdk.SB_V_DOUBLE_ARROW))
-                self.im.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+#                self.im.set_cursor(Gdk.Cursor.new(Gdk.SB_V_DOUBLE_ARROW))
+                self.im.set_cursor(Gdk.Cursor.new(Gdk.HAND2))
 	else:
 		self.im.set_cursor(None)
 
@@ -125,7 +125,7 @@ class Car:
             else:
                 self.im.set_coords(cnt, other)
             if cnt!=dest:
-                gobject.timeout_add(\
+                GObject.timeout_add(\
                     delay_ms, lambda f= self.move_a_bit_inner,
                     cnt=cnt,
                     dest=dest,
@@ -149,7 +149,7 @@ class Car:
         
     def startdrag(self,window,e):
         if e.button!=1 or \
-           e.type!=gtk.gdk.BUTTON_PRESS or \
+           e.type!=Gdk.EventType.BUTTON_PRESS or \
            self.disabled:
             return False
         toprow,bottomrow,leftcolumn,rightcolumn=\
@@ -220,8 +220,8 @@ class Arena(Canvas.Canvas):
         self.artwork=game.artwork
         self.carlist=[]
         self.background=None
-        self.popup=gtk.Menu()
-        self.popup_item=gtk.MenuItem("Order this car")
+        self.popup=Gtk.Menu()
+        self.popup_item=Gtk.MenuItem("Order this car")
         self.popup.append(self.popup_item)
         self.popup_item.show()
         self.popup_item.connect("activate",self.order)
