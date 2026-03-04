@@ -262,11 +262,7 @@ ext_modules=[Extension("_hint",["src/hint/globals.c",
                                        "src/hint/gtraffic.c",
                                        "src/hint/hint_wrap.c",
                                        "src/hint/precompute.c",
-                                       ]),
-             Extension("_sdl_mixer",
-                             ["src/sdl_mixer/sdl_mixer_wrap.c"],
-                             libraries=["SDL","SDL_mixer"]
-                            )]
+                                       ])]
 
 data_files=([(ail("."),['ttraffic.levels','COPYING','config.db']),
              (ail('doc'),glob.glob('doc/*.htm')+glob.glob('doc/*.png')),
