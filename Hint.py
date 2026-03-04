@@ -23,31 +23,14 @@ hint_enabled = 0
 _last_error = ""
 import os, sys
 
-def version_suffix():
-    if os.name == 'nt':
-        return sys.version[:3].replace('.', '')
-    else:
-        return ''
-
 if os.name == 'nt' or os.name == 'posix':
     try:
-        print("Trying build binary...")
         import _hint
         hint_enabled = 1
     except ImportError as e:
         _last_error = str(e)
-        try:
-            print("Trying included binary...")
-            _hint = __import__("python"+version_suffix()+"._hint",
-                    locals(),
-                    globals(),
-                    '_hint')
-            hint_enabled = 1
-        except ImportError as e:
-            _last_error = str(e)
-            pass
 else:
-    print("The hint feature only works on Windows and Unix.")
+    _last_error = "The hint feature only works on Windows and Unix."
 
 if hint_enabled:
     _hint.init()
